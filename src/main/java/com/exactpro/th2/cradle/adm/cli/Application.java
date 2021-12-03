@@ -22,18 +22,14 @@ import com.exactpro.cradle.cassandra.CassandraCradleManager;
 import com.exactpro.cradle.cassandra.CassandraStorageSettings;
 import com.exactpro.cradle.cassandra.connection.CassandraConnectionSettings;
 import com.exactpro.cradle.utils.CradleStorageException;
-import com.exactpro.th2.common.schema.cradle.CradleConfidentialConfiguration;
 import com.exactpro.th2.common.schema.cradle.CradleConfiguration;
-import com.exactpro.th2.common.schema.cradle.CradleNonConfidentialConfiguration;
 import com.exactpro.th2.common.schema.exception.CommonFactoryException;
 import com.exactpro.th2.common.schema.factory.CommonFactory;
 import com.exactpro.th2.cradle.adm.cli.modes.AbstractMode;
 import com.exactpro.th2.cradle.adm.cli.params.CmdParams;
 import com.exactpro.th2.cradle.adm.cli.params.Mode;
-import com.google.common.collect.Streams;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -49,9 +45,12 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.stream.StreamSupport;
 
 import static com.exactpro.cradle.cassandra.CassandraStorageSettings.DEFAULT_CONSISTENCY_LEVEL;
 import static com.exactpro.cradle.cassandra.CassandraStorageSettings.DEFAULT_TIMEOUT;
@@ -174,7 +173,9 @@ public class Application {
 		{
 			ClassLoader cl = Application.class.getClassLoader();
 			Enumeration<URL> urls = cl.getResources(JarFile.MANIFEST_NAME);
-			Optional<Attributes> attributes = Streams.stream(urls.asIterator())
+
+			Spliterator<URL> urlSpliterator = Spliterators.spliteratorUnknownSize(urls.asIterator(), Spliterator.ORDERED);
+			Optional<Attributes> attributes = StreamSupport.stream(urlSpliterator, false)
 					.map(url ->
 					{
 						try (InputStream stream = url.openStream())
