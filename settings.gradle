@@ -1,2 +1,4 @@
 rootProject.name = 'th2-cradle-admin-tool'
+include 'cradle-admin-tool-http'
+include 'cradle-admin-tool-cli'
 
