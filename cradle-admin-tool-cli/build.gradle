@@ -25,6 +25,8 @@ jar {
     }
 }
 
+mainClassName = 'com.exactpro.th2.cradle.adm.cli.Application'
+
 
 task release(type: Zip, dependsOn: jar) {
     archiveFileName = "th2-cradle-admin-cli-${project.version}.zip"
