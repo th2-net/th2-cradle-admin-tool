@@ -1,72 +1,53 @@
 apply plugin: 'java'
-apply plugin: 'java-library'
 apply plugin: 'application'
 
 
 ext {
     cradleApiVersion = '4.0.0-TH2-2150-1493588338-SNAPSHOT'
+    commonVersion = '4.0.0-th2-2150-books-pages-1530756720-SNAPSHOT'
 }
 
-group 'org.exactpro'
-version '1.0-SNAPSHOT'
+allprojects {
 
-repositories {
-    mavenCentral()
-    maven {
-        name 'Sonatype_snapshots'
-        url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
-    }
-    maven {
-        name 'Sonatype_releases'
-        url 'https://s01.oss.sonatype.org/content/repositories/releases/'
-    }
-}
+    apply plugin: 'java'
+    apply plugin: 'application'
 
-dependencies {
-
-    implementation "com.exactpro.th2:cradle-core:$cradleApiVersion"
-    implementation "com.exactpro.th2:cradle-cassandra:$cradleApiVersion"
-    implementation "com.exactpro.th2:common:4.0.0-th2-2150-books-pages-1530756720-SNAPSHOT"
-    implementation 'commons-cli:commons-cli:1.4'
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+    compileJava.options.debugOptions.debugLevel = 'source,lines,vars' // Include debug information
     
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    group   = 'com.exactpro.th2'
+
+    repositories {
+        mavenCentral()
+        maven {
+            name 'Sonatype_snapshots'
+            url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+        }
+        maven {
+            name 'Sonatype_releases'
+            url 'https://s01.oss.sonatype.org/content/repositories/releases/'
+        }
+        configurations.all {
+            resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+            resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+        }
+    }
+
+    dependencies {
+
+        implementation "com.exactpro.th2:cradle-core:$cradleApiVersion"
+        implementation "com.exactpro.th2:cradle-cassandra:$cradleApiVersion"
+        implementation "com.exactpro.th2:common:$commonVersion"
+
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    }
 }
 
 test {
     useJUnitPlatform()
 }
 
-mainClassName = 'com.exactpro.th2.cradle.adm.cli.Application'
-
-jar {
-    archivesBaseName = 'th2-cradle-admin-cli'
-    manifest {
-        attributes(
-                'Created-By': "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})",
-                'Specification-Title': 'Cradle TH2 Admin tool',
-                'Specification-Vendor': 'Exactpro Systems LLC',
-                'Implementation-Title': 'Cradle TH2 Admin tool',
-                'Implementation-Vendor-Id': 'com.exactpro',
-                'Implementation-Version-Date': getDate(),
-                'Implementation-Version': project.version,
-                'Main-Class': mainClassName,
-                "Class-Path": configurations.runtimeClasspath.collect { "lib/" + it.getName() }.join(' '))
-    }
-}
-
-task release(type: Zip, dependsOn: jar) {
-    archiveFileName = "th2-cradle-admin-cli-${project.version}.zip"
-    from(configurations.runtimeClasspath) {
-        into "lib"
-    }
-    from jar
-}
-
-static def getDate() {
-    def date = new Date()
-    def formattedDate = date.format('yyyy-MM-dd_HH:mm:ss.SSS')
-    return formattedDate
-}
 
 

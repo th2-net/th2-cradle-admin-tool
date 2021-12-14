@@ -1,0 +1,43 @@
+
+dependencies {
+
+    implementation project(':')
+    implementation 'commons-cli:commons-cli:1.4'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    archivesBaseName = 'th2-cradle-admin-cli'
+    manifest {
+        attributes(
+                'Created-By': "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})",
+                'Specification-Title': 'Cradle TH2 Admin tool (CLI)',
+                'Specification-Vendor': 'Exactpro Systems LLC',
+                'Implementation-Title': 'Cradle TH2 Admin tool (CLI)',
+                'Implementation-Vendor-Id': 'com.exactpro',
+                'Implementation-Version-Date': getDate(),
+                'Implementation-Version': project.version,
+                'Main-Class': 'com.exactpro.th2.cradle.adm.cli.Application',
+                "Class-Path": configurations.runtimeClasspath.collect { "lib/" + it.getName() }.join(' '))
+    }
+}
+
+
+task release(type: Zip, dependsOn: jar) {
+    archiveFileName = "th2-cradle-admin-cli-${project.version}.zip"
+    from(configurations.runtimeClasspath) {
+        into "lib"
+    }
+    from jar
+}
+
+static def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyy-MM-dd_HH:mm:ss.SSS')
+    return formattedDate
+}
+
+
