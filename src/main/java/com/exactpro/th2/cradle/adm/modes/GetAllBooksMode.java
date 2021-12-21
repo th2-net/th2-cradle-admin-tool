@@ -29,8 +29,10 @@ import java.util.Collection;
 public class GetAllBooksMode extends AbstractMode<NoParams, BooksListInfo> {
 
 	private ResultPageInfo printPage(PageInfo page) {
+		if (page == null)
+			return null;
 		ResultPageInfo result = new ResultPageInfo();
-		result.setPageId(page.getId().getName());
+		result.setPageId(page.getId() == null ? null: page.getId().getName());
 		result.setActive(page.isActive());
 		result.setComment(page.getComment());
 		result.setStarted(page.getStarted());

@@ -46,7 +46,16 @@ public class ResultPrinter {
 			System.out.println("\tBookBookDesc: " + bookInfo.getBookDesc());
 		if (bookInfo.getBookFullName() != null)
 			System.out.println("\tBookFullName: " + bookInfo.getBookFullName());
-		if (!bookInfo.getBookFirstPage().getPageId().equals(bookInfo.getBookLastPage().getPageId())) {
+		if (bookInfo.getBookFirstPage() == null || bookInfo.getBookLastPage() == null) {
+			if (bookInfo.getBookFirstPage() != null) {
+				System.out.println("\tFirstPage: ");
+				printPageToCmd(bookInfo.getBookFirstPage(), "\t\t");
+			}
+			if (bookInfo.getBookLastPage() != null) {
+				System.out.println("\tLastPage: ");
+				printPageToCmd(bookInfo.getBookLastPage(), "\t\t");
+			}
+		} else if (!bookInfo.getBookFirstPage().getPageId().equals(bookInfo.getBookLastPage().getPageId())) {
 			System.out.println("\tFirstPage: ");
 			printPageToCmd(bookInfo.getBookFirstPage(), "\t\t");
 			System.out.println("\tLastPage: ");

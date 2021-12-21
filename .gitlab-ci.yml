@@ -3,7 +3,7 @@ variables:
   INSPECTION_ENABLED: 'false'
   MAJOR_VERSION: "1"
   MINOR_VERSION: "0"
-  MAINTENANCE_VERSION: "1"
+  MAINTENANCE_VERSION: "2"
 
 
 include:
