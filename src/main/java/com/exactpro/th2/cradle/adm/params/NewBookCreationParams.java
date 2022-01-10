@@ -69,11 +69,11 @@ public class NewBookCreationParams {
 		}
 
 		if (desc != null) {
-			bookToAdd.setFullName(desc);
+			bookToAdd.setDesc(desc);
 		}
 
 		if (firstPageComment != null) {
-			bookToAdd.setFullName(firstPageComment);
+			bookToAdd.setFirstPageComment(firstPageComment);
 		}
 		return bookToAdd;
 	}
