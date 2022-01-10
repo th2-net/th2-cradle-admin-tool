@@ -21,6 +21,9 @@ import java.time.Instant;
 public class ParamUtils {
 	
 	public static Instant parseInstant(String text) {
+		if (text == null || text.isEmpty()) {
+			return null;
+		}
 		if (text.chars().allMatch(Character::isDigit)) {
 			return Instant.ofEpochMilli(Long.parseLong(text));
 		} else {
