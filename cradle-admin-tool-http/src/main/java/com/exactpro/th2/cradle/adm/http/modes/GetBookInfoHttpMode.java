@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2022-2022 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,21 @@
 package com.exactpro.th2.cradle.adm.http.modes;
 
 import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
+import com.exactpro.th2.cradle.adm.http.params.GetBookInfoParamsBuilder;
 import com.exactpro.th2.cradle.adm.http.params.HttpParamBuilder;
-import com.exactpro.th2.cradle.adm.http.params.NewBookCreationParamsBuilder;
-import com.exactpro.th2.cradle.adm.modes.NewBookCreationMode;
-import com.exactpro.th2.cradle.adm.params.NewBookCreationParams;
-import com.exactpro.th2.cradle.adm.results.SimpleResult;
+import com.exactpro.th2.cradle.adm.modes.GetBookInfoMode;
+import com.exactpro.th2.cradle.adm.params.GetBookInfoParams;
+import com.exactpro.th2.cradle.adm.results.BooksListInfo;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
-public class NewBookCreationHttpMode extends NewBookCreationMode implements HttpMode<NewBookCreationParams> {
-
-	@Override
-	public HttpParamBuilder<NewBookCreationParams> createParamsBuilder() {
-		return new NewBookCreationParamsBuilder();
-	}
+public class GetBookInfoHttpMode extends GetBookInfoMode implements HttpMode<GetBookInfoParams> {
 	
+	@Override
+	public HttpParamBuilder<GetBookInfoParams> createParamsBuilder() {
+		return new GetBookInfoParamsBuilder();
+	}
+
 	@Override
 	public boolean initParams(HttpServletRequest req) throws InvalidConfigurationException {
 		this.param = getParams(req);
@@ -40,11 +39,11 @@ public class NewBookCreationHttpMode extends NewBookCreationMode implements Http
 	}
 
 	@Override
-	public SimpleResult execute() {
+	public BooksListInfo execute() {
 		try {
-			this.cradleStorage.refreshBooks();
-		} catch (IOException e) {
-			return new SimpleResult(e);
+			HttpModesUtils.refreshBookPages(cradleStorage, this.param.getBookIds());
+		} catch (Throwable e) {
+			return new BooksListInfo(e);
 		}
 		return super.execute();
 	}

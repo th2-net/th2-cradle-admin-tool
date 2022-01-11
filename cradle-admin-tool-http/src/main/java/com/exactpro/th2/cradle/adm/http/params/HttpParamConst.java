@@ -29,5 +29,7 @@ public class HttpParamConst {
 	public static final String PAGE_NAME			= "page-name";
 	public static final String PAGE_START_TIME		= "page-start";
 	public static final String PAGE_COMMENT			= "page-comment";
+
+	public static final String WITH_PAGES			= "with-pages";
 	
 }

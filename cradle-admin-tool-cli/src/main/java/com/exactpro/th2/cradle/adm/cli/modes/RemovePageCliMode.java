@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2022-2022 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ package com.exactpro.th2.cradle.adm.cli.modes;
 
 import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
 import com.exactpro.th2.cradle.adm.cli.params.CommandLineBuilder;
-import com.exactpro.th2.cradle.adm.cli.params.NewBookCreationParamsBuilder;
-import com.exactpro.th2.cradle.adm.modes.NewBookCreationMode;
-import com.exactpro.th2.cradle.adm.params.NewBookCreationParams;
+import com.exactpro.th2.cradle.adm.cli.params.RemovePageParamsBuilder;
+import com.exactpro.th2.cradle.adm.modes.RemovePageMode;
+import com.exactpro.th2.cradle.adm.params.RemovePageParams;
 import org.apache.commons.cli.CommandLine;
 
-public class NewBookCreationCliMode extends NewBookCreationMode implements CliMode<NewBookCreationParams> {
-	
+public class RemovePageCliMode extends RemovePageMode implements CliMode<RemovePageParams> {
+
 	@Override
 	public boolean initParams(CommandLine commandLine) throws InvalidConfigurationException {
 		this.param = getParams(commandLine);
@@ -32,8 +32,7 @@ public class NewBookCreationCliMode extends NewBookCreationMode implements CliMo
 	}
 
 	@Override
-	public CommandLineBuilder<NewBookCreationParams> createParamsBuilder() {
-		return new NewBookCreationParamsBuilder();
+	public CommandLineBuilder<RemovePageParams> createParamsBuilder() {
+		return new RemovePageParamsBuilder();
 	}
-	
 }

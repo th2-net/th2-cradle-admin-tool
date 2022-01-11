@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2022-2022 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,42 @@
 
 package com.exactpro.th2.cradle.adm.modes;
 
-import com.exactpro.cradle.BookInfo;
-import com.exactpro.th2.cradle.adm.params.NoParams;
+import com.exactpro.cradle.PageInfo;
+import com.exactpro.th2.cradle.adm.params.GetBookInfoParams;
 import com.exactpro.th2.cradle.adm.results.BooksListInfo;
-import com.exactpro.th2.cradle.adm.results.ResultBookInfo;
-
-import java.util.Collection;
+import com.exactpro.th2.cradle.adm.results.ResultBookDetailedInfo;
 
 
-public class GetAllBooksMode extends AbstractMode<NoParams, BooksListInfo> {
-		
+public class GetBookInfoMode extends AbstractMode<GetBookInfoParams, BooksListInfo> {
+	
+
 	@Override
 	public BooksListInfo execute() {
 
-		Collection<BookInfo> books = cradleStorage.getBooks();
-		BooksListInfo resBooks = new BooksListInfo(); 
-		for (BookInfo book : books) {
-			resBooks.addBook(ResultConverter.fromBookInfo(book, new ResultBookInfo()));
-		}
-		return resBooks;
+		BooksListInfo resBooks = new BooksListInfo();
 		
+		cradleStorage.getBooks().stream().filter(bookInfo
+				-> param.getBookIds().contains(bookInfo.getId())).map(bookInfo ->
+		{
+
+			var resultBookInfo = ResultConverter.fromBookInfo(bookInfo, new ResultBookDetailedInfo());
+
+			if (param.isWithPages()) {
+				for (PageInfo page : bookInfo.getPages()) {
+					resultBookInfo.addPages(ResultConverter.fromPageInfo(page));
+				}
+			}
+			
+			return resultBookInfo;
+			
+		}).forEach(resBooks::addBook);
+
+		return resBooks;
+
 	}
 
 	protected boolean requiredParams() {
-		return false;
+		return true;
 	}
-	
 }
+	

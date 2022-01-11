@@ -17,7 +17,12 @@
 package com.exactpro.th2.cradle.adm.cli;
 
 import com.exactpro.th2.cradle.adm.results.BooksListInfo;
+import com.exactpro.th2.cradle.adm.results.ResultBookDetailedInfo;
+import com.exactpro.th2.cradle.adm.results.ResultBookInfo;
+import com.exactpro.th2.cradle.adm.results.ResultPageInfo;
 import com.exactpro.th2.cradle.adm.results.SimpleResult;
+
+import java.util.List;
 
 public class ResultPrinter {
 	
@@ -29,7 +34,7 @@ public class ResultPrinter {
 			r.getError().printStackTrace(System.out);
 		if (r instanceof BooksListInfo) {
 			int count = 1;
-			for (BooksListInfo.ResultBookInfo book : ((BooksListInfo) r).getBooks()) {
+			for (ResultBookInfo book : ((BooksListInfo) r).getBooks()) {
 				System.out.println();
 				System.out.println("book #" + count);
 				printBookToCmd(book);
@@ -39,34 +44,24 @@ public class ResultPrinter {
 		
 	}
 	
-	private static void printBookToCmd(BooksListInfo.ResultBookInfo bookInfo) {
+	private static void printBookToCmd(ResultBookInfo bookInfo) {
 		System.out.println("\tBookId: " + bookInfo.getBookId());
 		System.out.println("\tBookCreatedTime: " + bookInfo.getBookCreatedTime());
 		if (bookInfo.getBookDesc() != null)
 			System.out.println("\tBookBookDesc: " + bookInfo.getBookDesc());
 		if (bookInfo.getBookFullName() != null)
 			System.out.println("\tBookFullName: " + bookInfo.getBookFullName());
-		if (bookInfo.getBookFirstPage() == null || bookInfo.getBookLastPage() == null) {
-			if (bookInfo.getBookFirstPage() != null) {
-				System.out.println("\tFirstPage: ");
-				printPageToCmd(bookInfo.getBookFirstPage(), "\t\t");
+		if (bookInfo instanceof ResultBookDetailedInfo) {
+			List<ResultPageInfo> pages = ((ResultBookDetailedInfo) bookInfo).getPages();
+			int i = 1;
+			for (ResultPageInfo page : pages) {
+				System.out.println("\tPage #" + i++);
+				printPageToCmd(page, "\t\t");
 			}
-			if (bookInfo.getBookLastPage() != null) {
-				System.out.println("\tLastPage: ");
-				printPageToCmd(bookInfo.getBookLastPage(), "\t\t");
-			}
-		} else if (!bookInfo.getBookFirstPage().getPageId().equals(bookInfo.getBookLastPage().getPageId())) {
-			System.out.println("\tFirstPage: ");
-			printPageToCmd(bookInfo.getBookFirstPage(), "\t\t");
-			System.out.println("\tLastPage: ");
-			printPageToCmd(bookInfo.getBookLastPage(), "\t\t");
-		} else {
-			System.out.println("\tFirst/Last Page: ");
-			printPageToCmd(bookInfo.getBookFirstPage(), "\t\t");
 		}
 	}
 
-	private static void printPageToCmd(BooksListInfo.ResultPageInfo pageInfo, String prefix) {
+	private static void printPageToCmd(ResultPageInfo pageInfo, String prefix) {
 		System.out.println(prefix + "PageId: " + pageInfo.getPageId());
 		System.out.println(prefix + "Active: " + pageInfo.isActive());
 		if (pageInfo.getComment() != null)

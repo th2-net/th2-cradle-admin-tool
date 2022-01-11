@@ -17,17 +17,22 @@
 package com.exactpro.th2.cradle.adm.cli.modes;
 
 import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
+import com.exactpro.th2.cradle.adm.cli.params.CommandLineBuilder;
 import com.exactpro.th2.cradle.adm.cli.params.NewPageParamsBuilder;
 import com.exactpro.th2.cradle.adm.modes.NewPageCreationMode;
+import com.exactpro.th2.cradle.adm.params.NewPageParams;
 import org.apache.commons.cli.CommandLine;
 
-public class NewPageCreationCliMode extends NewPageCreationMode implements CliMode {
+public class NewPageCreationCliMode extends NewPageCreationMode implements CliMode<NewPageParams> {
 
 	@Override
 	public boolean initParams(CommandLine commandLine) throws InvalidConfigurationException {
-		var builder = new NewPageParamsBuilder();
-		builder.checkMandatoryOptions(commandLine);
-		this.param = builder.fromCommandLine(commandLine);
+		this.param = getParams(commandLine);
 		return true;
+	}
+
+	@Override
+	public CommandLineBuilder<NewPageParams> createParamsBuilder() {
+		return new NewPageParamsBuilder();
 	}
 }

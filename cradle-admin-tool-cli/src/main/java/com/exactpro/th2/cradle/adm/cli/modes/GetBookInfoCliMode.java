@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2022-2022 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ package com.exactpro.th2.cradle.adm.cli.modes;
 
 import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
 import com.exactpro.th2.cradle.adm.cli.params.CommandLineBuilder;
-import com.exactpro.th2.cradle.adm.cli.params.NewBookCreationParamsBuilder;
-import com.exactpro.th2.cradle.adm.modes.NewBookCreationMode;
-import com.exactpro.th2.cradle.adm.params.NewBookCreationParams;
+import com.exactpro.th2.cradle.adm.cli.params.GetBookInfoParamsBuilder;
+import com.exactpro.th2.cradle.adm.modes.GetBookInfoMode;
+import com.exactpro.th2.cradle.adm.params.GetBookInfoParams;
 import org.apache.commons.cli.CommandLine;
 
-public class NewBookCreationCliMode extends NewBookCreationMode implements CliMode<NewBookCreationParams> {
-	
+public class GetBookInfoCliMode  extends GetBookInfoMode implements CliMode<GetBookInfoParams> {
+
 	@Override
 	public boolean initParams(CommandLine commandLine) throws InvalidConfigurationException {
 		this.param = getParams(commandLine);
@@ -32,8 +32,8 @@ public class NewBookCreationCliMode extends NewBookCreationMode implements CliMo
 	}
 
 	@Override
-	public CommandLineBuilder<NewBookCreationParams> createParamsBuilder() {
-		return new NewBookCreationParamsBuilder();
+	public CommandLineBuilder<GetBookInfoParams> createParamsBuilder() {
+		return new GetBookInfoParamsBuilder();
 	}
-	
+
 }

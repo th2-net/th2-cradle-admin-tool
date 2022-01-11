@@ -17,10 +17,21 @@
 package com.exactpro.th2.cradle.adm.cli.modes;
 
 import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
+import com.exactpro.th2.cradle.adm.cli.params.CommandLineBuilder;
+import com.exactpro.th2.cradle.adm.cli.params.NewBookCreationParamsBuilder;
+import com.exactpro.th2.cradle.adm.params.NewBookCreationParams;
 import org.apache.commons.cli.CommandLine;
 
-public interface CliMode {
+public interface CliMode<T> {
 
+	CommandLineBuilder<T> createParamsBuilder();
 	boolean initParams(CommandLine commandLine) throws InvalidConfigurationException;
+
+	default T getParams(CommandLine commandLine) throws InvalidConfigurationException {
+		var builder = createParamsBuilder();
+		builder.checkMandatoryOptions(commandLine);
+		return builder.fromCommandLine(commandLine);
+	}
+	
 	
 }

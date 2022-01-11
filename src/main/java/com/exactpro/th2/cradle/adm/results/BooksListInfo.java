@@ -16,13 +16,24 @@
 
 package com.exactpro.th2.cradle.adm.results;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BooksListInfo extends SimpleResult {
 	
 	private List<ResultBookInfo> books;
+
+	public BooksListInfo() {
+		super();
+	}
+
+	public BooksListInfo(Throwable error) {
+		super(error);
+	}
+
+	public BooksListInfo(String info) {
+		super(info);
+	}
 
 	public List<ResultBookInfo> getBooks() {
 		return books;
@@ -35,120 +46,5 @@ public class BooksListInfo extends SimpleResult {
 		this.books.add(book);
 	}
 
-	public static class ResultBookInfo {
-		private String bookId;
-		private String bookFullName;
-		private String bookDesc;
-		private Instant bookCreatedTime;
-		private ResultPageInfo bookFirstPage;
-		private ResultPageInfo bookLastPage;
-
-
-		public String getBookId() {
-			return bookId;
-		}
-
-		public ResultBookInfo setBookId(String bookId) {
-			this.bookId = bookId;
-			return this;
-		}
-
-		public String getBookFullName() {
-			return bookFullName;
-		}
-
-		public ResultBookInfo setBookFullName(String bookFullName) {
-			this.bookFullName = bookFullName;
-			return this;
-		}
-
-		public String getBookDesc() {
-			return bookDesc;
-		}
-
-		public ResultBookInfo setBookDesc(String bookDesc) {
-			this.bookDesc = bookDesc;
-			return this;
-		}
-
-		public Instant getBookCreatedTime() {
-			return bookCreatedTime;
-		}
-
-		public ResultBookInfo setBookCreatedTime(Instant bookCreatedTime) {
-			this.bookCreatedTime = bookCreatedTime;
-			return this;
-		}
-
-		public ResultPageInfo getBookFirstPage() {
-			return bookFirstPage;
-		}
-
-		public ResultBookInfo setBookFirstPage(ResultPageInfo bookFirstPage) {
-			this.bookFirstPage = bookFirstPage;
-			return this;
-		}
-
-		public ResultPageInfo getBookLastPage() {
-			return bookLastPage;
-		}
-
-		public ResultBookInfo setBookLastPage(ResultPageInfo bookLastPage) {
-			this.bookLastPage = bookLastPage;
-			return this;
-		}
-	}
-
-	public static class ResultPageInfo {
-		private String pageId;
-		private boolean isActive;
-		private String comment;
-		private Instant started;
-		private Instant ended;
-
-		public String getPageId() {
-			return pageId;
-		}
-
-		public ResultPageInfo setPageId(String pageId) {
-			this.pageId = pageId;
-			return this;
-		}
-
-		public boolean isActive() {
-			return isActive;
-		}
-
-		public ResultPageInfo setActive(boolean active) {
-			isActive = active;
-			return this;
-		}
-
-		public String getComment() {
-			return comment;
-		}
-
-		public ResultPageInfo setComment(String comment) {
-			this.comment = comment;
-			return this;
-		}
-
-		public Instant getStarted() {
-			return started;
-		}
-
-		public ResultPageInfo setStarted(Instant started) {
-			this.started = started;
-			return this;
-		}
-
-		public Instant getEnded() {
-			return ended;
-		}
-
-		public ResultPageInfo setEnded(Instant ended) {
-			this.ended = ended;
-			return this;
-		}
-	}
+	
 }

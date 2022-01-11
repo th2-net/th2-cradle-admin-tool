@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2022-2022 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,37 +14,39 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.exactpro.th2.cradle.adm.results;
+package com.exactpro.th2.cradle.adm.params;
 
-public class SimpleResult {
+import com.exactpro.cradle.BookId;
+import com.exactpro.cradle.PageId;
+
+import java.time.Instant;
+
+public class RemovePageParams {
 	
-	protected boolean isSuccess;
-	protected String info;
-	protected Throwable error;
+	private String bookId;
+	private String pageName;
 
-	public SimpleResult() {
-		this.isSuccess = true;
+	public RemovePageParams() {
 	}
 
-	public SimpleResult(Throwable error) {
-		this.isSuccess = false;
-		this.error = error;
+	public BookId getBookId() {
+		return new BookId(bookId);
 	}
 
-	public SimpleResult(String info) {
-		this.isSuccess = true;
-		this.info = info;
+	public PageId getPageId() {
+		return new PageId(getBookId(), this.pageName);
 	}
 
-	public boolean isSuccess() {
-		return isSuccess;
+	public String getPageName() {
+		return pageName;
+	}
+	
+	public void setBookId(String bookId) {
+		this.bookId = bookId;
 	}
 
-	public String getInfo() {
-		return info;
+	public void setPageName(String pageName) {
+		this.pageName = pageName;
 	}
-
-	public Throwable getError() {
-		return error;
-	}
+	
 }

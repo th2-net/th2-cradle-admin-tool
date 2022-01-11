@@ -16,6 +16,8 @@
 
 package com.exactpro.th2.cradle.adm.params;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.Instant;
 
 public class ParamUtils {
@@ -29,6 +31,10 @@ public class ParamUtils {
 		} else {
 			return Instant.parse(text);
 		}
+	}
+	
+	public static boolean getBoolean (String value, boolean defaultValue) {
+		return StringUtils.isEmpty(value) ? defaultValue : Boolean.parseBoolean(value);
 	}
 	
 }

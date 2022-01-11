@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2022-2022 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,35 +16,23 @@
 
 package com.exactpro.th2.cradle.adm.results;
 
-public class SimpleResult {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ResultBookDetailedInfo extends ResultBookInfo {
+
+	private final List<ResultPageInfo> pages;
+
+	public ResultBookDetailedInfo() {
+		this.pages = new ArrayList<>();
+	}
+
+	public List<ResultPageInfo> getPages() {
+		return pages;
+	}
+
+	public void addPages(ResultPageInfo book) {
+		this.pages.add(book);
+	}
 	
-	protected boolean isSuccess;
-	protected String info;
-	protected Throwable error;
-
-	public SimpleResult() {
-		this.isSuccess = true;
-	}
-
-	public SimpleResult(Throwable error) {
-		this.isSuccess = false;
-		this.error = error;
-	}
-
-	public SimpleResult(String info) {
-		this.isSuccess = true;
-		this.info = info;
-	}
-
-	public boolean isSuccess() {
-		return isSuccess;
-	}
-
-	public String getInfo() {
-		return info;
-	}
-
-	public Throwable getError() {
-		return error;
-	}
 }

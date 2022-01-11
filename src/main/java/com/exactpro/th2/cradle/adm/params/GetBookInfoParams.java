@@ -14,37 +14,36 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.exactpro.th2.cradle.adm.results;
+package com.exactpro.th2.cradle.adm.params;
 
-public class SimpleResult {
+import com.exactpro.cradle.BookId;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+
+public class GetBookInfoParams {
 	
-	protected boolean isSuccess;
-	protected String info;
-	protected Throwable error;
+	private Set<BookId> bookId;
+	private boolean withPages;
 
-	public SimpleResult() {
-		this.isSuccess = true;
+	public GetBookInfoParams() {
+		this.bookId = new LinkedHashSet<>();
 	}
 
-	public SimpleResult(Throwable error) {
-		this.isSuccess = false;
-		this.error = error;
+	public Set<BookId> getBookIds() {
+		return bookId;
 	}
 
-	public SimpleResult(String info) {
-		this.isSuccess = true;
-		this.info = info;
+	public void addBookId(String bookId) {
+		this.bookId.add(new BookId(bookId));
 	}
 
-	public boolean isSuccess() {
-		return isSuccess;
+	public boolean isWithPages() {
+		return withPages;
 	}
 
-	public String getInfo() {
-		return info;
-	}
-
-	public Throwable getError() {
-		return error;
+	public void setWithPages(boolean withPages) {
+		this.withPages = withPages;
 	}
 }
