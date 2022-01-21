@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2021-2022 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +60,6 @@ public class NewBookCreationParamsBuilder extends CommandLineBuilder<NewBookCrea
 
 	@Override
 	public String[] mandatoryOptions() {
-		return new String[] {BOOK_NAME, FIRST_PAGE_NAME};
+		return new String[] {BOOK_NAME};
 	}
 }

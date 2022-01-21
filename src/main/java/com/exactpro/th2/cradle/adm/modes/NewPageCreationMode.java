@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2021-2022 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import com.exactpro.th2.cradle.adm.results.SimpleResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.UUID;
+
 public class NewPageCreationMode extends AbstractMode<NewPageParams, SimpleResult> {
 
 	private static final Logger logger = LoggerFactory.getLogger(NewPageCreationMode.class);
@@ -29,8 +31,15 @@ public class NewPageCreationMode extends AbstractMode<NewPageParams, SimpleResul
 	public SimpleResult execute() {
 		try {
 			checkInit();
-			logger.info("Creating new page: bookId({}}) name({}) pageStart({}) comment({})", param.getBookId(), param.getPageName(), param.getPageStart(), param.getPageComment());
-			this.cradleStorage.addPage(param.getBookId(), param.getPageName(), param.getPageStart(), param.getPageComment());
+			String pageName = param.getPageName();
+			if (pageName == null) {
+				pageName = UUID.randomUUID().toString();
+				param.setPageName(pageName);
+				logger.info("Generating page name: {}", pageName);
+			}
+
+			logger.info("Creating new page: bookId({}}) name({}) pageStart({}) comment({})", param.getBookId(), pageName, param.getPageStart(), param.getPageComment());
+			this.cradleStorage.addPage(param.getBookId(), pageName, param.getPageStart(), param.getPageComment());
 			logger.info("Page is successfully created");
 			StringBuilder pageSB = new StringBuilder("Page created ");
 			fillPageParams(pageSB);
