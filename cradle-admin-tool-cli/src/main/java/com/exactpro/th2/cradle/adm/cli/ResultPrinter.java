@@ -48,7 +48,7 @@ public class ResultPrinter {
 		System.out.println("\tBookId: " + bookInfo.getBookId());
 		System.out.println("\tBookCreatedTime: " + bookInfo.getBookCreatedTime());
 		if (bookInfo.getBookDesc() != null)
-			System.out.println("\tBookBookDesc: " + bookInfo.getBookDesc());
+			System.out.println("\tBookDesc: " + bookInfo.getBookDesc());
 		if (bookInfo.getBookFullName() != null)
 			System.out.println("\tBookFullName: " + bookInfo.getBookFullName());
 		if (bookInfo instanceof ResultBookDetailedInfo) {
