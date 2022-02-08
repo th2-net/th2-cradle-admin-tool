@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2022 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,42 +14,29 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.exactpro.th2.cradle.adm.results;
+package com.exactpro.th2.cradle.adm;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.exactpro.cradle.CradleManager;
+import com.exactpro.cradle.utils.CradleStorageException;
 
-public class BooksListInfo extends SimpleResult {
-	
-	private List<ResultBookInfo> books;
+public class TestCradleManager implements CradleManager {
 
-	public BooksListInfo() {
-		super();
-	}
+    private TestCradleStorage storage;
 
-	public BooksListInfo(Throwable error) {
-		super(error);
-	}
+    @Override
+    public void close() throws Exception {
+        storage = null;
+    }
 
-	public BooksListInfo(String info) {
-		super(info);
-	}
-
-	public List<ResultBookInfo> getBooks() {
-		return books;
-	}
-
-	public void addBook(ResultBookInfo book) {
-		if (this.books == null) {
-			this.books = new ArrayList<>();
-		}
-		this.books.add(book);
-	}
-
-	public void failed(String text) {
-		this.isSuccess = false;
-		this.info = text;
-	}
-
-	
+    @Override
+    public TestCradleStorage getStorage() {
+        if (storage == null) {
+            try {
+                storage = new TestCradleStorage();
+            } catch (CradleStorageException e) {
+               //ignored
+            }
+        }
+        return storage;
+    }
 }

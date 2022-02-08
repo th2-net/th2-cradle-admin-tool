@@ -46,6 +46,10 @@ public class GetBookInfoMode extends AbstractMode<GetBookInfoParams, BooksListIn
 			
 		}).forEach(resBooks::addBook);
 
+		if (resBooks.getBooks() == null || resBooks.getBooks().isEmpty()) {
+			resBooks.failed("No books found by given params");
+		}
+
 		return resBooks;
 
 	}

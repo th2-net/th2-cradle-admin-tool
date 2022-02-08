@@ -47,4 +47,5 @@ public class SimpleResult {
 	public Throwable getError() {
 		return error;
 	}
+
 }

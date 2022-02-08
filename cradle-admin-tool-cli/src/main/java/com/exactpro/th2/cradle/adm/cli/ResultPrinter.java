@@ -34,12 +34,17 @@ public class ResultPrinter {
 			r.getError().printStackTrace(System.out);
 		if (r instanceof BooksListInfo) {
 			int count = 1;
-			for (ResultBookInfo book : ((BooksListInfo) r).getBooks()) {
-				System.out.println();
-				System.out.println("book #" + count);
-				printBookToCmd(book);
-				count++;
+			BooksListInfo bookListInfo = (BooksListInfo) r;
+			List<ResultBookInfo> books = bookListInfo.getBooks();
+			if (books != null && !books.isEmpty()) {
+				for (ResultBookInfo book : books) {
+					System.out.println();
+					System.out.println("book #" + count);
+					printBookToCmd(book);
+					count++;
+				}
 			}
+
 		}
 		
 	}
