@@ -143,4 +143,36 @@ public class PagesHttpTest extends AbstractHttpTest {
         Assertions.assertNotNull(bookIdObj.getPage(new PageId(bookIdkey, new_page)));
     }
 
+//    @Test
+//    TODO doesnt work currently TH2-3223
+    public void pageGapTest() throws Exception {
+
+        String bookId = "testBook";
+        String pageToRemove = "page2";
+        Instant time = Instant.now();
+        BookId bookIdkey = new BookId(bookId);
+
+        Instant page2Start = time.plus(10, ChronoUnit.MINUTES);
+        Instant page3Start = time.plus(20, ChronoUnit.MINUTES);
+
+        addBook(new BookToAdd(bookId, time.minus(20, ChronoUnit.SECONDS), "page1"));
+        addPage(bookIdkey, new PageToAdd(pageToRemove, page2Start, null));
+        addPage(bookIdkey, new PageToAdd("page3", page3Start, null));
+
+
+        BookInfo bookIdObj = this.storage.getBook(bookIdkey);
+        Assertions.assertEquals(1, this.storage.getBooksCount());
+        Assertions.assertEquals(3, bookIdObj.getPages().size());
+
+        HttpTester.Response response = this.executeGet(String.format("/remove-page?book-id=%s&page-name=%s",
+                bookId, pageToRemove));
+        bookIdObj = this.storage.getBook(bookIdkey);
+        Assertions.assertEquals(200, response.getStatus());
+        this.checkPlainResponseContains(response.getContent(), true, "Page removed");
+        Assertions.assertEquals(2, bookIdObj.getPages().size());
+        Assertions.assertEquals(page3Start, bookIdObj.getFirstPage().getEnded());
+        Assertions.assertEquals(page3Start, bookIdObj.getLastPage().getStarted());
+
+    }
+
 }
