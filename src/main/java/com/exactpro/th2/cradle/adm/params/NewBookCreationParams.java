@@ -58,12 +58,7 @@ public class NewBookCreationParams {
 	}
 
 	public BookToAdd toBookToAdd() {
-		Instant created = this.created;
-		if (created == null) {
-			created = Instant.now();
-		}
-		
-		BookToAdd bookToAdd = new BookToAdd(name, created, firstPageName);
+		BookToAdd bookToAdd = new BookToAdd(name, this.created, firstPageName);
 		if (fullName != null) {
 			bookToAdd.setFullName(fullName);
 		}

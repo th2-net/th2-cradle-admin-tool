@@ -36,21 +36,25 @@ public class HttpServer implements AutoCloseable {
 	
 	private final CustomConfiguration configuration;
 	private final CradleStorage storage;
-	private Server server;
+	protected Server server;
 
 	public HttpServer(CustomConfiguration configuration, CradleStorage storage) {
 		this.configuration = configuration;
 		this.storage = storage;
 	}
 
-	public void run() throws Exception {
-		Server server = new Server();
-		
-		ServerConnector serverConnector = new ServerConnector(server);
+	protected void createServer() {
+		this.server = new Server();
+
+		ServerConnector serverConnector = new ServerConnector(this.server);
 		serverConnector.setHost(configuration.getIp());
 		serverConnector.setPort(configuration.getPort());
-		
-		server.setConnectors(new Connector[]{serverConnector});
+
+		this.server.setConnectors(new Connector[]{serverConnector});
+	}
+
+	public void run() throws Exception {
+		this.createServer();
 		ServletHandler servletHandler = new ServletHandler();
 		server.setHandler(servletHandler);
 		

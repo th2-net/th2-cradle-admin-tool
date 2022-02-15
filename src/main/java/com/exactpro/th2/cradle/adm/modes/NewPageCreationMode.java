@@ -57,7 +57,7 @@ public class NewPageCreationMode extends AbstractMode<NewPageParams, SimpleResul
 		sb.append(",pageStart = ").append(param.getPageStart());
 
 		if (param.getPageComment() != null) {
-			sb.append(",pageCommit = ").append(param.getPageComment());
+			sb.append(",pageComment = ").append(param.getPageComment());
 		}
 	}
 	
