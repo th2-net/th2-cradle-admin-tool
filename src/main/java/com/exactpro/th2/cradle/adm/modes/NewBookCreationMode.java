@@ -21,6 +21,7 @@ import com.exactpro.th2.cradle.adm.results.SimpleResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.UUID;
 
 
@@ -38,8 +39,14 @@ public class NewBookCreationMode extends AbstractMode<NewBookCreationParams, Sim
 				param.setFirstPageName(firstPage);
 				logger.info("Generating page name: {}", firstPage);
 			}
+			Instant createdTime = param.getCreated();
+			if (createdTime == null) {
+				createdTime = Instant.now();
+				param.setCreated(createdTime);
+				logger.info("'Created' book time is not specified. Generated value: {}", createdTime);
+			}
 
-			logger.info("Creating new book: name({}}) created({}}) first page({}})", param.getName(), param.getCreated(), firstPage);
+			logger.info("Creating new book: name({}}) created({}}) first page({}})", param.getName(), createdTime, firstPage);
 			logger.info("full name({}) desc({}}) firstPage({}})", param.getFullName(), param.getDesc(), firstPage);
 		
 			this.cradleStorage.addBook(this.param.toBookToAdd());
