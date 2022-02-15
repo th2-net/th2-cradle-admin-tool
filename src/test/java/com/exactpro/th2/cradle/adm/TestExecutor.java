@@ -21,7 +21,6 @@ import com.exactpro.cradle.BookToAdd;
 import com.exactpro.cradle.PageToAdd;
 import com.exactpro.th2.common.schema.cradle.CradleConfiguration;
 import com.exactpro.th2.common.schema.factory.CommonFactory;
-import com.exactpro.th2.cradle.adm.results.SimpleResult;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mockito.MockedStatic;

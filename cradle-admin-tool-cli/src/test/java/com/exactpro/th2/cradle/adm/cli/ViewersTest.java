@@ -44,7 +44,7 @@ public class ViewersTest extends AbstractCliTest {
     private final String book2 = "test_book2";
     private final String book3 = "test_book3";
 
-    private TestExecutor getExecutor() {
+    private TestExecutor createDataExecutor() {
         return new TestExecutor().addBookIds(INITIAL_BOOK, book1Start, INITIAL_PAGE)
                 .addPageIds(INITIAL_BOOK, page2Name, page2Time, null)
                 .addPageIds(INITIAL_BOOK, page3Name, page3Time, null)
@@ -54,7 +54,7 @@ public class ViewersTest extends AbstractCliTest {
 
     @Test
     public void printUnknownBookTest() throws Exception {
-        getExecutor().execTest(
+        createDataExecutor().execTest(
                         (cradleStorage) -> {
                             Application.main(new String[]{"-c=stub/", "--getBookInfo", "-bookId", "unknown_book"});
                             checkOutput(false, "No books found by given params");
@@ -65,7 +65,7 @@ public class ViewersTest extends AbstractCliTest {
     @Test
     public void printBookTest() throws Exception {
 
-        getExecutor().execTest(
+        createDataExecutor().execTest(
                 (cradleStorage) -> {
                     Application.main(new String[]{"-c=stub/", "--getBookInfo", "-bookId", INITIAL_BOOK});
                     String expected = String.format("Cradle TH2 Admin tool (CLI), version null, build-date null\n" +
@@ -97,7 +97,7 @@ public class ViewersTest extends AbstractCliTest {
     @Test
     public void printBookTest2() throws Exception {
 
-        getExecutor().execTest(
+        createDataExecutor().execTest(
                 (cradleStorage) -> {
                     Application.main(new String[]{"-c=stub/", "--getBookInfo", "-bookId", book2, "-bookId", book3});
                     String expected = String.format("Cradle TH2 Admin tool (CLI), version null, build-date null\n" +
@@ -127,7 +127,7 @@ public class ViewersTest extends AbstractCliTest {
     @Test
     public void printBookTestWithoutPages() throws Exception {
 
-        getExecutor().execTest(
+        createDataExecutor().execTest(
                 (cradleStorage) -> {
                     Application.main(new String[]{"-c=stub/", "--getBookInfo", "-bookId", INITIAL_BOOK, "-withPages", "false"});
                     String expected = String.format("Cradle TH2 Admin tool (CLI), version null, build-date null\n" +
@@ -145,7 +145,7 @@ public class ViewersTest extends AbstractCliTest {
     @Test
     public void printAllBooksTest() throws Exception {
 
-        getExecutor().execTest(
+        createDataExecutor().execTest(
                 (cradleStorage) -> {
                     Application.main(new String[]{"-c=stub/", "--getAllBooks"});
                     String expected = String.format("Cradle TH2 Admin tool (CLI), version null, build-date null\n" +
