@@ -74,9 +74,9 @@ public class ViewersTest extends AbstractHttpTest {
         String expected = String.format("[{\"bookId\":\"book_3\",\"bookFullName\":null,\"bookDesc\":null," +
                         "\"bookCreatedTime\":\"%s\",\"pages\":[{\"pageId\":\"page3\"," +
                         "\"comment\":null,\"started\":\"%s\"," +
-                        "\"ended\":\"%s\",\"active\":false},{\"pageId\":\"page3/2\"," +
+                        "\"ended\":\"%s\"},{\"pageId\":\"page3/2\"," +
                         "\"comment\":\"comment\",\"started\":\"%s\"," +
-                        "\"ended\":null,\"active\":true}]}]", BOOK_3.getCreated(), BOOK_3.getCreated(),
+                        "\"ended\":null}]}]", BOOK_3.getCreated(), BOOK_3.getCreated(),
                 BOOK_3_PAGE.getStart(), BOOK_3_PAGE.getStart());
         Assertions.assertEquals(expected, content);
     }

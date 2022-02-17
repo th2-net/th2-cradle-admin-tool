@@ -77,17 +77,14 @@ public class ViewersTest extends AbstractCliTest {
                             "\tBookCreatedTime: %s\n" +
                             "\tPage #1\n" +
                             "\t\tPageId: init_page\n" +
-                            "\t\tActive: false\n" +
                             "\t\tStarted: %s\n" +
                             "\t\tEnded: %s\n" +
                             "\tPage #2\n" +
                             "\t\tPageId: page2\n" +
-                            "\t\tActive: false\n" +
                             "\t\tStarted: %s\n" +
                             "\t\tEnded: %s\n" +
                             "\tPage #3\n" +
                             "\t\tPageId: page3\n" +
-                            "\t\tActive: true\n" +
                             "\t\tStarted: %s\n", book1Str, book1Str, page2Str, page2Str, page3Str, page3Str);
                     Assertions.assertEquals(expected, this.outContent.toString());
                 }
@@ -109,7 +106,6 @@ public class ViewersTest extends AbstractCliTest {
                             "\tBookCreatedTime: %s\n" +
                             "\tPage #1\n" +
                             "\t\tPageId: testpage2\n" +
-                            "\t\tActive: true\n" +
                             "\t\tStarted: %s\n" +
                             "\n" +
                             "book #2\n" +
@@ -117,7 +113,6 @@ public class ViewersTest extends AbstractCliTest {
                             "\tBookCreatedTime: %s\n" +
                             "\tPage #1\n" +
                             "\t\tPageId: testpage1\n" +
-                            "\t\tActive: true\n" +
                             "\t\tStarted: %s\n", book3StartStr, book3StartStr, book2StartStr, book2StartStr);
                     Assertions.assertEquals(expected, this.outContent.toString());
                 }

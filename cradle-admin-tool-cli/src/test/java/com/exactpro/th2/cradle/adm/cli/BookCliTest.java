@@ -97,7 +97,6 @@ public class BookCliTest extends AbstractCliTest{
                             PageInfo firstPage = dev_test_6.getFirstPage();
                             Assertions.assertEquals(pageName, firstPage.getId().getName());
                             Assertions.assertEquals(pageComment, firstPage.getComment());
-                            Assertions.assertTrue(firstPage.isActive());
                             Assertions.assertNull(firstPage.getEnded());
                             Assertions.assertEquals(created, firstPage.getStarted());
 

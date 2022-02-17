@@ -114,7 +114,6 @@ public class PagesCliTest extends AbstractCliTest {
                             PageInfo createdPage = cradleStorage.getPage(new PageId(new BookId(INITIAL_BOOK), pageName));
                             Assertions.assertEquals(pageName, createdPage.getId().getName());
                             Assertions.assertEquals(pageComment, createdPage.getComment());
-                            Assertions.assertTrue(createdPage.isActive());
                             Assertions.assertNull(createdPage.getEnded());
                             Assertions.assertEquals(pageStart, createdPage.getStarted());
 

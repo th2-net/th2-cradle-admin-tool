@@ -46,7 +46,7 @@ public class PagesHttpTest extends AbstractHttpTest {
                 bookId, pageName, time.toString()));
         Assertions.assertEquals(200, response.getStatus());
         this.checkPlainResponse(response.getContent(), true,
-                String.format("Page created bookId = %s,pageName = %s,pageStart = %s", bookId, pageName, time));
+                String.format("Page created bookId = %s,pageName = %s,pageStart = %s", bookId.toLowerCase(), pageName, time));
         Assertions.assertEquals(1, this.storage.getBooksCount());
         BookId bookIdkey = new BookId(bookId);
         BookInfo bookIdObj = this.storage.getBook(bookIdkey);
@@ -66,7 +66,7 @@ public class PagesHttpTest extends AbstractHttpTest {
         Assertions.assertEquals(200, response.getStatus());
         Instant instant = Instant.ofEpochMilli(time.toEpochMilli()); // reset nanos
         this.checkPlainResponse(response.getContent(), true,
-                String.format("Page created bookId = %s,pageName = %s,pageStart = %s", bookId, pageName, instant));
+                String.format("Page created bookId = %s,pageName = %s,pageStart = %s", bookId.toLowerCase(), pageName, instant));
         Assertions.assertEquals(1, this.storage.getBooksCount());
         BookId bookIdkey = new BookId(bookId);
         BookInfo bookIdObj = this.storage.getBook(bookIdkey);
@@ -89,7 +89,7 @@ public class PagesHttpTest extends AbstractHttpTest {
         Assertions.assertEquals(2, bookIdObj.getPages().size());
         String pageName = bookIdObj.findPage(time).getId().getName();
         this.checkPlainResponseContains(response.getContent(), true,
-                String.format("Page created bookId = %s,pageName = %s,pageStart = %s", bookId, pageName, time));
+                String.format("Page created bookId = %s,pageName = %s,pageStart = %s", bookId.toLowerCase(), pageName, time));
         Assertions.assertTrue(UUID_REGEX.matcher(pageName).find());
     }
 
@@ -106,7 +106,7 @@ public class PagesHttpTest extends AbstractHttpTest {
                 bookId, pageName, time.toString(), comment));
         Assertions.assertEquals(200, response.getStatus());
         this.checkPlainResponse(response.getContent(), true,
-                String.format("Page created bookId = %s,pageName = %s,pageStart = %s,pageComment = %s", bookId, pageName, time, comment));
+                String.format("Page created bookId = %s,pageName = %s,pageStart = %s,pageComment = %s", bookId.toLowerCase(), pageName, time, comment));
         Assertions.assertEquals(1, this.storage.getBooksCount());
         BookId bookIdkey = new BookId(bookId);
         BookInfo bookIdObj = this.storage.getBook(bookIdkey);
@@ -137,7 +137,7 @@ public class PagesHttpTest extends AbstractHttpTest {
         bookIdObj = this.storage.getBook(bookIdkey);
         Assertions.assertEquals(200, response.getStatus());
         this.checkPlainResponse(response.getContent(), true,
-                String.format("Page removed testBook:%s", old_page));
+                String.format("Page removed %s:%s", bookId.toLowerCase(), old_page));
         Assertions.assertEquals(1, bookIdObj.getPages().size());
 
         Assertions.assertNotNull(bookIdObj.getPage(new PageId(bookIdkey, new_page)));

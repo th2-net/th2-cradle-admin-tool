@@ -21,7 +21,6 @@ import java.time.Instant;
 public class ResultPageInfo {
 
 	private String pageId;
-	private boolean isActive;
 	private String comment;
 	private Instant started;
 	private Instant ended;
@@ -32,15 +31,6 @@ public class ResultPageInfo {
 
 	public ResultPageInfo setPageId(String pageId) {
 		this.pageId = pageId;
-		return this;
-	}
-
-	public boolean isActive() {
-		return isActive;
-	}
-
-	public ResultPageInfo setActive(boolean active) {
-		isActive = active;
 		return this;
 	}
 

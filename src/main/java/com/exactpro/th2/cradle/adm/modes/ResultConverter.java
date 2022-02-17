@@ -29,7 +29,6 @@ public class ResultConverter {
 			return null;
 		ResultPageInfo result = new ResultPageInfo();
 		result.setPageId(page.getId() == null ? null : page.getId().getName());
-		result.setActive(page.isActive());
 		result.setComment(page.getComment());
 		result.setStarted(page.getStarted());
 		result.setEnded(page.getEnded());

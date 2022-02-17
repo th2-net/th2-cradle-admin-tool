@@ -101,7 +101,8 @@ public class BookHttpTest extends AbstractHttpTest{
         Assertions.assertEquals(1, this.storage.getBooksCount());
 
         HttpTester.Response response = this.executeGet("/new-book?book-name=" + bookName);
-        this.checkPlainResponseContains(response.getContent(), false, String.format("Book '%s' is already present in storage", bookName));
+        this.checkPlainResponseContains(response.getContent(), false, String.format("Book '%s' is already present in storage",
+                bookName.toLowerCase()));
         Assertions.assertEquals(1, this.storage.getBooksCount());
     }
 

@@ -68,7 +68,6 @@ public class ResultPrinter {
 
 	private static void printPageToCmd(ResultPageInfo pageInfo, String prefix) {
 		System.out.println(prefix + "PageId: " + pageInfo.getPageId());
-		System.out.println(prefix + "Active: " + pageInfo.isActive());
 		if (pageInfo.getComment() != null)
 			System.out.println(prefix + "Comment: " + pageInfo.getComment());
 		System.out.println(prefix + "Started: " + pageInfo.getStarted());
