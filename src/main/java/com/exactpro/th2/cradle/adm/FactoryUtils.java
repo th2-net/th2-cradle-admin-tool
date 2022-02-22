@@ -16,6 +16,7 @@
 
 package com.exactpro.th2.cradle.adm;
 
+import com.datastax.oss.driver.api.core.ConsistencyLevel;
 import com.exactpro.cradle.CradleManager;
 import com.exactpro.cradle.cassandra.CassandraCradleManager;
 import com.exactpro.cradle.cassandra.CassandraStorageSettings;
@@ -57,8 +58,8 @@ public class FactoryUtils {
 					cradleConfiguration.getTimeout() > 0
 							? cradleConfiguration.getTimeout()
 							: DEFAULT_TIMEOUT,
-					DEFAULT_CONSISTENCY_LEVEL,
-					DEFAULT_CONSISTENCY_LEVEL
+					ConsistencyLevel.LOCAL_ONE,
+					ConsistencyLevel.LOCAL_ONE
 			);
 			if (cradleConfiguration.getPageSize() > 0) {
 				cassandraStorageSettings.setResultPageSize(cradleConfiguration.getPageSize());
