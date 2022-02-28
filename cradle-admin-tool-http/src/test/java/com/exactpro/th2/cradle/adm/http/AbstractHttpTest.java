@@ -41,6 +41,8 @@ public class AbstractHttpTest {
         this.testHttpServer.run();
         this.connector = testHttpServer.getLocalConnector();
         this.testHttpServer.run();
+
+        storage.init(false);
     }
 
     @AfterEach

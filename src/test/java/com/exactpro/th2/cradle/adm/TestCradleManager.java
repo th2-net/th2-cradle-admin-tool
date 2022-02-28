@@ -17,7 +17,6 @@
 package com.exactpro.th2.cradle.adm;
 
 import com.exactpro.cradle.CradleManager;
-import com.exactpro.cradle.utils.CradleStorageException;
 
 public class TestCradleManager implements CradleManager {
 
@@ -29,12 +28,13 @@ public class TestCradleManager implements CradleManager {
     }
 
     @Override
-    public TestCradleStorage getStorage() {
+    public synchronized TestCradleStorage getStorage() {
         if (storage == null) {
             try {
                 storage = new TestCradleStorage();
-            } catch (CradleStorageException e) {
-               //ignored
+                storage.init(false);
+            } catch (Exception e) {
+               throw new RuntimeException(e);
             }
         }
         return storage;
