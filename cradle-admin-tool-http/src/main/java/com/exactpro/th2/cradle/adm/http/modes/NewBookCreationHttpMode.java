@@ -43,7 +43,7 @@ public class NewBookCreationHttpMode extends NewBookCreationMode implements Http
 	public SimpleResult execute() {
 		try {
 			this.cradleStorage.refreshBooks();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			return new SimpleResult(e);
 		}
 		return super.execute();

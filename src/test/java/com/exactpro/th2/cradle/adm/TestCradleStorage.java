@@ -33,12 +33,19 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 public class TestCradleStorage extends CradleStorage {
+    private BookCache bookCache;
     public TestCradleStorage(ExecutorService composingService, int maxMessageBatchSize, int maxTestEventBatchSize) throws CradleStorageException {
         super(composingService, maxMessageBatchSize, maxTestEventBatchSize);
+        bookCache = new TestBookCache();
+    }
+
+    public TestCradleStorage() throws CradleStorageException {
+        super();
+        bookCache = new TestBookCache();
     }
 
     public BookInfo getBook(BookId bookId) throws CradleStorageException {
-        return this.bpc.getBook(bookId);
+        return bookCache.getBook(bookId);
     }
 
     public BookInfo getBook(String bookId) throws CradleStorageException {
@@ -53,23 +60,19 @@ public class TestCradleStorage extends CradleStorage {
         return getBook(pageId.getBookId()).getPage(pageId);
     }
 
-    public TestCradleStorage() throws CradleStorageException {
-        super();
-    }
-
     @Override
     protected void doInit(boolean prepareStorage) throws CradleStorageException {
 
     }
 
     @Override
-    protected void doDispose() throws CradleStorageException {
-
+    protected BookCache getBookCache() {
+        return bookCache;
     }
 
     @Override
-    protected Collection<BookInfo> loadBooks() throws IOException {
-        return null;
+    protected void doDispose() throws CradleStorageException {
+
     }
 
     @Override
