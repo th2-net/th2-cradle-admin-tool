@@ -2,6 +2,6 @@
 /logs
 /.settings
 /bin
-/build
+**/build
 /schema
 /.idea
