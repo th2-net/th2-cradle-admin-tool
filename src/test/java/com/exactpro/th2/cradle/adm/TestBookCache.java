@@ -38,13 +38,8 @@ class TestBookCache implements BookCache {
     }
 
     @Override
-    public BookInfo loadBook(BookId bookId) throws CradleStorageException {
-        throw new CradleStorageException("Method not supported");
-    }
-
-    @Override
-    public Collection<BookInfo> loadBooks() throws CradleStorageException {
-        return Collections.unmodifiableCollection(books.values());
+    public BookInfo loadBook(BookId bookId) {
+        return books.get(bookId);
     }
 
     @Override

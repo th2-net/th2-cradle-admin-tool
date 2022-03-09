@@ -71,15 +71,11 @@ public class FactoryUtils {
 				cassandraStorageSettings.setMaxTestEventBatchSize(cradleConfiguration.getCradleMaxEventBatchSize());
 			}
 
-			CradleManager manager =  new CassandraCradleManager(
+			return new CassandraCradleManager(
 					cassandraConnectionSettings,
 					cassandraStorageSettings,
 					prepareStorage
 			);
-
-			// load all books from cassandra
-			manager.getStorage().refreshBooks();
-			return manager;
 		} catch (CradleStorageException | RuntimeException | IOException e) {
 			throw new CommonFactoryException("Cannot create Cradle manager", e);
 		}

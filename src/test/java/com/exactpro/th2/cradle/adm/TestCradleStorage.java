@@ -27,6 +27,7 @@ import com.exactpro.cradle.testevents.TestEventToStore;
 import com.exactpro.cradle.utils.CradleStorageException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -34,6 +35,8 @@ import java.util.concurrent.ExecutorService;
 
 public class TestCradleStorage extends CradleStorage {
     private BookCache bookCache;
+    private List<BookListEntry> bookList;
+
     public TestCradleStorage(ExecutorService composingService, int maxMessageBatchSize, int maxTestEventBatchSize) throws CradleStorageException {
         super(composingService, maxMessageBatchSize, maxTestEventBatchSize);
         bookCache = new TestBookCache();
@@ -42,6 +45,7 @@ public class TestCradleStorage extends CradleStorage {
     public TestCradleStorage() throws CradleStorageException {
         super();
         bookCache = new TestBookCache();
+        bookList = new ArrayList<>();
     }
 
     public BookInfo getBook(BookId bookId) throws CradleStorageException {
@@ -76,8 +80,13 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected void doAddBook(BookToAdd newBook, BookId bookId) throws IOException {
+    protected Collection<BookListEntry> doListBooks() {
+        return bookList;
+    }
 
+    @Override
+    protected void doAddBook(BookToAdd newBook, BookId bookId) throws IOException {
+        bookList.add(new BookListEntry(bookId.getName(), null));
     }
 
     @Override

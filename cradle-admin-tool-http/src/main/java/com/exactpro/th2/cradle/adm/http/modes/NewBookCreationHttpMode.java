@@ -38,14 +38,4 @@ public class NewBookCreationHttpMode extends NewBookCreationMode implements Http
 		this.param = getParams(req);
 		return true;
 	}
-
-	@Override
-	public SimpleResult execute() {
-		try {
-			this.cradleStorage.refreshBooks();
-		} catch (Exception e) {
-			return new SimpleResult(e);
-		}
-		return super.execute();
-	}
 }

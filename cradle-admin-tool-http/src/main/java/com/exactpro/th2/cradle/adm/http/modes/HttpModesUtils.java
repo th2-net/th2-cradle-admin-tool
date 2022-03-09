@@ -41,11 +41,6 @@ public class HttpModesUtils {
 			bookSet.remove(iterator.next().getId());
 		}
 
-		//books don't exist
-		if (!bookSet.isEmpty())  {
-			cradleStorage.refreshBooks();
-		}
-
 		for (BookId bookId : bookIds) {
 			cradleStorage.refreshPages(bookId);
 		}
@@ -56,9 +51,6 @@ public class HttpModesUtils {
 		for (BookInfo oldBook : oldBooks) {
 			cradleStorage.refreshPages(oldBook.getId());
 		}
-		
-		//load new books
-		cradleStorage.refreshBooks();
 	}
 	
 }

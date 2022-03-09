@@ -21,14 +21,4 @@ import com.exactpro.th2.cradle.adm.results.BooksListInfo;
 
 
 public class GetAllBooksHttpMode extends GetAllBooksMode {
-
-	@Override
-	public BooksListInfo execute() {
-		try {
-			cradleStorage.refreshBooks();
-		} catch (Throwable e) {
-			return new BooksListInfo(e);
-		}
-		return super.execute();
-	}
 }
