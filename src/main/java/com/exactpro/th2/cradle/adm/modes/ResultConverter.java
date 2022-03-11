@@ -32,6 +32,7 @@ public class ResultConverter {
 		result.setComment(page.getComment());
 		result.setStarted(page.getStarted());
 		result.setEnded(page.getEnded());
+		result.setRemoved(page.getRemoved());
 		return result;
 	}
 

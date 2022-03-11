@@ -40,6 +40,7 @@ public class CmdParams {
 	public static final String PAGE_COMMENT			= "pageComment";
 
 	public static final String WITH_PAGES			= "withPages";
+	public static final String LOAD_REMOVED_PAGES   = "loadRemovedPages";
 
 	public static final String COMMON_CFG_SHORT = "c";
 	public static final String COMMON_CFG_LONG = "configs";

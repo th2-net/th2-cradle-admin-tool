@@ -73,7 +73,8 @@ public class ResultPrinter {
 		System.out.println(prefix + "Started: " + pageInfo.getStarted());
 		if (pageInfo.getEnded() != null)
 			System.out.println(prefix + "Ended: " + pageInfo.getEnded());
+		if (pageInfo.getRemoved() != null) {
+			System.out.println(prefix + "Removed: " + pageInfo.getRemoved());
+		}
 	}
-	
-	
 }

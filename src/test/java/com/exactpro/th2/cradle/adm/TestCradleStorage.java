@@ -27,15 +27,17 @@ import com.exactpro.cradle.testevents.TestEventToStore;
 import com.exactpro.cradle.utils.CradleStorageException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.time.Instant;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 public class TestCradleStorage extends CradleStorage {
     private BookCache bookCache;
     private List<BookListEntry> bookList;
+    private Map<BookId, List<PageInfo>> pages;
+    private Instant nextRemovedTime;
 
     public TestCradleStorage(ExecutorService composingService, int maxMessageBatchSize, int maxTestEventBatchSize) throws CradleStorageException {
         super(composingService, maxMessageBatchSize, maxTestEventBatchSize);
@@ -46,6 +48,11 @@ public class TestCradleStorage extends CradleStorage {
         super();
         bookCache = new TestBookCache();
         bookList = new ArrayList<>();
+        pages = new HashMap<>();
+    }
+
+    public void setNextRemovedTime(Instant nextRemovedTime) {
+        this.nextRemovedTime = nextRemovedTime;
     }
 
     public BookInfo getBook(BookId bookId) throws CradleStorageException {
@@ -91,7 +98,13 @@ public class TestCradleStorage extends CradleStorage {
 
     @Override
     protected void doAddPages(BookId bookId, List<PageInfo> pages, PageInfo lastPage) throws CradleStorageException, IOException {
+        this.pages.putIfAbsent(bookId, new ArrayList<>());
 
+        if (lastPage != null) {
+            this.pages.get(bookId).removeIf(page -> page.getId().equals(lastPage.getId()));
+            this.pages.get(bookId).add(lastPage);
+        }
+        this.pages.get(bookId).addAll(pages);
     }
 
     @Override
@@ -100,8 +113,20 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected void doRemovePage(PageInfo page) throws CradleStorageException, IOException {
+    protected Collection<PageInfo> doGetAllPages(BookId bookId) throws CradleStorageException {
+        return pages.get(bookId).stream().sorted(Comparator.comparing(PageInfo::getStarted)).collect(Collectors.toList());
+    }
 
+    @Override
+    protected void doRemovePage(PageInfo page) throws CradleStorageException, IOException {
+        this.pages.get(page.getId().getBookId()).remove(page);
+        this.pages.get(page.getId().getBookId()).add(new PageInfo(
+                page.getId(),
+                page.getStarted(),
+                page.getEnded(),
+                page.getComment(),
+                nextRemovedTime == null ? Instant.now() : nextRemovedTime
+        ));
     }
 
     @Override
