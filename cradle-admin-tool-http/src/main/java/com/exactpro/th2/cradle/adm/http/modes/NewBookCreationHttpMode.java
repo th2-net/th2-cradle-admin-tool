@@ -17,19 +17,25 @@
 package com.exactpro.th2.cradle.adm.http.modes;
 
 import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
+import com.exactpro.th2.cradle.adm.http.params.HttpParamBuilder;
 import com.exactpro.th2.cradle.adm.http.params.NewBookCreationParamsBuilder;
 import com.exactpro.th2.cradle.adm.modes.NewBookCreationMode;
+import com.exactpro.th2.cradle.adm.params.NewBookCreationParams;
+import com.exactpro.th2.cradle.adm.results.SimpleResult;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
-public class NewBookCreationHttpMode extends NewBookCreationMode implements HttpMode {
+public class NewBookCreationHttpMode extends NewBookCreationMode implements HttpMode<NewBookCreationParams> {
+
+	@Override
+	public HttpParamBuilder<NewBookCreationParams> createParamsBuilder() {
+		return new NewBookCreationParamsBuilder();
+	}
 	
 	@Override
 	public boolean initParams(HttpServletRequest req) throws InvalidConfigurationException {
-		var builder = new NewBookCreationParamsBuilder();
-		builder.checkMandatoryOptions(req);
-		this.param = builder.fromHttpRequest(req);
+		this.param = getParams(req);
 		return true;
 	}
-	
 }

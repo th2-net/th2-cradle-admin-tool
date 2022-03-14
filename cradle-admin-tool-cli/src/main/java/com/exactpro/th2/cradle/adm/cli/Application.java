@@ -70,7 +70,7 @@ public class Application {
 		try (CommonFactory commonFactory = CommonFactory.createFromArguments(buildSchemaParams(cmdLine))) {
 			
 			AbstractMode<?, ?> mode = Mode.getMode(cmdLine);
-			if (mode instanceof CliMode && !((CliMode)mode).initParams(cmdLine)) {
+			if (mode instanceof CliMode && !((CliMode<?>)mode).initParams(cmdLine)) {
 				return;
 			}
 			
@@ -81,7 +81,7 @@ public class Application {
 			ResultPrinter.printToCmd(result);
 		} catch (InvalidConfigurationException e) {
 			System.out.println("Error:");
-			System.out.println(e.getDescription());
+			System.out.println(e.getMessage());
 			printHelp(options);
 		} finally {
 			if (mngr != null) {

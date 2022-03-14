@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2021-2022 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,9 @@ import com.exactpro.th2.cradle.adm.results.SimpleResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
+import java.util.UUID;
+
 
 public class NewBookCreationMode extends AbstractMode<NewBookCreationParams, SimpleResult> {
 
@@ -30,8 +33,21 @@ public class NewBookCreationMode extends AbstractMode<NewBookCreationParams, Sim
 	public SimpleResult execute() {
 		try {
 			checkInit();
-			logger.info("Creating new book: name({}}) created({}}) first page({}})", param.getName(), param.getCreated(), param.getFirstPageName());
-			logger.info("full name({}) desc({}}) firstPage({}})", param.getFullName(), param.getDesc(), param.getFirstPageComment());
+			String firstPage = param.getFirstPageName();
+			if (firstPage == null) {
+				firstPage = UUID.randomUUID().toString();
+				param.setFirstPageName(firstPage);
+				logger.info("Generating page name: {}", firstPage);
+			}
+			Instant createdTime = param.getCreated();
+			if (createdTime == null) {
+				createdTime = Instant.now();
+				param.setCreated(createdTime);
+				logger.info("'Created' book time is not specified. Generated value: {}", createdTime);
+			}
+
+			logger.info("Creating new book: name({}}) created({}}) first page({}})", param.getName(), createdTime, firstPage);
+			logger.info("full name({}) desc({}}) firstPage({}})", param.getFullName(), param.getDesc(), firstPage);
 		
 			this.cradleStorage.addBook(this.param.toBookToAdd());
 			logger.info("Book is successfully created");

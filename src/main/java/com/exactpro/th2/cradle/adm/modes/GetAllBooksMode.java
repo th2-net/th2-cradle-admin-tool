@@ -17,51 +17,51 @@
 package com.exactpro.th2.cradle.adm.modes;
 
 import com.exactpro.cradle.BookInfo;
-import com.exactpro.cradle.PageInfo;
+import com.exactpro.cradle.utils.CradleStorageException;
 import com.exactpro.th2.cradle.adm.params.NoParams;
 import com.exactpro.th2.cradle.adm.results.BooksListInfo;
-import com.exactpro.th2.cradle.adm.results.BooksListInfo.ResultBookInfo;
-import com.exactpro.th2.cradle.adm.results.BooksListInfo.ResultPageInfo;
+import com.exactpro.th2.cradle.adm.results.ResultBookInfo;
+import com.exactpro.th2.cradle.adm.results.SimpleResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
 
 public class GetAllBooksMode extends AbstractMode<NoParams, BooksListInfo> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(GetAllBooksMode.class);
 
-	private ResultPageInfo printPage(PageInfo page) {
-		if (page == null)
-			return null;
-		ResultPageInfo result = new ResultPageInfo();
-		result.setPageId(page.getId() == null ? null: page.getId().getName());
-		result.setActive(page.isActive());
-		result.setComment(page.getComment());
-		result.setStarted(page.getStarted());
-		result.setEnded(page.getEnded());
-		return result;
-	}
-	
 	@Override
 	public BooksListInfo execute() {
+
+		try {
+			cacheAllBooks();
+		} catch (CradleStorageException e) {
+			return new BooksListInfo(e);
+		}
 
 		Collection<BookInfo> books = cradleStorage.getBooks();
 		BooksListInfo resBooks = new BooksListInfo(); 
 		for (BookInfo book : books) {
-			ResultBookInfo resultBookInfo = new ResultBookInfo();
-			resultBookInfo.setBookId(book.getId().getName());
-			resultBookInfo.setBookFullName(book.getFullName());
-			resultBookInfo.setBookDesc(book.getDesc());
-			resultBookInfo.setBookCreatedTime(book.getCreated());
-			
-			resultBookInfo.setBookFirstPage(printPage(book.getFirstPage()));
-			resultBookInfo.setBookLastPage(printPage(book.getLastPage()));
-			resBooks.addBook(resultBookInfo);
+			resBooks.addBook(ResultConverter.fromBookInfo(book, new ResultBookInfo()));
 		}
 		return resBooks;
-		
 	}
 
 	protected boolean requiredParams() {
 		return false;
 	}
-	
+
+	/**
+	 * Loads and caches all books in Cradle's storage.
+	 */
+	private void cacheAllBooks() throws CradleStorageException {
+		for (var bookEntry : cradleStorage.listBooks()) {
+			try {
+				cradleStorage.refreshBook(bookEntry.getName());
+			} catch (CradleStorageException e) {
+				LOGGER.info("Could not load book '{}'. Error: '{}'.", bookEntry.getName(), e.getMessage());
+			}
+		}
+	}
 }

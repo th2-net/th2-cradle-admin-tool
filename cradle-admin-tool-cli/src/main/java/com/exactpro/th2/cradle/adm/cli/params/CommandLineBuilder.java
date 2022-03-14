@@ -24,7 +24,7 @@ import java.util.List;
 
 public abstract class CommandLineBuilder<T> {
 
-	abstract T fromCommandLine(CommandLine commandLine) ;
+	public abstract T fromCommandLine(CommandLine commandLine) ;
 	protected abstract String header() ;
 	protected String[] mandatoryOptions() { return new String[0]; }
 

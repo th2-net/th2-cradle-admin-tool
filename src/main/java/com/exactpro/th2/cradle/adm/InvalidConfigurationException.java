@@ -16,19 +16,10 @@
 
 package com.exactpro.th2.cradle.adm;
 
-import java.util.Objects;
-
 public class InvalidConfigurationException extends Exception {
-	
-	private final String description;
-	
 
 	public InvalidConfigurationException(String format, Object... args) {
-		this.description = String.format(format, args);
+		super(String.format(format, args));
 	}
 
-
-	public String getDescription() {
-		return description;
-	}
 }

@@ -17,11 +17,20 @@
 package com.exactpro.th2.cradle.adm.http.modes;
 
 import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
+import com.exactpro.th2.cradle.adm.http.params.HttpParamBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 
-public interface HttpMode {
+public interface HttpMode<T> {
 
-	boolean initParams(HttpServletRequest request) throws InvalidConfigurationException;
+	HttpParamBuilder<T> createParamsBuilder();
+	boolean initParams(HttpServletRequest commandLine) throws InvalidConfigurationException;
+
+	default T getParams(HttpServletRequest commandLine) throws InvalidConfigurationException {
+		var builder = createParamsBuilder();
+		builder.checkMandatoryOptions(commandLine);
+		return builder.fromHttpRequest(commandLine);
+	}
+
 	
 }

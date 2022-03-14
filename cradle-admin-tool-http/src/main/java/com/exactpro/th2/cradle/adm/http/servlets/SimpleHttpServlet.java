@@ -49,7 +49,7 @@ public abstract class SimpleHttpServlet extends HttpServlet {
 		SimpleResult execute;
 		try {
 			if (mode instanceof HttpMode) {
-				((HttpMode)mode).initParams(req);	
+				((HttpMode<?>)mode).initParams(req);	
 			}
 			
 			mode.init(this.storage);

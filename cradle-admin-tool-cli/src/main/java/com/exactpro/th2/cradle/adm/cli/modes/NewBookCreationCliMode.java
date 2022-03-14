@@ -17,18 +17,23 @@
 package com.exactpro.th2.cradle.adm.cli.modes;
 
 import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
+import com.exactpro.th2.cradle.adm.cli.params.CommandLineBuilder;
 import com.exactpro.th2.cradle.adm.cli.params.NewBookCreationParamsBuilder;
 import com.exactpro.th2.cradle.adm.modes.NewBookCreationMode;
+import com.exactpro.th2.cradle.adm.params.NewBookCreationParams;
 import org.apache.commons.cli.CommandLine;
 
-public class NewBookCreationCliMode extends NewBookCreationMode implements CliMode {
+public class NewBookCreationCliMode extends NewBookCreationMode implements CliMode<NewBookCreationParams> {
 	
 	@Override
 	public boolean initParams(CommandLine commandLine) throws InvalidConfigurationException {
-		var builder = new NewBookCreationParamsBuilder();
-		builder.checkMandatoryOptions(commandLine);
-		this.param = builder.fromCommandLine(commandLine);
+		this.param = getParams(commandLine);
 		return true;
+	}
+
+	@Override
+	public CommandLineBuilder<NewBookCreationParams> createParamsBuilder() {
+		return new NewBookCreationParamsBuilder();
 	}
 	
 }

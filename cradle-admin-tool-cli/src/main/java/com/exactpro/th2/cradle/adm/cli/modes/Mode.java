@@ -18,8 +18,10 @@ package com.exactpro.th2.cradle.adm.cli.modes;
 
 import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
 import com.exactpro.th2.cradle.adm.cli.params.CmdParams;
+import com.exactpro.th2.cradle.adm.cli.params.GetBookInfoParamsBuilder;
 import com.exactpro.th2.cradle.adm.cli.params.NewBookCreationParamsBuilder;
 import com.exactpro.th2.cradle.adm.cli.params.NewPageParamsBuilder;
+import com.exactpro.th2.cradle.adm.cli.params.RemovePageParamsBuilder;
 import com.exactpro.th2.cradle.adm.modes.AbstractMode;
 import com.exactpro.th2.cradle.adm.modes.GetAllBooksMode;
 import com.exactpro.th2.cradle.adm.modes.InitKeySpaceMode;
@@ -34,12 +36,18 @@ public class Mode {
 				.required(false).desc("Initializing new keyspace").build());
 		options.addOption(Option.builder().longOpt(CmdParams.ALL_BOOKS_L).hasArg(false)
 				.required(false).desc("Getting info about books").build());
+		options.addOption(Option.builder().longOpt(CmdParams.BOOK_INFO_L).hasArg(false)
+				.required(false).desc("Getting info about chosen books").build());
+		GetBookInfoParamsBuilder.getOptions(options);
 		options.addOption(Option.builder(CmdParams.MODE_BOOK_S).longOpt(CmdParams.MODE_BOOK_L).hasArg(false)
 				.required(false).desc("Create new book mode").build());
 		NewBookCreationParamsBuilder.getOptions(options);
 		options.addOption(Option.builder(CmdParams.MODE_PAGE_S).longOpt(CmdParams.MODE_PAGE_L).hasArg(false)
 				.required(false).desc("Add a page to existed book mode").build());
 		NewPageParamsBuilder.getOptions(options);
+		options.addOption(Option.builder().longOpt(CmdParams.REMOVE_PAGE_L).hasArg(false)
+				.required(false).desc("Removing a page from existed book mode").build());
+		RemovePageParamsBuilder.getOptions(options);
 	}
 
 	public static AbstractMode<?, ?> getMode(CommandLine cmdLine) throws InvalidConfigurationException {
@@ -52,6 +60,10 @@ public class Mode {
 			return new InitKeySpaceMode();
 		} else if (cmdLine.hasOption(CmdParams.ALL_BOOKS_L)) {
 			return new GetAllBooksMode();
+		} else if (cmdLine.hasOption(CmdParams.REMOVE_PAGE_L)) {
+			return new RemovePageCliMode();
+		} else if (cmdLine.hasOption(CmdParams.BOOK_INFO_L)) {
+			return new GetBookInfoCliMode();
 		} else {
 			throw new InvalidConfigurationException("Mode for application didn't specified. (--%s or -%s supported)",
 					CmdParams.MODE_BOOK_L, CmdParams.MODE_PAGE_L);

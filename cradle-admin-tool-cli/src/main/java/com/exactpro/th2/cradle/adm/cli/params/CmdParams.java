@@ -24,6 +24,8 @@ public class CmdParams {
 	public static final String MODE_PAGE_S			= "p";
 	public static final String INIT_KEYSPACE_L		= "initKeyspace";
 	public static final String ALL_BOOKS_L			= "getAllBooks";
+	public static final String BOOK_INFO_L			= "getBookInfo";
+	public static final String REMOVE_PAGE_L		= "removePage";
 
 	public static final String BOOK_NAME			= "bookName";
 	public static final String CREATED_TIME			= "createdTime";
@@ -36,6 +38,9 @@ public class CmdParams {
 	public static final String PAGE_NAME			= "pageName";
 	public static final String PAGE_START_TIME		= "pageStart";
 	public static final String PAGE_COMMENT			= "pageComment";
+
+	public static final String WITH_PAGES			= "withPages";
+	public static final String LOAD_REMOVED_PAGES   = "loadRemovedPages";
 
 	public static final String COMMON_CFG_SHORT = "c";
 	public static final String COMMON_CFG_LONG = "configs";

@@ -17,9 +17,11 @@
 package com.exactpro.th2.cradle.adm.http;
 
 import com.exactpro.cradle.CradleStorage;
+import com.exactpro.th2.cradle.adm.http.servlets.GetBookInfoServlet;
 import com.exactpro.th2.cradle.adm.http.servlets.GetBookServlet;
 import com.exactpro.th2.cradle.adm.http.servlets.NewBookServlet;
 import com.exactpro.th2.cradle.adm.http.servlets.NewPageServlet;
+import com.exactpro.th2.cradle.adm.http.servlets.RemovePageServlet;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -34,27 +36,33 @@ public class HttpServer implements AutoCloseable {
 	
 	private final CustomConfiguration configuration;
 	private final CradleStorage storage;
-	private Server server;
+	protected Server server;
 
 	public HttpServer(CustomConfiguration configuration, CradleStorage storage) {
 		this.configuration = configuration;
 		this.storage = storage;
 	}
 
-	public void run() throws Exception {
-		Server server = new Server();
-		
-		ServerConnector serverConnector = new ServerConnector(server);
+	protected void createServer() {
+		this.server = new Server();
+
+		ServerConnector serverConnector = new ServerConnector(this.server);
 		serverConnector.setHost(configuration.getIp());
 		serverConnector.setPort(configuration.getPort());
-		
-		server.setConnectors(new Connector[]{serverConnector});
+
+		this.server.setConnectors(new Connector[]{serverConnector});
+	}
+
+	public void run() throws Exception {
+		this.createServer();
 		ServletHandler servletHandler = new ServletHandler();
 		server.setHandler(servletHandler);
 		
 		servletHandler.addServletWithMapping(new ServletHolder(new GetBookServlet(storage)), "/get-all-books");
 		servletHandler.addServletWithMapping(new ServletHolder(new NewBookServlet(storage)), "/new-book");
 		servletHandler.addServletWithMapping(new ServletHolder(new NewPageServlet(storage)), "/new-page");
+		servletHandler.addServletWithMapping(new ServletHolder(new RemovePageServlet(storage)), "/remove-page");
+		servletHandler.addServletWithMapping(new ServletHolder(new GetBookInfoServlet(storage)), "/get-book-info");
 		
 		server.start();
 		logger.info("server started: http://{}:{}/", configuration.getIp(), configuration.getPort());

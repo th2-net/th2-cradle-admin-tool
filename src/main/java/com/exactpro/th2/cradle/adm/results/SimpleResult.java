@@ -18,9 +18,9 @@ package com.exactpro.th2.cradle.adm.results;
 
 public class SimpleResult {
 	
-	private boolean isSuccess;
-	private String info;
-	private Throwable error;
+	protected boolean isSuccess;
+	protected String info;
+	protected Throwable error;
 
 	public SimpleResult() {
 		this.isSuccess = true;
@@ -47,4 +47,5 @@ public class SimpleResult {
 	public Throwable getError() {
 		return error;
 	}
+
 }

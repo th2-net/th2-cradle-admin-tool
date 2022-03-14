@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2021-2022 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package com.exactpro.th2.cradle.adm.http.params;
 
-import com.exactpro.th2.cradle.adm.params.NewBookCreationParams;
 import com.exactpro.th2.cradle.adm.params.NewPageParams;
 import com.exactpro.th2.cradle.adm.params.ParamUtils;
 
@@ -36,7 +35,7 @@ public class NewPageCreationParamsBuilder extends HttpParamBuilder<NewPageParams
 
 	@Override
 	protected String[] mandatoryOptions() {
-		return new String[] {HttpParamConst.BOOK_ID, HttpParamConst.PAGE_NAME, HttpParamConst.PAGE_START_TIME};
+		return new String[] {HttpParamConst.BOOK_ID, HttpParamConst.PAGE_START_TIME};
 	}
 
 	@Override

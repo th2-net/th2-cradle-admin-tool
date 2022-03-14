@@ -16,22 +16,42 @@
 
 package com.exactpro.th2.cradle.adm.http.modes;
 
+import com.exactpro.cradle.BookId;
+import com.exactpro.cradle.BookInfo;
 import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
+import com.exactpro.th2.cradle.adm.http.params.HttpParamBuilder;
 import com.exactpro.th2.cradle.adm.http.params.NewBookCreationParamsBuilder;
 import com.exactpro.th2.cradle.adm.http.params.NewPageCreationParamsBuilder;
 import com.exactpro.th2.cradle.adm.modes.NewBookCreationMode;
 import com.exactpro.th2.cradle.adm.modes.NewPageCreationMode;
+import com.exactpro.th2.cradle.adm.params.NewBookCreationParams;
+import com.exactpro.th2.cradle.adm.params.NewPageParams;
+import com.exactpro.th2.cradle.adm.results.SimpleResult;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Collection;
 
-public class NewPageCreationHttpMode extends NewPageCreationMode implements HttpMode {
-	
+public class NewPageCreationHttpMode extends NewPageCreationMode implements HttpMode<NewPageParams> {
+
+	@Override
+	public HttpParamBuilder<NewPageParams> createParamsBuilder() {
+		return new NewPageCreationParamsBuilder();
+	}
+
 	@Override
 	public boolean initParams(HttpServletRequest req) throws InvalidConfigurationException {
-		var builder = new NewPageCreationParamsBuilder();
-		builder.checkMandatoryOptions(req);
-		this.param = builder.fromHttpRequest(req);
+		this.param = getParams(req);
 		return true;
 	}
-	
+
+	@Override
+	public SimpleResult execute() {
+		try {
+			HttpModesUtils.refreshBookPages(cradleStorage, this.param.getBookId());
+		} catch (Throwable e) {
+			return new SimpleResult(e);
+		}
+		return super.execute();
+	}
 }

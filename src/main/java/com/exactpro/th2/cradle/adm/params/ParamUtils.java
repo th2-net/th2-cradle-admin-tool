@@ -16,11 +16,17 @@
 
 package com.exactpro.th2.cradle.adm.params;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.Instant;
+import java.util.Enumeration;
 
 public class ParamUtils {
 	
 	public static Instant parseInstant(String text) {
+		if (text == null || text.isEmpty()) {
+			return null;
+		}
 		if (text.chars().allMatch(Character::isDigit)) {
 			return Instant.ofEpochMilli(Long.parseLong(text));
 		} else {
@@ -28,4 +34,19 @@ public class ParamUtils {
 		}
 	}
 	
+	public static boolean getBoolean (String value, boolean defaultValue) {
+		return StringUtils.isEmpty(value) ? defaultValue : Boolean.parseBoolean(value);
+	}
+
+	/**
+	 * Returns true if the specified {@link Enumeration} contains the specified option.
+	 */
+	public static boolean containsOptions(Enumeration<String> options, String targetOption) {
+		while(options.hasMoreElements()) {
+			if(options.nextElement().equals(targetOption)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

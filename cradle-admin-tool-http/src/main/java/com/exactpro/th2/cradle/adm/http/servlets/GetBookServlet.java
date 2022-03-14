@@ -17,9 +17,11 @@
 package com.exactpro.th2.cradle.adm.http.servlets;
 
 import com.exactpro.cradle.CradleStorage;
+import com.exactpro.th2.cradle.adm.http.modes.GetAllBooksHttpMode;
+import com.exactpro.th2.cradle.adm.modes.AbstractMode;
 import com.exactpro.th2.cradle.adm.modes.GetAllBooksMode;
 import com.exactpro.th2.cradle.adm.results.BooksListInfo;
-import com.exactpro.th2.cradle.adm.results.BooksListInfo.ResultBookInfo;
+import com.exactpro.th2.cradle.adm.results.ResultBookInfo;
 import com.exactpro.th2.cradle.adm.results.SimpleResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -64,7 +66,7 @@ public class GetBookServlet extends SimpleHttpServlet {
 	}
 
 	@Override
-	protected GetAllBooksMode createMode() {
-		return new GetAllBooksMode();
+	protected AbstractMode<?, ?> createMode() {
+		return new GetAllBooksHttpMode();
 	}
 }

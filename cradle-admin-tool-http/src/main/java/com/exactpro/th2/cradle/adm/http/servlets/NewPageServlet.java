@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class NewPageServlet  extends SimpleHttpServlet {
+public class NewPageServlet extends SimpleHttpServlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(NewBookServlet.class);
 
