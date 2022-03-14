@@ -66,27 +66,24 @@ public class Application {
 		
 		CommandLine cmdLine = new DefaultParser().parse(options, args);
 
-		CradleManager mngr = null;
 		try (CommonFactory commonFactory = CommonFactory.createFromArguments(buildSchemaParams(cmdLine))) {
 			
 			AbstractMode<?, ?> mode = Mode.getMode(cmdLine);
 			if (mode instanceof CliMode && !((CliMode<?>)mode).initParams(cmdLine)) {
 				return;
 			}
-			
-			mngr = FactoryUtils.createCradleManager(commonFactory, mode.prepareStorage());
-			CradleStorage storage = mngr.getStorage();
-			mode.init(storage);
-			SimpleResult result = mode.execute();
-			ResultPrinter.printToCmd(result);
-		} catch (InvalidConfigurationException e) {
-			System.out.println("Error:");
-			System.out.println(e.getMessage());
-			printHelp(options);
-		} finally {
-			if (mngr != null) {
-				mngr.close();
+
+			try (CradleManager mngr = FactoryUtils.createCradleManager(commonFactory, mode.prepareStorage())) {
+
+				CradleStorage storage = mngr.getStorage();
+				mode.init(storage);
+				SimpleResult result = mode.execute();
+				ResultPrinter.printToCmd(result);
+
 			}
+		} catch (Exception e) {
+			logger.error("Exception {}", e);
+			printHelp(options);
 		}
 	}
 	

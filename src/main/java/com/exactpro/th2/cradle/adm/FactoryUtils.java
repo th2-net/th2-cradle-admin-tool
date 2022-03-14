@@ -34,51 +34,47 @@ import static com.exactpro.cradle.cassandra.CassandraStorageSettings.DEFAULT_TIM
 
 public class FactoryUtils {
 
-	public static CradleManager createCradleManager(CommonFactory commonFactory, boolean prepareStorage) {
+	public static CradleManager createCradleManager(CommonFactory commonFactory, boolean prepareStorage) throws CradleStorageException, IOException {
 		CradleConfiguration cradleConfiguration = commonFactory.getCradleConfiguration();
 		return createCradleManager(cradleConfiguration, prepareStorage);
 	}
 
-	public static CradleManager createCradleManager(CradleConfiguration cradleConfiguration, boolean prepareStorage) {
-		try {
-			CassandraConnectionSettings cassandraConnectionSettings = new CassandraConnectionSettings(
-					cradleConfiguration.getHost(),
-					cradleConfiguration.getPort(),
-					cradleConfiguration.getDataCenter()
-			);
-			if (StringUtils.isNotEmpty(cradleConfiguration.getUsername())) {
-				cassandraConnectionSettings.setUsername(cradleConfiguration.getUsername());
-			}
-			if (StringUtils.isNotEmpty(cradleConfiguration.getPassword())) {
-				cassandraConnectionSettings.setPassword(cradleConfiguration.getPassword());
-			}
-
-			CassandraStorageSettings cassandraStorageSettings = new CassandraStorageSettings(
-					null,
-					cradleConfiguration.getTimeout() > 0
-							? cradleConfiguration.getTimeout()
-							: DEFAULT_TIMEOUT,
-					ConsistencyLevel.LOCAL_ONE,
-					ConsistencyLevel.LOCAL_ONE
-			);
-			if (cradleConfiguration.getPageSize() > 0) {
-				cassandraStorageSettings.setResultPageSize(cradleConfiguration.getPageSize());
-			}
-			if (cradleConfiguration.getCradleMaxMessageBatchSize() > 0) {
-				cassandraStorageSettings.setMaxMessageBatchSize(cradleConfiguration.getCradleMaxMessageBatchSize());
-			}
-			if (cradleConfiguration.getCradleMaxEventBatchSize() > 0) {
-				cassandraStorageSettings.setMaxTestEventBatchSize(cradleConfiguration.getCradleMaxEventBatchSize());
-			}
-
-			return new CassandraCradleManager(
-					cassandraConnectionSettings,
-					cassandraStorageSettings,
-					prepareStorage
-			);
-		} catch (CradleStorageException | RuntimeException | IOException e) {
-			throw new CommonFactoryException("Cannot create Cradle manager", e);
+	public static CradleManager createCradleManager(CradleConfiguration cradleConfiguration, boolean prepareStorage) throws CradleStorageException, IOException {
+		CassandraConnectionSettings cassandraConnectionSettings = new CassandraConnectionSettings(
+				cradleConfiguration.getHost(),
+				cradleConfiguration.getPort(),
+				cradleConfiguration.getDataCenter()
+		);
+		if (StringUtils.isNotEmpty(cradleConfiguration.getUsername())) {
+			cassandraConnectionSettings.setUsername(cradleConfiguration.getUsername());
 		}
+		if (StringUtils.isNotEmpty(cradleConfiguration.getPassword())) {
+			cassandraConnectionSettings.setPassword(cradleConfiguration.getPassword());
+		}
+
+		CassandraStorageSettings cassandraStorageSettings = new CassandraStorageSettings(
+				null,
+				cradleConfiguration.getTimeout() > 0
+						? cradleConfiguration.getTimeout()
+						: DEFAULT_TIMEOUT,
+				ConsistencyLevel.LOCAL_ONE,
+				ConsistencyLevel.LOCAL_ONE
+		);
+		if (cradleConfiguration.getPageSize() > 0) {
+			cassandraStorageSettings.setResultPageSize(cradleConfiguration.getPageSize());
+		}
+		if (cradleConfiguration.getCradleMaxMessageBatchSize() > 0) {
+			cassandraStorageSettings.setMaxMessageBatchSize(cradleConfiguration.getCradleMaxMessageBatchSize());
+		}
+		if (cradleConfiguration.getCradleMaxEventBatchSize() > 0) {
+			cassandraStorageSettings.setMaxTestEventBatchSize(cradleConfiguration.getCradleMaxEventBatchSize());
+		}
+
+		return new CassandraCradleManager(
+				cassandraConnectionSettings,
+				cassandraStorageSettings,
+				prepareStorage
+		);
 	}
 	
 }

@@ -34,33 +34,40 @@ public class Application {
 		
 		var resources = new ArrayList<AutoCloseable>();
 		configureShutdownHook(resources);
-		
-		CommonFactory factory = CommonFactory.createFromArguments(args);
-		resources.add(factory);
-		CradleManager cradleManager = FactoryUtils.createCradleManager(factory, true);
-		resources.add(cradleManager);
-		
-		CradleStorage storage = cradleManager.getStorage();
-		
-		HttpServer httpServer = new HttpServer(factory.getCustomConfiguration(CustomConfiguration.class), storage);
-		httpServer.run();
-		resources.add(httpServer);
-		
+
+		try {
+			CommonFactory factory = CommonFactory.createFromArguments(args);
+			resources.add(factory);
+			CradleManager cradleManager = FactoryUtils.createCradleManager(factory, true);
+			resources.add(cradleManager);
+
+			CradleStorage storage = cradleManager.getStorage();
+
+			HttpServer httpServer = new HttpServer(factory.getCustomConfiguration(CustomConfiguration.class), storage);
+			httpServer.run();
+			resources.add(httpServer);
+		} catch (Exception e) {
+			logger.error("{}", e.getMessage(), e);
+			System.exit(-1);
+		}
 	}
 	
 	public static void configureShutdownHook(ArrayList<AutoCloseable> resources) {
 
 		Runtime.getRuntime().addShutdownHook(new Thread(
 				() -> {
+					logger.info("Executing shutdown hook");
 					ArrayList<AutoCloseable> revs = new ArrayList<>(resources);
 					Collections.reverse(revs);
 					for (AutoCloseable resource : revs) {
 						try {
+							logger.info("Closing {}", resource);
 							resource.close();
 						} catch (Exception e) {
-							logger.warn("Cannot close resource", e);
+							logger.error("Cannot close resource {}", resource, e);
 						}
 					}
+					logger.info("Shutdown complete");
 				}
 				));
 	}
