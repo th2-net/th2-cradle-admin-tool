@@ -135,9 +135,9 @@ public class ViewersTest extends AbstractCliTest {
                     cradleStorage.setNextRemovedTime(removeInstant);
                     cradleStorage.removePage(new PageId(new BookId(INITIAL_BOOK), INITIAL_PAGE));
 
-                    Application.main(new String[]{"-c=stub/", "--getBookInfo", "-bookId", INITIAL_BOOK, "-loadRemovedPages", "true"});
+                    Application.main(new String[]{"-c=stub/", "--getBookInfo", "-bookId", INITIAL_BOOK, "-loadRemovedPages"});
                     String expected = String.format("Cradle TH2 Admin tool (CLI), version null, build-date null\n" +
-                            "Started with arguments: [-c=stub/, --getBookInfo, -bookId, init_book, -loadRemovedPages, true]\n" +
+                            "Started with arguments: [-c=stub/, --getBookInfo, -bookId, init_book, -loadRemovedPages]\n" +
                             "Success\n" +
                             "\n" +
                             "book #1\n" +

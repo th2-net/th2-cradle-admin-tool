@@ -31,7 +31,7 @@ public class GetBookInfoParamsBuilder extends CommandLineBuilder<GetBookInfoPara
 	public static void getOptions(Options options) {
 		options.addOption(Option.builder(BOOK_ID).hasArg(true).required(false).build());
 		options.addOption(Option.builder(WITH_PAGES).hasArg(true).required(false).build());
-		options.addOption(Option.builder(LOAD_REMOVED_PAGES).hasArg(true).required(false).build());
+		options.addOption(Option.builder(LOAD_REMOVED_PAGES).required(false).build());
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class GetBookInfoParamsBuilder extends CommandLineBuilder<GetBookInfoPara
 
 		Arrays.stream(commandLine.getOptionValues(BOOK_ID)).forEach(arg::addBookId);
 		arg.setWithPages(ParamUtils.getBoolean(commandLine.getOptionValue(WITH_PAGES), true));
-		arg.setLoadRemovedPages(ParamUtils.getBoolean(commandLine.getOptionValue(LOAD_REMOVED_PAGES), false));
+		arg.setLoadRemovedPages(commandLine.hasOption(LOAD_REMOVED_PAGES));
 
 		return arg;
 	}

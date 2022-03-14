@@ -95,4 +95,19 @@ public class ViewersTest extends AbstractHttpTest {
         Assertions.assertEquals(expected, content);
     }
 
+    @Test
+    public void getBookInfoWithPagesTest() throws Exception {
+        createData();
+        HttpTester.Response response = this.executeGet("/get-book-info?with-pages=true&book-id=" + BOOK_3.getName()
+                + "&book-id=" + BOOK_2.getName());
+        Assertions.assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    public void getBookInfoWithRemovedPagesTest() throws Exception {
+        createData();
+        HttpTester.Response response = this.executeGet("/get-book-info?with-pages=true&load-removed-pages" +
+                "&book-id=" + BOOK_3.getName() + "&book-id=" + BOOK_2.getName());
+        Assertions.assertEquals(200, response.getStatus());
+    }
 }
