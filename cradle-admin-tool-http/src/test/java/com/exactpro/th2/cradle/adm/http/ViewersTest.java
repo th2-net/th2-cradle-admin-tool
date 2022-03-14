@@ -74,9 +74,9 @@ public class ViewersTest extends AbstractHttpTest {
         String expected = String.format("[{\"bookId\":\"book_3\",\"bookFullName\":null,\"bookDesc\":null," +
                         "\"bookCreatedTime\":\"%s\",\"pages\":[{\"pageId\":\"page3\"," +
                         "\"comment\":null,\"started\":\"%s\"," +
-                        "\"ended\":\"%s\"},{\"pageId\":\"page3/2\"," +
+                        "\"ended\":\"%s\",\"removed\":null},{\"pageId\":\"page3/2\"," +
                         "\"comment\":\"comment\",\"started\":\"%s\"," +
-                        "\"ended\":null}]}]", BOOK_3.getCreated(), BOOK_3.getCreated(),
+                        "\"ended\":null,\"removed\":null}]}]", BOOK_3.getCreated(), BOOK_3.getCreated(),
                 BOOK_3_PAGE.getStart(), BOOK_3_PAGE.getStart());
         Assertions.assertEquals(expected, content);
     }
@@ -95,4 +95,19 @@ public class ViewersTest extends AbstractHttpTest {
         Assertions.assertEquals(expected, content);
     }
 
+    @Test
+    public void getBookInfoWithPagesTest() throws Exception {
+        createData();
+        HttpTester.Response response = this.executeGet("/get-book-info?with-pages=true&book-id=" + BOOK_3.getName()
+                + "&book-id=" + BOOK_2.getName());
+        Assertions.assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    public void getBookInfoWithRemovedPagesTest() throws Exception {
+        createData();
+        HttpTester.Response response = this.executeGet("/get-book-info?with-pages=true&load-removed-pages" +
+                "&book-id=" + BOOK_3.getName() + "&book-id=" + BOOK_2.getName());
+        Assertions.assertEquals(200, response.getStatus());
+    }
 }

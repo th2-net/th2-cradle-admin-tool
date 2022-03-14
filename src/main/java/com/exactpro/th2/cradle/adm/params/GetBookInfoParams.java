@@ -26,6 +26,7 @@ public class GetBookInfoParams {
 	
 	private Set<BookId> bookId;
 	private boolean withPages;
+	private boolean loadRemovedPages;
 
 	public GetBookInfoParams() {
 		this.bookId = new LinkedHashSet<>();
@@ -45,5 +46,13 @@ public class GetBookInfoParams {
 
 	public void setWithPages(boolean withPages) {
 		this.withPages = withPages;
+	}
+
+	public boolean shouldLoadRemovedPages() {
+		return this.loadRemovedPages;
+	}
+
+	public void setLoadRemovedPages(boolean loadRemovedPages) {
+		this.loadRemovedPages = loadRemovedPages;
 	}
 }

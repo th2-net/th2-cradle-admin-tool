@@ -24,6 +24,7 @@ public class ResultPageInfo {
 	private String comment;
 	private Instant started;
 	private Instant ended;
+	private Instant removed;
 
 	public String getPageId() {
 		return pageId;
@@ -60,5 +61,13 @@ public class ResultPageInfo {
 		this.ended = ended;
 		return this;
 	}
-	
+
+	public Instant getRemoved() {
+		return removed;
+	}
+
+	public ResultPageInfo setRemoved(Instant removed) {
+		this.removed = removed;
+		return this;
+	}
 }

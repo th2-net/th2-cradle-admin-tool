@@ -16,6 +16,7 @@
 
 package com.exactpro.th2.cradle.adm.modes;
 
+import com.exactpro.cradle.BookInfo;
 import com.exactpro.cradle.PageInfo;
 import com.exactpro.cradle.utils.CradleStorageException;
 import com.exactpro.th2.cradle.adm.params.GetBookInfoParams;
@@ -23,6 +24,8 @@ import com.exactpro.th2.cradle.adm.results.BooksListInfo;
 import com.exactpro.th2.cradle.adm.results.ResultBookDetailedInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 
 public class GetBookInfoMode extends AbstractMode<GetBookInfoParams, BooksListInfo> {
@@ -42,7 +45,9 @@ public class GetBookInfoMode extends AbstractMode<GetBookInfoParams, BooksListIn
 			var resultBookInfo = ResultConverter.fromBookInfo(bookInfo, new ResultBookDetailedInfo());
 
 			if (param.isWithPages()) {
-				for (PageInfo page : bookInfo.getPages()) {
+				Collection<PageInfo> pages = param.shouldLoadRemovedPages() ? loadAllPages(bookInfo) : bookInfo.getPages();
+
+				for (PageInfo page : pages) {
 					resultBookInfo.addPages(ResultConverter.fromPageInfo(page));
 				}
 			}
@@ -73,6 +78,18 @@ public class GetBookInfoMode extends AbstractMode<GetBookInfoParams, BooksListIn
 			} catch (CradleStorageException e) {
 				LOGGER.info("Could not load book '{}'. Error: '{}'.", book.getName(), e.getMessage());
 			}
+		}
+	}
+
+	/**
+	 * Loads all pages for the specified book, including removed ones.
+	 */
+	private Collection<PageInfo> loadAllPages(BookInfo bookInfo) {
+		try {
+			return cradleStorage.getAllPages(bookInfo.getId());
+		} catch (CradleStorageException e) {
+			LOGGER.info("Could not load all pages for book '{}'. Error: '{}'", bookInfo.getId().getName(), e.getMessage());
+			return bookInfo.getPages();
 		}
 	}
 }

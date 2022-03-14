@@ -31,6 +31,7 @@ public class GetBookInfoParamsBuilder extends HttpParamBuilder<GetBookInfoParams
 		GetBookInfoParams arg = new GetBookInfoParams();
 		Arrays.stream(request.getParameterValues(HttpParamConst.BOOK_ID)).forEach(arg::addBookId);
 		arg.setWithPages(ParamUtils.getBoolean(request.getParameter(HttpParamConst.WITH_PAGES), true));
+		arg.setLoadRemovedPages(ParamUtils.containsOptions(request.getParameterNames(), HttpParamConst.LOAD_REMOVED_PAGES));
 		return arg;
 	}
 	
@@ -39,6 +40,7 @@ public class GetBookInfoParamsBuilder extends HttpParamBuilder<GetBookInfoParams
 		GetBookInfoParams arg = new GetBookInfoParams();
 		arg.addBookId(request.get(HttpParamConst.BOOK_ID));
 		arg.setWithPages(ParamUtils.getBoolean(request.get(HttpParamConst.WITH_PAGES), true));
+		arg.setLoadRemovedPages(request.containsKey(HttpParamConst.LOAD_REMOVED_PAGES));
 		return arg;
 	}
 

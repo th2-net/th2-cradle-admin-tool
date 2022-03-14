@@ -33,7 +33,7 @@ class TestBookCache implements BookCache {
     }
 
     @Override
-    public Collection<PageInfo> loadPageInfo(BookId bookId) throws CradleStorageException {
+    public Collection<PageInfo> loadPageInfo(BookId bookId, boolean loadRemoved) throws CradleStorageException {
         throw new CradleStorageException("Method not supported");
     }
 
