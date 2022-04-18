@@ -296,4 +296,14 @@ public class TestCradleStorage extends CradleStorage {
     protected Counter doGetCount(BookId bookId, EntityType entityType, Interval interval) throws CradleStorageException, IOException {
         return null;
     }
+
+    @Override
+    protected PageInfo doUpdatePageComment(BookId bookId, String pageName, String comment) throws CradleStorageException {
+        return null;
+    }
+
+    @Override
+    protected PageInfo doUpdatePageName(BookId bookId, String pageName, String newPageName) throws CradleStorageException {
+        return null;
+    }
 }
