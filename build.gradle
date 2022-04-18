@@ -3,7 +3,7 @@ apply plugin: 'application'
 
 
 ext {
-    cradleApiVersion = '4.0.0-TH2-2150-1967797463-SNAPSHOT'
+    cradleApiVersion = '4.0.0-TH2-2150-2096569469-SNAPSHOT'
     commonVersion = '4.0.0-th2-2150-books-pages-1530756720-SNAPSHOT'
 }
 

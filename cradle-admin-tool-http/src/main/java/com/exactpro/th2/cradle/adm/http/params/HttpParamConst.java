@@ -32,4 +32,10 @@ public class HttpParamConst {
 
 	public static final String WITH_PAGES			= "with-pages";
 	public static final String LOAD_REMOVED_PAGES   = "load-removed-pages";
+
+
+	public static final String NAME_SORT = "name-sort";
+	public static final String CREATION_SORT = "creation-sort";
+	public static final String DATE_FROM = "date-from";
+	public static final String DATE_TO = "date-to";
 }

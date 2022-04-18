@@ -44,5 +44,10 @@ public class CmdParams {
 
 	public static final String COMMON_CFG_SHORT = "c";
 	public static final String COMMON_CFG_LONG = "configs";
-	
+
+	public static final String NAME_SORT = "nameSort";
+	public static final String CREATION_SORT = "creationSort";
+	public static final String DATE_FROM = "dateFrom";
+	public static final String DATE_TO = "dateTo";
+
 }
