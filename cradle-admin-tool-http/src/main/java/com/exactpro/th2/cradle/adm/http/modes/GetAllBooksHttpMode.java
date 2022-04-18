@@ -16,9 +16,24 @@
 
 package com.exactpro.th2.cradle.adm.http.modes;
 
+import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
+import com.exactpro.th2.cradle.adm.http.params.GetAllBooksParamBuilder;
+import com.exactpro.th2.cradle.adm.http.params.HttpParamBuilder;
 import com.exactpro.th2.cradle.adm.modes.GetAllBooksMode;
-import com.exactpro.th2.cradle.adm.results.BooksListInfo;
+import com.exactpro.th2.cradle.adm.params.GetAllBooksParams;
+
+import javax.servlet.http.HttpServletRequest;
 
 
-public class GetAllBooksHttpMode extends GetAllBooksMode {
+public class GetAllBooksHttpMode extends GetAllBooksMode implements HttpMode<GetAllBooksParams> {
+    @Override
+    public HttpParamBuilder<GetAllBooksParams> createParamsBuilder() {
+        return new GetAllBooksParamBuilder();
+    }
+
+    @Override
+    public boolean initParams(HttpServletRequest req) throws InvalidConfigurationException {
+        this.param = getParams(req);
+        return true;
+    }
 }

@@ -17,13 +17,8 @@
 package com.exactpro.th2.cradle.adm.cli.modes;
 
 import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
-import com.exactpro.th2.cradle.adm.cli.params.CmdParams;
-import com.exactpro.th2.cradle.adm.cli.params.GetBookInfoParamsBuilder;
-import com.exactpro.th2.cradle.adm.cli.params.NewBookCreationParamsBuilder;
-import com.exactpro.th2.cradle.adm.cli.params.NewPageParamsBuilder;
-import com.exactpro.th2.cradle.adm.cli.params.RemovePageParamsBuilder;
+import com.exactpro.th2.cradle.adm.cli.params.*;
 import com.exactpro.th2.cradle.adm.modes.AbstractMode;
-import com.exactpro.th2.cradle.adm.modes.GetAllBooksMode;
 import com.exactpro.th2.cradle.adm.modes.InitKeySpaceMode;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -36,6 +31,7 @@ public class Mode {
 				.required(false).desc("Initializing new keyspace").build());
 		options.addOption(Option.builder().longOpt(CmdParams.ALL_BOOKS_L).hasArg(false)
 				.required(false).desc("Getting info about books").build());
+		GetAllBooksParamBuilder.getOptions(options);
 		options.addOption(Option.builder().longOpt(CmdParams.BOOK_INFO_L).hasArg(false)
 				.required(false).desc("Getting info about chosen books").build());
 		GetBookInfoParamsBuilder.getOptions(options);
@@ -59,7 +55,7 @@ public class Mode {
 		} else if (cmdLine.hasOption(CmdParams.INIT_KEYSPACE_L)) {
 			return new InitKeySpaceMode();
 		} else if (cmdLine.hasOption(CmdParams.ALL_BOOKS_L)) {
-			return new GetAllBooksMode();
+			return new GetAllBooksCreationCliMode();
 		} else if (cmdLine.hasOption(CmdParams.REMOVE_PAGE_L)) {
 			return new RemovePageCliMode();
 		} else if (cmdLine.hasOption(CmdParams.BOOK_INFO_L)) {

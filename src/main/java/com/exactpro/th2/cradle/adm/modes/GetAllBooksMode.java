@@ -18,17 +18,18 @@ package com.exactpro.th2.cradle.adm.modes;
 
 import com.exactpro.cradle.BookInfo;
 import com.exactpro.cradle.utils.CradleStorageException;
-import com.exactpro.th2.cradle.adm.params.NoParams;
+import com.exactpro.th2.cradle.adm.params.GetAllBooksParams;
 import com.exactpro.th2.cradle.adm.results.BooksListInfo;
 import com.exactpro.th2.cradle.adm.results.ResultBookInfo;
-import com.exactpro.th2.cradle.adm.results.SimpleResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
-public class GetAllBooksMode extends AbstractMode<NoParams, BooksListInfo> {
+public class GetAllBooksMode extends AbstractMode<GetAllBooksParams, BooksListInfo> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GetAllBooksMode.class);
 
 	@Override
@@ -40,11 +41,53 @@ public class GetAllBooksMode extends AbstractMode<NoParams, BooksListInfo> {
 			return new BooksListInfo(e);
 		}
 
-		Collection<BookInfo> books = cradleStorage.getBooks();
-		BooksListInfo resBooks = new BooksListInfo(); 
+		List<BookInfo> books = new ArrayList<>(cradleStorage.getBooks());
+
+		books = books.stream().filter(el ->
+				el.getCreated().isAfter(param.getFrom())
+				&& el.getCreated().isBefore(param.getTo())).collect(Collectors.toList());
+
+		books.sort((Comparator) (o1, o2) -> {
+			BookInfo info1 = (BookInfo) o1;
+			BookInfo info2 = (BookInfo) o2;
+
+			Instant ins1 = info1.getCreated();
+			Instant ins2 = info2.getCreated();
+
+			String name1 = info1.getId().getName();
+			String name2 = info2.getId().getName();
+
+			if (!param.getCreationSort().equals(GetAllBooksParams.SortType.NONE)) {
+				if (!info1.getCreated().equals(info2.getCreated())) {
+					switch (param.getCreationSort()) {
+						case ASC:
+							return ins1.compareTo(ins2);
+						case DESC:
+							return ins2.compareTo(ins1);
+					}
+				}
+			}
+
+			switch (param.getNameSort()) {
+				case ASC:
+					return name1.compareTo(name2);
+				case DESC:
+					return name2.compareTo(name1);
+			}
+
+			return 0;
+		});
+
+		BooksListInfo resBooks;
+		if (books.isEmpty()) {
+			resBooks = new BooksListInfo("No books for given interval");
+		} else {
+			resBooks = new BooksListInfo();
+		}
 		for (BookInfo book : books) {
 			resBooks.addBook(ResultConverter.fromBookInfo(book, new ResultBookInfo()));
 		}
+
 		return resBooks;
 	}
 
