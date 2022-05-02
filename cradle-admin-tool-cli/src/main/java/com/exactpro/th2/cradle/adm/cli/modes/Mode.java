@@ -20,6 +20,7 @@ import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
 import com.exactpro.th2.cradle.adm.cli.params.*;
 import com.exactpro.th2.cradle.adm.modes.AbstractMode;
 import com.exactpro.th2.cradle.adm.modes.InitKeySpaceMode;
+import com.exactpro.th2.cradle.adm.modes.UpdatePageMode;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -44,6 +45,10 @@ public class Mode {
 		options.addOption(Option.builder().longOpt(CmdParams.REMOVE_PAGE_L).hasArg(false)
 				.required(false).desc("Removing a page from existed book mode").build());
 		RemovePageParamsBuilder.getOptions(options);
+		options.addOption(Option.builder().longOpt(CmdParams.UPDATE_PAGE).hasArg(false)
+				.required(false).desc("Update page name/comment").build());
+		UpdatePageParamBuilder.getOptions(options);
+
 	}
 
 	public static AbstractMode<?, ?> getMode(CommandLine cmdLine) throws InvalidConfigurationException {
@@ -60,6 +65,8 @@ public class Mode {
 			return new RemovePageCliMode();
 		} else if (cmdLine.hasOption(CmdParams.BOOK_INFO_L)) {
 			return new GetBookInfoCliMode();
+		} else if (cmdLine.hasOption(CmdParams.UPDATE_PAGE)) {
+			return new UpdatePageCliMode();
 		} else {
 			throw new InvalidConfigurationException("Mode for application didn't specified. (--%s or -%s supported)",
 					CmdParams.MODE_BOOK_L, CmdParams.MODE_PAGE_L);
