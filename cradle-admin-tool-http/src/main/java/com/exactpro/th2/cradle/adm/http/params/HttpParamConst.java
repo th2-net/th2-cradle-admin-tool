@@ -38,4 +38,9 @@ public class HttpParamConst {
 	public static final String CREATION_SORT = "creation-sort";
 	public static final String DATE_FROM = "date-from";
 	public static final String DATE_TO = "date-to";
+
+	public static final String UPDATE_PAGE_BOOK_ID = "book-id";
+	public static final String UPDATE_PAGE_NAME = "page-name";
+	public static final String UPDATE_PAGE_NAME_NEW = "new-page-name";
+	public static final String UPDATE_PAGE_COMMENT_NEW = "new-page-comment";
 }

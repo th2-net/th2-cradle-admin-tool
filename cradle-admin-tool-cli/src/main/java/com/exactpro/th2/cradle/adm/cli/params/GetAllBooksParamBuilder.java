@@ -13,7 +13,7 @@ import static com.exactpro.th2.cradle.adm.cli.params.CmdParams.*;
 
 public class GetAllBooksParamBuilder extends CommandLineBuilder<GetAllBooksParams> {
     public static void getOptions(Options options) {
-        options.addOption(Option.builder().longOpt(NAME_SORT).desc("sorting order by names (ASC/DESC)").hasArg(true).argName("abc").argName("xyz").required(false).build());
+        options.addOption(Option.builder().longOpt(NAME_SORT).desc("sorting order by names (ASC/DESC)").hasArg(true).required(false).build());
         options.addOption(Option.builder().longOpt(CREATION_SORT).desc("sorting order by creation datetime (ASC/DESC)").hasArg(true).required(false).build());
         options.addOption(Option.builder().longOpt(DATE_FROM).desc("date filter from yyyy-mm-dd (inclusive)").hasArg(true).required(false).build());
         options.addOption(Option.builder().longOpt(DATE_TO).desc("date filter to yyyy-mm-dd (exclusive)").hasArg(true).required(false).build());

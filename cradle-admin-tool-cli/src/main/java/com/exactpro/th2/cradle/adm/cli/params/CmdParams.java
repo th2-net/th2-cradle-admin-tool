@@ -50,4 +50,10 @@ public class CmdParams {
 	public static final String DATE_FROM = "dateFrom";
 	public static final String DATE_TO = "dateTo";
 
+	public static final String UPDATE_PAGE = "updatePage";
+	public static final String UPDATE_PAGE_BOOK_ID = "bookId";
+	public static final String UPDATE_PAGE_NAME = "pageName";
+	public static final String UPDATE_PAGE_NAME_NEW = "newPageName";
+	public static final String UPDATE_PAGE_COMMENT_NEW = "newPageComment";
+
 }

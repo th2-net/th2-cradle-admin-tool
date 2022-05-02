@@ -17,11 +17,7 @@
 package com.exactpro.th2.cradle.adm.http;
 
 import com.exactpro.cradle.CradleStorage;
-import com.exactpro.th2.cradle.adm.http.servlets.GetBookInfoServlet;
-import com.exactpro.th2.cradle.adm.http.servlets.GetBookServlet;
-import com.exactpro.th2.cradle.adm.http.servlets.NewBookServlet;
-import com.exactpro.th2.cradle.adm.http.servlets.NewPageServlet;
-import com.exactpro.th2.cradle.adm.http.servlets.RemovePageServlet;
+import com.exactpro.th2.cradle.adm.http.servlets.*;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -63,6 +59,7 @@ public class HttpServer implements AutoCloseable {
 		servletHandler.addServletWithMapping(new ServletHolder(new NewPageServlet(storage)), "/new-page");
 		servletHandler.addServletWithMapping(new ServletHolder(new RemovePageServlet(storage)), "/remove-page");
 		servletHandler.addServletWithMapping(new ServletHolder(new GetBookInfoServlet(storage)), "/get-book-info");
+		servletHandler.addServletWithMapping(new ServletHolder(new UpdatePageServlet(storage)), "/update-page");
 		
 		server.start();
 		logger.info("server started: http://{}:{}/", configuration.getIp(), configuration.getPort());
