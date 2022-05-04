@@ -128,6 +128,7 @@ public class TestCradleStorage extends CradleStorage {
                 page.getStarted(),
                 page.getEnded(),
                 page.getComment(),
+                page.getUpdated(),
                 nextRemovedTime == null ? Instant.now() : nextRemovedTime
         ));
     }
