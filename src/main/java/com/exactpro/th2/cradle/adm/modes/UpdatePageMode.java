@@ -48,5 +48,7 @@ public class UpdatePageMode extends AbstractMode<UpdatePageParams, SimpleResult>
         if (pageInfo.getComment() != null) {
             sb.append(",pageComment = ").append(pageInfo.getComment());
         }
+
+        sb.append(",updated = ").append(pageInfo.getUpdated());
     }
 }
