@@ -71,12 +71,14 @@ public class ViewersTest extends AbstractHttpTest {
         HttpTester.Response response = this.executeGet("/get-book-info?book-id=" + BOOK_3.getName());
         Assertions.assertEquals(200, response.getStatus());
         String content = response.getContent().trim();
-        String expected = String.format("[{\"bookId\":\"book_3\",\"bookFullName\":null,\"bookDesc\":null," +
-                        "\"bookCreatedTime\":\"%s\",\"pages\":[{\"pageId\":\"page3\"," +
-                        "\"comment\":null,\"started\":\"%s\"," +
-                        "\"ended\":\"%s\",\"removed\":null},{\"pageId\":\"page3/2\"," +
-                        "\"comment\":\"comment\",\"started\":\"%s\"," +
-                        "\"ended\":null,\"removed\":null}]}]", BOOK_3.getCreated(), BOOK_3.getCreated(),
+        String expected = String.format("[{\"bookId\":\"book_3\"," +
+                        "\"bookFullName\":null," +
+                        "\"bookDesc\":null," +
+                        "\"bookCreatedTime\":\"%s\"," +
+                        "\"pages\":" +
+                        "[{\"pageId\":\"page3\",\"comment\":null,\"started\":\"%s\",\"ended\":\"%s\",\"updated\":null,\"removed\":null}," +
+                        "{\"pageId\":\"page3/2\",\"comment\":\"comment\",\"started\":\"%s\",\"ended\":null,\"updated\":null,\"removed\":null}]}]",
+                BOOK_3.getCreated(), BOOK_3.getCreated(),
                 BOOK_3_PAGE.getStart(), BOOK_3_PAGE.getStart());
         Assertions.assertEquals(expected, content);
     }
