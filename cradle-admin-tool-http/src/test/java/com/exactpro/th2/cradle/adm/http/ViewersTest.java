@@ -76,10 +76,8 @@ public class ViewersTest extends AbstractHttpTest {
                         "\"bookDesc\":null," +
                         "\"bookCreatedTime\":\"%s\"," +
                         "\"pages\":" +
-                        "[{\"pageId\":\"page3\",\"comment\":null,\"started\":\"%s\",\"ended\":\"%s\",\"updated\":null,\"removed\":null}," +
-                        "{\"pageId\":\"page3/2\",\"comment\":\"comment\",\"started\":\"%s\",\"ended\":null,\"updated\":null,\"removed\":null}]}]",
-                BOOK_3.getCreated(), BOOK_3.getCreated(),
-                BOOK_3_PAGE.getStart(), BOOK_3_PAGE.getStart());
+                        "[{\"pageId\":\"page3/2\",\"comment\":\"comment\",\"started\":\"%s\",\"ended\":null,\"updated\":null,\"removed\":null}]}]",
+                BOOK_3.getCreated(), BOOK_3_PAGE.getStart());
         Assertions.assertEquals(expected, content);
     }
 
