@@ -27,16 +27,16 @@ import java.time.Instant;
 
 public class ViewersTest extends AbstractHttpTest {
 
-    public static final BookToAdd BOOK_1 = new BookToAdd("book_1", Instant.now().minusSeconds(60*20), "page1");
+    public static final BookToAdd BOOK_1 = new BookToAdd("book_1", Instant.now().minusSeconds(60*20));
     static {
         BOOK_1.setDesc("book1-description");
         BOOK_1.setFullName("Book1 full name. Test");
         BOOK_1.setFirstPageComment("Comment123");
     }
     public static final BookToAdd BOOK_2 = new BookToAdd("book_2",
-            BOOK_1.getCreated().minusSeconds(60*20), "page2");
+            BOOK_1.getCreated().minusSeconds(60*20));
     public static final BookToAdd BOOK_3 = new BookToAdd("book_3",
-            BOOK_1.getCreated().minusSeconds(60*30), "page3");
+            BOOK_1.getCreated().minusSeconds(60*30));
 
     public static final PageToAdd BOOK_3_PAGE = new PageToAdd("page3/2", Instant.now().plusSeconds(60), "comment");
 

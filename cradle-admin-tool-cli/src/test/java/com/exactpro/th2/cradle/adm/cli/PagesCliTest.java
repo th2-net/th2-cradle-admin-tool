@@ -21,28 +21,28 @@ import com.exactpro.cradle.BookInfo;
 import com.exactpro.cradle.PageId;
 import com.exactpro.cradle.PageInfo;
 import com.exactpro.th2.cradle.adm.TestExecutor;
+import jnr.ffi.annotations.In;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.logging.Logger;
 
 public class PagesCliTest extends AbstractCliTest {
 
     @Test
     public void addPageBeforeTest() throws Exception {
 
-        new TestExecutor().addBookIds(INITIAL_BOOK, Instant.now(), INITIAL_PAGE)
+        new TestExecutor().addBookIds(INITIAL_BOOK, Instant.now())
                 .execTest(
                         (cradleStorage) -> {
-
-                            Application.main(new String[]{"-c=stub/", "--page", "-pageName", "page123", "-bookId", INITIAL_BOOK, "-pageStart", "2022-01-22T00:10:00.000000Z"});
-
+                            cradleStorage.addPage(new BookId(INITIAL_BOOK), INITIAL_PAGE, Instant.now().plusSeconds(30), "test");
+                            Assertions.assertEquals(1, cradleStorage.getBook(INITIAL_BOOK).getPages().size());
+                            Application.main(new String[]{"-c=stub/", "--page", "-pageName", "page123", "-bookId", INITIAL_BOOK, "-pageStart", Instant.parse("2022-01-22T00:10:00Z").toString()});
                             Assertions.assertEquals(1, cradleStorage.getBooksCount());
                             BookInfo dev_test_5 = cradleStorage.getBook(INITIAL_BOOK);
                             Assertions.assertEquals(1, dev_test_5.getPages().size());
-                            Assertions.assertNotNull(dev_test_5.getPage(new PageId(dev_test_5.getId(), INITIAL_PAGE)));
-
                             checkOutput(false, "Timestamp of new page start must be after current timestamp");
                         }
                 );
@@ -51,7 +51,7 @@ public class PagesCliTest extends AbstractCliTest {
     @Test
     public void addPageCorrectTest() throws Exception {
 
-        new TestExecutor().addBookIds(INITIAL_BOOK, Instant.now(), INITIAL_PAGE)
+        new TestExecutor().addBookIds(INITIAL_BOOK, Instant.now())
                 .execTest(
                         (cradleStorage) -> {
 
@@ -59,14 +59,11 @@ public class PagesCliTest extends AbstractCliTest {
 
                             Assertions.assertEquals(1, cradleStorage.getBooksCount());
                             BookInfo dev_test_5 = cradleStorage.getBook(INITIAL_BOOK);
-                            Assertions.assertEquals(2, dev_test_5.getPages().size());
+                            Assertions.assertEquals(1, dev_test_5.getPages().size());
                             PageInfo newPage = dev_test_5.getPage(new PageId(dev_test_5.getId(), "page123"));
-                            PageInfo oldPage = dev_test_5.getPage(new PageId(dev_test_5.getId(), INITIAL_PAGE));
-                            Assertions.assertNotNull(newPage);
-                            Assertions.assertNotNull(oldPage);
 
-                            Assertions.assertNotNull(oldPage.getStarted());
-                            Assertions.assertNotNull(oldPage.getEnded());
+                            Assertions.assertNotNull(newPage);
+
                             //todo incorrect logic now
 //                            Assertions.assertTrue(oldPage.isActive());
 
@@ -82,7 +79,7 @@ public class PagesCliTest extends AbstractCliTest {
     @Test
     public void addPageWithoutNameTest() throws Exception {
 
-        new TestExecutor().addBookIds(INITIAL_BOOK, Instant.now(), INITIAL_PAGE)
+        new TestExecutor().addBookIds(INITIAL_BOOK, Instant.now())
                 .execTest(
                         (cradleStorage) -> {
 
@@ -90,8 +87,7 @@ public class PagesCliTest extends AbstractCliTest {
 
                             Assertions.assertEquals(1, cradleStorage.getBooksCount());
                             BookInfo dev_test_5 = cradleStorage.getBook(INITIAL_BOOK);
-                            Assertions.assertEquals(2, dev_test_5.getPages().size());
-                            Assertions.assertEquals(dev_test_5.getFirstPage().getId().getName(), INITIAL_PAGE);
+                            Assertions.assertEquals(1, dev_test_5.getPages().size());
                             Assertions.assertTrue(UUID_REGEX.matcher(dev_test_5.getLastPage().getId().getName()).find());
 
                             checkOutput(true, null);
@@ -102,7 +98,7 @@ public class PagesCliTest extends AbstractCliTest {
     @Test
     public void addPageWithParamsTest() throws Exception {
 
-        new TestExecutor().addBookIds(INITIAL_BOOK, Instant.now(), INITIAL_PAGE)
+        new TestExecutor().addBookIds(INITIAL_BOOK, Instant.now())
                 .execTest(
                         (cradleStorage) -> {
                             Instant pageStart = Instant.now().plus(20, ChronoUnit.MINUTES);
@@ -125,11 +121,14 @@ public class PagesCliTest extends AbstractCliTest {
     @Test
     public void addExistedPageTest() throws Exception {
 
-        new TestExecutor().addBookIds(INITIAL_BOOK, Instant.now(), INITIAL_PAGE)
+        new TestExecutor().addBookIds(INITIAL_BOOK, Instant.now())
                 .execTest(
                         (cradleStorage) -> {
+                            cradleStorage.addPage(new BookId(INITIAL_BOOK), INITIAL_PAGE, Instant.now().plusSeconds(30), "test");
+                            Assertions.assertEquals(1,cradleStorage.getBook(new BookId(INITIAL_BOOK)).getPages().size());
                             Application.main(new String[]{"-c=stub/", "--page", "-pageName", INITIAL_PAGE, "-bookId", INITIAL_BOOK, "-pageStart", Instant.now().plus(1, ChronoUnit.MINUTES).toString()});
                             Assertions.assertEquals(1, cradleStorage.getBooksCount());
+                            Assertions.assertEquals(1,cradleStorage.getBook(new BookId(INITIAL_BOOK)).getPages().size());
                             checkOutput(false, String.format("Page '%s' is already present in book '%s'", INITIAL_PAGE, INITIAL_BOOK));
                         }
                 );

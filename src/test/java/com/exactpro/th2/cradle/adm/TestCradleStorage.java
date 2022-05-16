@@ -117,7 +117,11 @@ public class TestCradleStorage extends CradleStorage {
 
     @Override
     protected Collection<PageInfo> doGetAllPages(BookId bookId) throws CradleStorageException {
-        return pages.get(bookId).stream().sorted(Comparator.comparing(PageInfo::getStarted)).collect(Collectors.toList());
+        List<PageInfo> book = new ArrayList<>();
+        if(pages.containsKey(bookId)){
+            book = pages.get(bookId);
+        }
+        return book.stream().sorted(Comparator.comparing(PageInfo::getStarted)).collect(Collectors.toList());
     }
 
     @Override
