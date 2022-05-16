@@ -3,7 +3,7 @@ apply plugin: 'application'
 
 
 ext {
-    cradleApiVersion = '4.0.0-TH2-2150-2269130595-SNAPSHOT'
+    cradleApiVersion = '4.0.0-TH2-2150-2280258414-SNAPSHOT'
     commonVersion = '4.0.0-th2-2150-books-pages-1530756720-SNAPSHOT'
 }
 
@@ -39,6 +39,12 @@ allprojects {
         implementation "com.exactpro.th2:cradle-core:$cradleApiVersion"
         implementation "com.exactpro.th2:cradle-cassandra:$cradleApiVersion"
         implementation "com.exactpro.th2:common:$commonVersion"
+
+        implementation ("org.slf4j:slf4j-log4j12") {
+            version {
+                strictly '1.7.30'
+            }
+        }
 
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
