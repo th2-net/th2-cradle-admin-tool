@@ -40,9 +40,8 @@ public class BookCliTest extends AbstractCliTest{
 
                             Assertions.assertEquals(1, cradleStorage.getBooksCount());
                             BookInfo dev_test_6 = cradleStorage.getBook("dev_test_6");
-                            Assertions.assertEquals(1, dev_test_6.getPages().size());
-                            String name = dev_test_6.getFirstPage().getId().getName();
-                            Assertions.assertTrue(UUID_REGEX.matcher(name).find());
+                            Assertions.assertEquals(0, dev_test_6.getPages().size());
+
 
                             checkOutput(true, null);
                         }
@@ -81,24 +80,18 @@ public class BookCliTest extends AbstractCliTest{
                             Instant created = Instant.now().minus(20, ChronoUnit.MINUTES);
                             String bookName = "dev_test_6";
                             String bookFullName = "This book is created in addBookWithParamsTest for unit test purposes";
-                            String pageName = "pageInit";
-                            String pageComment = "page comment 12345678901234567890123456789012345678901234567890";
                             String bookDesc = "book DESC123";
                             Application.main(new String[]{"-c=stub/", "--book", "-bookName", bookName,
-                                    "-createdTime", created.toString(), "-firstPageName", pageName,
-                                    "-firstPageComment", pageComment, "-desc", bookDesc, "-fullName", bookFullName});
+                                    "-createdTime", created.toString(),
+                                    "-desc", bookDesc, "-fullName", bookFullName});
 
                             Assertions.assertEquals(1, cradleStorage.getBooksCount());
                             BookInfo dev_test_6 = cradleStorage.getBook("dev_test_6");
                             Assertions.assertEquals(bookFullName, dev_test_6.getFullName());
                             Assertions.assertEquals(bookDesc, dev_test_6.getDesc());
                             Assertions.assertEquals(created, dev_test_6.getCreated());
-                            Assertions.assertEquals(1, dev_test_6.getPages().size());
-                            PageInfo firstPage = dev_test_6.getFirstPage();
-                            Assertions.assertEquals(pageName, firstPage.getId().getName());
-                            Assertions.assertEquals(pageComment, firstPage.getComment());
-                            Assertions.assertNull(firstPage.getEnded());
-                            Assertions.assertEquals(created, firstPage.getStarted());
+                            Assertions.assertEquals(0, dev_test_6.getPages().size());
+
 
                             checkOutput(true, null);
                         }
@@ -108,7 +101,7 @@ public class BookCliTest extends AbstractCliTest{
     @Test
     public void addExistedBookTest() throws Exception {
 
-        new TestExecutor().addBookIds(INITIAL_BOOK, Instant.now(), INITIAL_PAGE)
+        new TestExecutor().addBookIds(INITIAL_BOOK, Instant.now())
                 .execTest(
                         (cradleStorage) -> {
                             Application.main(new String[]{"-c=stub/", "--book", "-bookName", INITIAL_BOOK});

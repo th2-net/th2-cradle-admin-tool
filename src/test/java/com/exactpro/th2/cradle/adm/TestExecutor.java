@@ -43,8 +43,8 @@ public class TestExecutor {
         return this;
     }
 
-    public TestExecutor addBookIds(String name, Instant created, String firstPageName) {
-        return this.addBookIds(new BookToAdd(name, created, firstPageName));
+    public TestExecutor addBookIds(String name, Instant created) {
+        return this.addBookIds(new BookToAdd(name, created));
     }
 
     public TestExecutor addPageIds(BookId bookId, PageToAdd pageToAdd) {

@@ -40,7 +40,7 @@ public class PagesHttpTest extends AbstractHttpTest {
         String bookId = "testBook";
         String pageName = "page2";
         Instant time = Instant.now().plus(2, ChronoUnit.MINUTES);
-        addBook(new BookToAdd(bookId, Instant.now(), "page1"));
+        addBook(new BookToAdd(bookId, Instant.now()));
 
         HttpTester.Response response = this.executeGet(String.format("/new-page?book-id=%s&page-name=%s&page-start=%s",
                 bookId, pageName, time.toString()));
@@ -59,7 +59,7 @@ public class PagesHttpTest extends AbstractHttpTest {
         String bookId = "testBook";
         String pageName = "page2";
         Instant time = Instant.now().plus(2, ChronoUnit.MINUTES);
-        addBook(new BookToAdd(bookId, Instant.now(), "page1"));
+        addBook(new BookToAdd(bookId, Instant.now()));
 
         HttpTester.Response response = this.executeGet(String.format("/new-page?book-id=%s&page-name=%s&page-start=%s",
                 bookId, pageName, time.toEpochMilli()));
@@ -78,7 +78,7 @@ public class PagesHttpTest extends AbstractHttpTest {
 
         String bookId = "testBook";
         Instant time = Instant.now().plus(2, ChronoUnit.MINUTES);
-        addBook(new BookToAdd(bookId, Instant.now(), "page1"));
+        addBook(new BookToAdd(bookId, Instant.now()));
 
         HttpTester.Response response = this.executeGet(String.format("/new-page?book-id=%s&page-start=%s",
                 bookId, time.toString()));
@@ -86,7 +86,7 @@ public class PagesHttpTest extends AbstractHttpTest {
         Assertions.assertEquals(1, this.storage.getBooksCount());
         BookId bookIdkey = new BookId(bookId);
         BookInfo bookIdObj = this.storage.getBook(bookIdkey);
-        Assertions.assertEquals(2, bookIdObj.getPages().size());
+        Assertions.assertEquals(1, bookIdObj.getPages().size());
         String pageName = bookIdObj.findPage(time).getId().getName();
         this.checkPlainResponseContains(response.getContent(), true,
                 String.format("Page created bookId = %s,pageName = %s,pageStart = %s", bookId.toLowerCase(), pageName, time));
@@ -100,7 +100,7 @@ public class PagesHttpTest extends AbstractHttpTest {
         String pageName = "page2";
         Instant time = Instant.now().plus(2, ChronoUnit.MINUTES);
         String comment = "text_comment_1234567890_text_comment_1234567890_text_comment_1234567890_text_comment_1234567890";
-        addBook(new BookToAdd(bookId, Instant.now(), "page1"));
+        addBook(new BookToAdd(bookId, Instant.now()));
 
         HttpTester.Response response = this.executeGet(String.format("/new-page?book-id=%s&page-name=%s&page-start=%s&page-comment=%s",
                 bookId, pageName, time.toString(), comment));
@@ -123,8 +123,9 @@ public class PagesHttpTest extends AbstractHttpTest {
         String bookId = "testBook";
         String old_page = "old_page";
         String new_page = "new_page";
-        addBook(new BookToAdd(bookId, Instant.now().minus(20, ChronoUnit.SECONDS), old_page));
-        addPage(new BookId(bookId), new PageToAdd("new_page", Instant.now().plus(10, ChronoUnit.MILLIS), "should not be deleted in this scenario"));
+        addBook(new BookToAdd(bookId, Instant.now().minus(20, ChronoUnit.SECONDS)));
+        addPage(new BookId(bookId), new PageToAdd(old_page, Instant.now().plus(5, ChronoUnit.MILLIS), "should be deleted in this scenario"));
+        addPage(new BookId(bookId), new PageToAdd(new_page, Instant.now().plus(10, ChronoUnit.MILLIS), "should not be deleted in this scenario"));
 
         BookId bookIdkey = new BookId(bookId);
         BookInfo bookIdObj = this.storage.getBook(bookIdkey);
@@ -155,7 +156,7 @@ public class PagesHttpTest extends AbstractHttpTest {
         Instant page2Start = time.plus(10, ChronoUnit.MINUTES);
         Instant page3Start = time.plus(20, ChronoUnit.MINUTES);
 
-        addBook(new BookToAdd(bookId, time.minus(20, ChronoUnit.SECONDS), "page1"));
+        addBook(new BookToAdd(bookId, time.minus(20, ChronoUnit.SECONDS)));
         addPage(bookIdkey, new PageToAdd(pageToRemove, page2Start, null));
         addPage(bookIdkey, new PageToAdd("page3", page3Start, null));
 

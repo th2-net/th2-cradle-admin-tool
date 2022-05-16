@@ -62,7 +62,8 @@ public class BookHttpTest extends AbstractHttpTest{
         Assertions.assertEquals(time, createdBook.getCreated());
         Assertions.assertEquals(fullname, createdBook.getFullName());
         Assertions.assertEquals(desc, createdBook.getDesc());
-        Assertions.assertEquals(pageName, createdBook.getFirstPage().getId().getName());
+        Assertions.assertEquals(0, createdBook.getPages().size());
+        //Assertions.assertEquals(pageName, createdBook.getFirstPage().getId().getName());
     }
 
     @Test
@@ -90,14 +91,15 @@ public class BookHttpTest extends AbstractHttpTest{
         Assertions.assertEquals(time, createdBook.getCreated());
         Assertions.assertEquals(fullname, createdBook.getFullName());
         Assertions.assertEquals(desc, createdBook.getDesc());
-        Assertions.assertEquals(pageName, createdBook.getFirstPage().getId().getName());
+        Assertions.assertEquals(0, createdBook.getPages().size());
+        //Assertions.assertEquals(pageName, createdBook.getFirstPage().getId().getName());
     }
 
     @Test
     public void addExistedBook() throws Exception {
 
         String bookName = "testBook";
-        this.addBook(new BookToAdd(bookName, Instant.now(), "testPage"));
+        this.addBook(new BookToAdd(bookName, Instant.now()));
         Assertions.assertEquals(1, this.storage.getBooksCount());
 
         HttpTester.Response response = this.executeGet("/new-book?book-name=" + bookName);

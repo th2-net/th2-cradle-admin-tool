@@ -58,7 +58,7 @@ public class NewBookCreationParams {
 	}
 
 	public BookToAdd toBookToAdd() {
-		BookToAdd bookToAdd = new BookToAdd(name, this.created, firstPageName);
+		BookToAdd bookToAdd = new BookToAdd(name, this.created);
 		if (fullName != null) {
 			bookToAdd.setFullName(fullName);
 		}

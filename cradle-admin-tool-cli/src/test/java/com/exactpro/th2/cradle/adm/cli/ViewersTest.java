@@ -17,6 +17,7 @@
 package com.exactpro.th2.cradle.adm.cli;
 
 import com.exactpro.cradle.BookId;
+import com.exactpro.cradle.CradleStorage;
 import com.exactpro.cradle.PageId;
 import com.exactpro.th2.cradle.adm.TestExecutor;
 import org.junit.jupiter.api.Assertions;
@@ -51,11 +52,11 @@ public class ViewersTest extends AbstractCliTest {
     private final String book3 = "test_book3";
 
     private TestExecutor createDataExecutor() {
-        return new TestExecutor().addBookIds(INITIAL_BOOK, book1Start, INITIAL_PAGE)
+        return new TestExecutor().addBookIds(INITIAL_BOOK, book1Start)
                 .addPageIds(INITIAL_BOOK, page2Name, page2Time, null)
                 .addPageIds(INITIAL_BOOK, page3Name, page3Time, null)
-                .addBookIds(book2, book2Start, "testpage1")
-                .addBookIds(book3, book3Start, "testpage2");
+                .addBookIds(book2, book2Start)
+                .addBookIds(book3, book3Start);
     }
 
     @Test
@@ -82,16 +83,12 @@ public class ViewersTest extends AbstractCliTest {
                             "\tBookId: init_book\n" +
                             "\tBookCreatedTime: %s\n" +
                             "\tPage #1\n" +
-                            "\t\tPageId: init_page\n" +
-                            "\t\tStarted: %s\n" +
-                            "\t\tEnded: %s\n" +
-                            "\tPage #2\n" +
                             "\t\tPageId: page2\n" +
                             "\t\tStarted: %s\n" +
                             "\t\tEnded: %s\n" +
-                            "\tPage #3\n" +
+                            "\tPage #2\n" +
                             "\t\tPageId: page3\n" +
-                            "\t\tStarted: %s\n", book1Str, book1Str, page2Str, page2Str, page3Str, page3Str);
+                            "\t\tStarted: %s\n", book1Str, page2Str, page3Str, page3Str);
                     Assertions.assertEquals(expected, this.outContent.toString());
                 }
         );
@@ -110,16 +107,11 @@ public class ViewersTest extends AbstractCliTest {
                             "book #1\n" +
                             "\tBookId: test_book3\n" +
                             "\tBookCreatedTime: %s\n" +
-                            "\tPage #1\n" +
-                            "\t\tPageId: testpage2\n" +
-                            "\t\tStarted: %s\n" +
                             "\n" +
                             "book #2\n" +
                             "\tBookId: test_book2\n" +
-                            "\tBookCreatedTime: %s\n" +
-                            "\tPage #1\n" +
-                            "\t\tPageId: testpage1\n" +
-                            "\t\tStarted: %s\n", book3StartStr, book3StartStr, book2StartStr, book2StartStr);
+                            "\tBookCreatedTime: %s\n"
+                            , book3StartStr,  book2StartStr);
                     Assertions.assertEquals(expected, this.outContent.toString());
                 }
         );
@@ -130,10 +122,11 @@ public class ViewersTest extends AbstractCliTest {
 
         createDataExecutor().execTest(
                 (cradleStorage) -> {
-                    Instant removeInstant = Instant.now();
+                    Instant removeInstant = Instant.now().plus(1, ChronoUnit.MINUTES);
+                    Assertions.assertEquals(2,cradleStorage.getBook(new BookId(INITIAL_BOOK)).getPages().size()  );
 
                     cradleStorage.setNextRemovedTime(removeInstant);
-                    cradleStorage.removePage(new PageId(new BookId(INITIAL_BOOK), INITIAL_PAGE));
+                    cradleStorage.removePage(new PageId(new BookId(INITIAL_BOOK), page2Name));
 
                     Application.main(new String[]{"-c=stub/", "--getBookInfo", "-bookId", INITIAL_BOOK, "-loadRemovedPages"});
                     String expected = String.format("Cradle TH2 Admin tool (CLI), version null, build-date null\n" +
@@ -144,17 +137,13 @@ public class ViewersTest extends AbstractCliTest {
                             "\tBookId: init_book\n" +
                             "\tBookCreatedTime: %s\n" +
                             "\tPage #1\n" +
-                            "\t\tPageId: init_page\n" +
+                            "\t\tPageId: page2\n" +
                             "\t\tStarted: %s\n" +
                             "\t\tEnded: %s\n" +
                             "\t\tRemoved: %s\n" +
                             "\tPage #2\n" +
-                            "\t\tPageId: page2\n" +
-                            "\t\tStarted: %s\n" +
-                            "\t\tEnded: %s\n" +
-                            "\tPage #3\n" +
                             "\t\tPageId: page3\n" +
-                            "\t\tStarted: %s\n", book1Str, book1Str, page2Str, removeInstant, page2Str, page3Str, page3Str);
+                            "\t\tStarted: %s\n", book1Str, page2Str, page3Str, removeInstant, page3Str);
                     Assertions.assertEquals(expected, this.outContent.toString());
                 }
         );
