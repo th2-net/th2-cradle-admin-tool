@@ -16,11 +16,8 @@
 
 package com.exactpro.th2.cradle.adm.cli;
 
-import com.exactpro.th2.cradle.adm.results.BooksListInfo;
-import com.exactpro.th2.cradle.adm.results.ResultBookDetailedInfo;
-import com.exactpro.th2.cradle.adm.results.ResultBookInfo;
-import com.exactpro.th2.cradle.adm.results.ResultPageInfo;
-import com.exactpro.th2.cradle.adm.results.SimpleResult;
+import com.exactpro.cradle.BookListEntry;
+import com.exactpro.th2.cradle.adm.results.*;
 
 import java.util.List;
 
@@ -44,7 +41,17 @@ public class ResultPrinter {
 					count++;
 				}
 			}
-
+		} else if(r instanceof BookSchemaInfo){
+			BookSchemaInfo bookSchemes = (BookSchemaInfo) r;
+			List<BookListEntry> bookSchemesList = bookSchemes.getBookSchemas();
+			int count = 1;
+			if(bookSchemesList != null){
+				for(BookListEntry bk : bookSchemesList){
+					System.out.println();
+					System.out.println("book #" + count + " Name: " + bk.getName() + ", Scheme Version: " + bk.getSchemaVersion());
+					count++;
+				}
+			}
 		}
 		
 	}
