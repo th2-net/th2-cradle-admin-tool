@@ -55,6 +55,7 @@ public class HttpServer implements AutoCloseable {
 		server.setHandler(servletHandler);
 		
 		servletHandler.addServletWithMapping(new ServletHolder(new GetBookServlet(storage)), "/get-all-books");
+		servletHandler.addServletWithMapping(new ServletHolder(new ListAllBookSchemasServlet(storage)), "/list-all-book-schemas");
 		servletHandler.addServletWithMapping(new ServletHolder(new NewBookServlet(storage)), "/new-book");
 		servletHandler.addServletWithMapping(new ServletHolder(new NewPageServlet(storage)), "/new-page");
 		servletHandler.addServletWithMapping(new ServletHolder(new RemovePageServlet(storage)), "/remove-page");

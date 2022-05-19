@@ -24,6 +24,7 @@ public class CmdParams {
 	public static final String MODE_PAGE_S			= "p";
 	public static final String INIT_KEYSPACE_L		= "initKeyspace";
 	public static final String ALL_BOOKS_L			= "getAllBooks";
+	public static final String ALL_BOOKS_SCHEMA_L	= "listAllBookSchemas";
 	public static final String BOOK_INFO_L			= "getBookInfo";
 	public static final String REMOVE_PAGE_L		= "removePage";
 

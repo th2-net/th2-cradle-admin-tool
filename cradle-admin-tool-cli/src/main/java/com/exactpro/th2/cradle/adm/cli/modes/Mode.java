@@ -20,7 +20,6 @@ import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
 import com.exactpro.th2.cradle.adm.cli.params.*;
 import com.exactpro.th2.cradle.adm.modes.AbstractMode;
 import com.exactpro.th2.cradle.adm.modes.InitKeySpaceMode;
-import com.exactpro.th2.cradle.adm.modes.UpdatePageMode;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -32,6 +31,8 @@ public class Mode {
 				.required(false).desc("Initializing new keyspace").build());
 		options.addOption(Option.builder().longOpt(CmdParams.ALL_BOOKS_L).hasArg(false)
 				.required(false).desc("Getting info about books").build());
+		options.addOption(Option.builder().longOpt(CmdParams.ALL_BOOKS_SCHEMA_L).hasArg(false)
+				.required(false).desc("Getting nae and schema about books").build());
 		GetAllBooksParamBuilder.getOptions(options);
 		options.addOption(Option.builder().longOpt(CmdParams.BOOK_INFO_L).hasArg(false)
 				.required(false).desc("Getting info about chosen books").build());
@@ -61,6 +62,8 @@ public class Mode {
 			return new InitKeySpaceMode();
 		} else if (cmdLine.hasOption(CmdParams.ALL_BOOKS_L)) {
 			return new GetAllBooksCreationCliMode();
+		} else if (cmdLine.hasOption(CmdParams.ALL_BOOKS_SCHEMA_L)){
+			return new ListAllBookSchemasCliMode();
 		} else if (cmdLine.hasOption(CmdParams.REMOVE_PAGE_L)) {
 			return new RemovePageCliMode();
 		} else if (cmdLine.hasOption(CmdParams.BOOK_INFO_L)) {
