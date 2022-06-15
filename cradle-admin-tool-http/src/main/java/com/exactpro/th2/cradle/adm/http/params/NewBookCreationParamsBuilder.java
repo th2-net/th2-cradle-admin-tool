@@ -35,10 +35,8 @@ public class NewBookCreationParamsBuilder extends HttpParamBuilder<NewBookCreati
 		NewBookCreationParams arg = new NewBookCreationParams();
 		arg.setName(request.get(BOOK_NAME));
 		arg.setCreated(ParamUtils.parseInstant(request.get(CREATED_TIME)));
-		arg.setFirstPageName(request.get(FIRST_PAGE_NAME));
 		arg.setFullName(request.get(FULL_NAME));
 		arg.setDesc(request.get(DESC));
-		arg.setFirstPageComment(request.get(FIRST_PAGE_COMMENT));
 
 		return arg;
 	}

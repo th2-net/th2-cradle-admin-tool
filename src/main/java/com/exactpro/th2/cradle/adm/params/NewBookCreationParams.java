@@ -24,11 +24,9 @@ public class NewBookCreationParams {
 
 	private String name;
 	private Instant created;
-	private String firstPageName;
 	
 	private String fullName;
 	private String desc;
-	private String firstPageComment;
 
 	public NewBookCreationParams() {
 	}
@@ -41,20 +39,12 @@ public class NewBookCreationParams {
 		return created;
 	}
 
-	public String getFirstPageName() {
-		return firstPageName;
-	}
-
 	public String getFullName() {
 		return fullName;
 	}
 
 	public String getDesc() {
 		return desc;
-	}
-
-	public String getFirstPageComment() {
-		return firstPageComment;
 	}
 
 	public BookToAdd toBookToAdd() {
@@ -67,9 +57,6 @@ public class NewBookCreationParams {
 			bookToAdd.setDesc(desc);
 		}
 
-		if (firstPageComment != null) {
-			bookToAdd.setFirstPageComment(firstPageComment);
-		}
 		return bookToAdd;
 	}
 
@@ -81,19 +68,11 @@ public class NewBookCreationParams {
 		this.created = created;
 	}
 
-	public void setFirstPageName(String firstPageName) {
-		this.firstPageName = firstPageName;
-	}
-
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
 
 	public void setDesc(String desc) {
 		this.desc = desc;
-	}
-
-	public void setFirstPageComment(String firstPageComment) {
-		this.firstPageComment = firstPageComment;
 	}
 }

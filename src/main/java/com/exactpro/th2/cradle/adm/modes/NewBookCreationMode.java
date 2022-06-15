@@ -33,12 +33,6 @@ public class NewBookCreationMode extends AbstractMode<NewBookCreationParams, Sim
 	public SimpleResult execute() {
 		try {
 			checkInit();
-			String firstPage = param.getFirstPageName();
-			if (firstPage == null) {
-				firstPage = UUID.randomUUID().toString();
-				param.setFirstPageName(firstPage);
-				logger.info("Generating page name: {}", firstPage);
-			}
 			Instant createdTime = param.getCreated();
 			if (createdTime == null) {
 				createdTime = Instant.now();
@@ -46,8 +40,8 @@ public class NewBookCreationMode extends AbstractMode<NewBookCreationParams, Sim
 				logger.info("'Created' book time is not specified. Generated value: {}", createdTime);
 			}
 
-			logger.info("Creating new book: name({}}) created({}}) first page({}})", param.getName(), createdTime, firstPage);
-			logger.info("full name({}) desc({}}) firstPage({}})", param.getFullName(), param.getDesc(), firstPage);
+			logger.info("Creating new book: name({}}) created({}})", param.getName(), createdTime);
+			logger.info("full name({}) desc({}})", param.getFullName(), param.getDesc());
 		
 			this.cradleStorage.addBook(this.param.toBookToAdd());
 			logger.info("Book is successfully created");
@@ -63,16 +57,12 @@ public class NewBookCreationMode extends AbstractMode<NewBookCreationParams, Sim
 	private void fillBookParams(StringBuilder sb) {
 		sb.append("name = ").append(param.getName());
 		sb.append(",created = ").append(param.getCreated());
-		sb.append(",firstPageName = ").append(param.getFirstPageName());
-		
+
 		if (param.getFullName() != null) {
 			sb.append(",fullName = ").append(param.getFullName());
 		}
 		if (param.getDesc() != null) {
 			sb.append(",desc = ").append(param.getDesc());
-		}
-		if (param.getFirstPageComment() != null) {
-			sb.append(",firstPageComment = ").append(param.getFirstPageComment());
 		}
 	}
 	
