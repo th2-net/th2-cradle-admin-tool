@@ -63,7 +63,6 @@ public class BookHttpTest extends AbstractHttpTest{
         Assertions.assertEquals(fullname, createdBook.getFullName());
         Assertions.assertEquals(desc, createdBook.getDesc());
         Assertions.assertEquals(0, createdBook.getPages().size());
-        //Assertions.assertEquals(pageName, createdBook.getFirstPage().getId().getName());
     }
 
     @Test
@@ -92,7 +91,6 @@ public class BookHttpTest extends AbstractHttpTest{
         Assertions.assertEquals(fullname, createdBook.getFullName());
         Assertions.assertEquals(desc, createdBook.getDesc());
         Assertions.assertEquals(0, createdBook.getPages().size());
-        //Assertions.assertEquals(pageName, createdBook.getFirstPage().getId().getName());
     }
 
     @Test

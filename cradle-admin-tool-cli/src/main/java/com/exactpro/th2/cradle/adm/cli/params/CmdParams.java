@@ -30,10 +30,8 @@ public class CmdParams {
 
 	public static final String BOOK_NAME			= "bookName";
 	public static final String CREATED_TIME			= "createdTime";
-	public static final String FIRST_PAGE_NAME		= "firstPageName";
 	public static final String FULL_NAME			= "fullName";
 	public static final String DESC					= "desc";
-	public static final String FIRST_PAGE_COMMENT	= "firstPageComment";
 
 	public static final String BOOK_ID				= "bookId";
 	public static final String PAGE_NAME			= "pageName";
