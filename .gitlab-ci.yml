@@ -2,8 +2,8 @@ variables:
   APP_NAME: "th2-cradle-admin-tool"
   INSPECTION_ENABLED: 'false'
   MAJOR_VERSION: "1"
-  MINOR_VERSION: "3"
-  MAINTENANCE_VERSION: "11"
+  MINOR_VERSION: "5"
+  MAINTENANCE_VERSION: "0"
 
 
 include:
