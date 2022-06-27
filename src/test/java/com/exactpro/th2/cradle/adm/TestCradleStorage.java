@@ -43,7 +43,7 @@ public class TestCradleStorage extends CradleStorage {
     private Instant nextRemovedTime;
 
     public TestCradleStorage(ExecutorService composingService, int maxMessageBatchSize, int maxMessageBatchDuration, int maxTestEventBatchSize) throws CradleStorageException {
-        super(composingService, maxMessageBatchSize, maxMessageBatchDuration, maxTestEventBatchSize);
+        super(composingService, maxMessageBatchSize, maxTestEventBatchSize);
         bookCache = new TestBookCache();
     }
 
@@ -112,7 +112,7 @@ public class TestCradleStorage extends CradleStorage {
 
     @Override
     protected Collection<PageInfo> doLoadPages(BookId bookId) throws CradleStorageException, IOException {
-        return bpc.getBook(bookId).getPages();
+        return getBookCache().getBook(bookId).getPages();
     }
 
     @Override
@@ -143,7 +143,7 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected void doStoreGroupedMessageBatch(MessageBatchToStore batch, PageInfo page, String groupName) throws IOException {
+    protected void doStoreGroupedMessageBatch(GroupedMessageBatchToStore batch, PageInfo page) throws IOException {
 
     }
 
@@ -153,7 +153,7 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected CompletableFuture<Void> doStoreGroupedMessageBatchAsync(MessageBatchToStore batch, PageInfo page, String groupName) throws IOException, CradleStorageException {
+    protected CompletableFuture<Void> doStoreGroupedMessageBatchAsync(GroupedMessageBatchToStore batch, PageInfo page) throws IOException, CradleStorageException {
         return null;
     }
 
@@ -223,7 +223,7 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected CradleResultSet<StoredMessageBatch> doGetGroupedMessageBatches(GroupedMessageFilter filter, BookInfo book) throws IOException, CradleStorageException {
+    protected CradleResultSet<StoredGroupedMessageBatch> doGetGroupedMessageBatches(GroupedMessageFilter filter, BookInfo book) throws IOException, CradleStorageException {
         return null;
     }
 
@@ -233,7 +233,7 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected CompletableFuture<CradleResultSet<StoredMessageBatch>> doGetGroupedMessageBatchesAsync(GroupedMessageFilter filter, BookInfo book) throws CradleStorageException {
+    protected CompletableFuture<CradleResultSet<StoredGroupedMessageBatch>> doGetGroupedMessageBatchesAsync(GroupedMessageFilter filter, BookInfo book) throws CradleStorageException {
         return null;
     }
 

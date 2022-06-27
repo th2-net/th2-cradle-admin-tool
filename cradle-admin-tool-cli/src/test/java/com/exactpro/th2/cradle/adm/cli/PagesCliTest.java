@@ -21,13 +21,11 @@ import com.exactpro.cradle.BookInfo;
 import com.exactpro.cradle.PageId;
 import com.exactpro.cradle.PageInfo;
 import com.exactpro.th2.cradle.adm.TestExecutor;
-import jnr.ffi.annotations.In;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.logging.Logger;
 
 public class PagesCliTest extends AbstractCliTest {
 

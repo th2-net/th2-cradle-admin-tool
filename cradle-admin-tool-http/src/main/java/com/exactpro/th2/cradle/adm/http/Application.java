@@ -19,7 +19,6 @@ package com.exactpro.th2.cradle.adm.http;
 import com.exactpro.cradle.CradleManager;
 import com.exactpro.cradle.CradleStorage;
 import com.exactpro.th2.common.schema.factory.CommonFactory;
-import com.exactpro.th2.cradle.adm.FactoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +37,7 @@ public class Application {
 		try {
 			CommonFactory factory = CommonFactory.createFromArguments(args);
 			resources.add(factory);
-			CradleManager cradleManager = FactoryUtils.createCradleManager(factory, true);
+			CradleManager cradleManager = factory.getCradleManager();
 			resources.add(cradleManager);
 
 			CradleStorage storage = cradleManager.getStorage();
