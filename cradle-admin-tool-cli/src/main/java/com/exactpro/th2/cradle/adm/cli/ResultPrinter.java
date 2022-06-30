@@ -41,17 +41,6 @@ public class ResultPrinter {
 					count++;
 				}
 			}
-		} else if(r instanceof BookSchemaInfo){
-			BookSchemaInfo bookSchemes = (BookSchemaInfo) r;
-			List<BookListEntry> bookSchemesList = bookSchemes.getBookSchemas();
-			int count = 1;
-			if(bookSchemesList != null){
-				for(BookListEntry bk : bookSchemesList){
-					System.out.println();
-					System.out.println("book #" + count + " Name: " + bk.getName() + ", Scheme Version: " + bk.getSchemaVersion());
-					count++;
-				}
-			}
 		}
 		
 	}
