@@ -4,6 +4,7 @@ apply plugin: 'application'
 
 ext {
     commonVersion = '5.0.0-dev-version-5-2567706074-SNAPSHOT'
+    cradleVersion   = '5.0.0-dev-version-5-2669754492-SNAPSHOT'
 }
 
 allprojects {
@@ -36,6 +37,8 @@ allprojects {
     dependencies {
 
         implementation "com.exactpro.th2:common:$commonVersion"
+        implementation "com.exactpro.th2:cradle-core:$cradleVersion"
+        implementation "com.exactpro.th2:cradle-cassandra:$cradleVersion"
 
         implementation ("org.slf4j:slf4j-log4j12") {
             version {
