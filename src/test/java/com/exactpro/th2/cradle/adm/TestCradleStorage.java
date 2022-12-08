@@ -283,11 +283,6 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    public IntervalsWorker getIntervalsWorker(PageId pageId) {
-        return null;
-    }
-
-    @Override
     protected CompletableFuture<CradleResultSet<CounterSample>> doGetMessageCountersAsync(BookId bookId, String sessionAlias, Direction direction, FrameType frameType, Interval interval) throws CradleStorageException {
         return null;
     }
@@ -354,6 +349,11 @@ public class TestCradleStorage extends CradleStorage {
 
     @Override
     protected PageInfo doUpdatePageName(BookId bookId, String pageName, String newPageName) throws CradleStorageException {
+        return null;
+    }
+
+    @Override
+    public IntervalsWorker getIntervalsWorker() {
         return null;
     }
 }
