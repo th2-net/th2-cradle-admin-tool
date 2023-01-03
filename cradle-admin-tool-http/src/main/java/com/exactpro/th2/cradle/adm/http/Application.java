@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2021-2023 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,14 +37,19 @@ public class Application {
 		try {
 			CommonFactory factory = CommonFactory.createFromArguments(args);
 			resources.add(factory);
+
+			Configuration config = factory.getCustomConfiguration(Configuration.class);
+
 			CradleManager cradleManager = factory.getCradleManager();
 			resources.add(cradleManager);
 
 			CradleStorage storage = cradleManager.getStorage();
 
-			HttpServer httpServer = new HttpServer(factory.getCustomConfiguration(CustomConfiguration.class), storage);
+			HttpServer httpServer = new HttpServer(config, storage);
 			httpServer.run();
 			resources.add(httpServer);
+
+			resources.add(new PageManager(storage, config.getAutoPages(), config.getPageRecheckInterval()));
 		} catch (Exception e) {
 			logger.error("{}", e.getMessage(), e);
 			System.exit(-1);

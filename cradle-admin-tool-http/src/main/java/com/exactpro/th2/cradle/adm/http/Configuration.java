@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2021-2023 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,15 @@ package com.exactpro.th2.cradle.adm.http;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.Duration;
+import java.util.Map;
+
 @SuppressWarnings("FieldMayBeFinal")
-public class CustomConfiguration {
+public class Configuration {
 	
 	public static final String DEFAULT_IP = "0.0.0.0";
 	public static final int DEFAULT_PORT = 8080;
+	public static final int DEFAULT_PAGE_RECHECK_INTERVAL_SEC = 60;
 
 	@JsonProperty("ip")
 	private String ip = DEFAULT_IP;
@@ -30,11 +34,25 @@ public class CustomConfiguration {
 	@JsonProperty("port")
 	private int port = DEFAULT_PORT;
 
+	@JsonProperty("page-recheck-interval")
+	private int pageRecheckInterval = DEFAULT_PAGE_RECHECK_INTERVAL_SEC;
+
+	@JsonProperty("auto-pages")
+	private Map<String, Duration> autoPages;
+
 	public String getIp() {
 		return ip;
 	}
 
 	public int getPort() {
 		return port;
+	}
+
+	public Map<String, Duration> getAutoPages() {
+		return autoPages;
+	}
+
+	public int getPageRecheckInterval() {
+		return pageRecheckInterval;
 	}
 }
