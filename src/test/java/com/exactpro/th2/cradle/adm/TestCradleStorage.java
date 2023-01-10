@@ -353,6 +353,16 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
+    protected Iterator<PageInfo> doGetPages(BookId bookId, Interval interval) throws CradleStorageException {
+        return null;
+    }
+
+    @Override
+    protected CompletableFuture<Iterator<PageInfo>> doGetPagesAsync(BookId bookId, Interval interval) {
+        return null;
+    }
+
+    @Override
     public IntervalsWorker getIntervalsWorker() {
         return null;
     }
