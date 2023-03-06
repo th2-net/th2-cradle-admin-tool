@@ -4,7 +4,7 @@ apply plugin: 'application'
 
 ext {
     commonVersion = '5.2.0-dev'
-    cradleVersion   = '5.0.0-dev-version-5-4300900143-24582b4-SNAPSHOT'
+    cradleVersion   = '5.0.0-dev-version-5-4342735022-799a8a9-SNAPSHOT'
 }
 
 allprojects {
