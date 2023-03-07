@@ -11,8 +11,8 @@ repositories {
 dependencies {
 
     implementation project(':')
-    implementation 'org.eclipse.jetty:jetty-server:9.4.44.v20210927'
-    implementation 'org.eclipse.jetty:jetty-servlet:9.4.44.v20210927'
+    implementation 'org.eclipse.jetty:jetty-server:9.4.51.v20230217'
+    implementation 'org.eclipse.jetty:jetty-servlet:9.4.51.v20230217'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.1'
 
     testImplementation project(':').sourceSets.test.output

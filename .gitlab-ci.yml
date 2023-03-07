@@ -2,11 +2,11 @@ variables:
   APP_NAME: "th2-cradle-admin-tool"
   INSPECTION_ENABLED: 'false'
   MAJOR_VERSION: "1"
-  MINOR_VERSION: "5"
-  MAINTENANCE_VERSION: "1"
+  MINOR_VERSION: "6"
+  MAINTENANCE_VERSION: "0"
 
 
 include:
   - project: 'vivarium/th2/pipelines'
-    ref: master
+    ref: v3
     file: '/.gitlab-ci-java.yml'
