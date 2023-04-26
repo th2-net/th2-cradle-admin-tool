@@ -35,30 +35,25 @@ import org.slf4j.LoggerFactory;
 public class PageManager implements AutoCloseable, Runnable{
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-    private Map<String, Duration> autoPages;
     private CradleStorage storage;
     private ScheduledExecutorService executorService;
-    private Map<String, BookInfo> books;
-    private final Instant autoPageStartDateTime;
+    private Map<String, AutoPageInfo> books;
 
     public PageManager(
             CradleStorage storage,
-           Map<String, Duration> autoPages,
-           int pageRecheckInterval,
-           Instant autoPageStartDateTime
+           Map<String, AutoPageConfiguration> autoPages,
+           int pageRecheckInterval
     ) throws CradleStorageException {
-        this.autoPageStartDateTime = autoPageStartDateTime;
         if (autoPages == null || autoPages.isEmpty()) {
             logger.info("auto-page configuration is not provided, pages will not be generated automatically");
             return;
         }
 
         this.storage = storage;
-        this.autoPages = autoPages;
 
         books = new HashMap<>();
         for (String bookName : autoPages.keySet()) {
-            books.put(bookName, storage.refreshBook(bookName));
+            books.put(bookName, new AutoPageInfo(autoPages.get(bookName), storage.refreshBook(bookName)));
         }
 
         logger.info("Managing pages for books {} every {} sec", books.keySet().toArray(), pageRecheckInterval);
@@ -67,7 +62,9 @@ public class PageManager implements AutoCloseable, Runnable{
     }
 
 
-    private BookInfo checkBook(BookInfo book, Duration pageDuration) throws Exception {
+    private BookInfo checkBook(BookInfo book, AutoPageConfiguration autoPageConfiguration) throws Exception {
+        Instant pageStartBase = autoPageConfiguration.getPageStartTime();
+        Duration pageDuration = autoPageConfiguration.getPageDuration();
         Instant now = Instant.now();
         long nowMillis =  now.toEpochMilli();
 
@@ -79,15 +76,15 @@ public class PageManager implements AutoCloseable, Runnable{
 
         Instant lastPageStart = pageInfo.getStarted();
         if (lastPageStart.isBefore(now)) {
-            int comparison = lastPageStart.compareTo(autoPageStartDateTime);
+            int comparison = lastPageStart.compareTo(pageStartBase);
             if (comparison < 0) {
-                return storage.addPage(book.getId(), "auto-page-" + nowMillis, autoPageStartDateTime, null);
+                return storage.addPage(book.getId(), "auto-page-" + nowMillis, pageStartBase, null);
             } else if (comparison > 0) {
-                Duration diff = Duration.between(autoPageStartDateTime, lastPageStart);
-                Instant nextMark = autoPageStartDateTime.plus(pageDuration.multipliedBy(diff.dividedBy(pageDuration) + 1));
+                Duration diff = Duration.between(pageStartBase, lastPageStart);
+                Instant nextMark = pageStartBase.plus(pageDuration.multipliedBy(diff.dividedBy(pageDuration) + 1));
                 return storage.addPage(book.getId(), "auto-page-" + nowMillis, nextMark, null);
             } else {
-                return storage.addPage(book.getId(), "auto-page-" + nowMillis, autoPageStartDateTime.plus(pageDuration), null);
+                return storage.addPage(book.getId(), "auto-page-" + nowMillis, pageStartBase.plus(pageDuration), null);
             }
         }
 
@@ -107,13 +104,12 @@ public class PageManager implements AutoCloseable, Runnable{
 
     @Override
     public void run() {
-
-        for (String book: books.keySet()) {
+        books.forEach((bookName, autoPageInfo) -> {
             try {
-                books.put(book, checkBook(books.get(book), autoPages.get(book)));
+                autoPageInfo.setBookInfo(checkBook(autoPageInfo.getBookInfo(), autoPageInfo.getAutoPageConfiguration()));
             } catch (Exception e) {
-                logger.error("Exception processing book {}", book, e);
+                logger.error("Exception processing book {}", bookName, e);
             }
-        }
+        });
     }
 }

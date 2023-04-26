@@ -192,14 +192,19 @@ public class PagesHttpTest extends AbstractHttpTest {
         when(mockStorage.addPage(same(equal.getId()), any(), any(), any())).thenReturn(equal);
         when(mockStorage.addPage(same(after.getId()), any(), any(), any())).thenReturn(after);
 
-        Map<String, Duration> mapping = Map.of(
-                before.getFullName(), Duration.of(100, ChronoUnit.SECONDS),
-                equal.getFullName(), Duration.of(100, ChronoUnit.SECONDS),
-                after.getFullName(), Duration.of(100, ChronoUnit.SECONDS)
+        AutoPageConfiguration autoPageConfig = mock(AutoPageConfiguration.class);
+        when(autoPageConfig.getPageDuration()).thenReturn(Duration.of(100, ChronoUnit.SECONDS));
+        when(autoPageConfig.getPageStartTime()).thenReturn(now);
+
+
+        Map<String, AutoPageConfiguration> mapping = Map.of(
+                before.getFullName(), autoPageConfig,
+                equal.getFullName(), autoPageConfig,
+                after.getFullName(), autoPageConfig
         );
         PageManager manager = new PageManager(
             mockStorage, mapping,
-            10, now
+            10
         );
         verify(mockStorage, times(1)).refreshBook(before.getFullName());
         verify(mockStorage, times(1)).refreshBook(equal.getFullName());
