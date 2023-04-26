@@ -53,8 +53,7 @@ public class Application {
 				new PageManager(
 					storage,
 					config.getAutoPages(),
-					config.getPageRecheckInterval(),
-					config.getAutoPagesStartTime()
+					config.getPageRecheckInterval()
 				));
 		} catch (Exception e) {
 			logger.error("{}", e.getMessage(), e);

@@ -4,9 +4,10 @@ Service which allows user to manage books/pages via RestAPI requests.
 ## Configuration
 - **ip** - host where http cradle admin instance will be instanciated. Default value: `0.0.0.0`
 - **port** - port on which http server will listen user requests. Default value: `8080`
-- **auto-pages** - defines lengths for pages for multiple books. If empty no pages will be create automatically. Default value: `empty_map`. Values uses the Java Duration format. You can read more about it [here](https://docs.oracle.com/javase/8/docsT/api/java/time/Duration.html#parse-java.lang.CharSequence-).
 - **page-recheck-interval** - interval in seconds which `PageManager` service checks if new page is required to create or not based on duration values presented in `auto-pages`. Default value: 60 seconds
-- **auto-page-start-time** - baseline date and time for every new page created by `PageManager`.
+- **auto-pages** - defines rule for automatic pages creation for multiple books. If empty no pages will be created automatically. Default value: `empty_map`.
+  - **page-duration** - defines duration of the page for the book. Value uses the Java Duration format. You can read more about it [here](https://docs.oracle.com/javase/8/docsT/api/java/time/Duration.html#parse-java.lang.CharSequence-).
+  - **page-start-time** - baseline date and time for every new page created by `PageManager` for this book.
 
 ### Configuration example:
 ```yaml
@@ -22,9 +23,14 @@ spec:
     ip: 198.168.0.2
     port: 8080
     auto-pages:
-        book1: PT60S
-        book2: PT60S
-        book3: PT60S
-    page-recheck-interval: 60
-    auto-page-start-time: 2023-03-27T12:00:00
+      book1:
+        page-duration: PT60S
+        page-start-time: 2023-03-27T12:00:00
+      book2: 
+        page-duration: PT60H
+        page-start-time: 2023-03-27T12:00:00
+      book3: 
+        page-duration: PT60M
+        page-start-time: 2023-03-27T12:00:00
+    page-recheck-interval: 60 
 ```
