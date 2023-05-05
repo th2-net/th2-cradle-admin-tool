@@ -125,7 +125,7 @@ public class PagesHttpTest extends AbstractHttpTest {
         String new_page = "new_page";
         addBook(new BookToAdd(bookId, Instant.now().minus(20, ChronoUnit.SECONDS)));
         addPage(new BookId(bookId), new PageToAdd(old_page, Instant.now().plus(5, ChronoUnit.MILLIS), "should be deleted in this scenario"));
-        addPage(new BookId(bookId), new PageToAdd(new_page, Instant.now().plus(10, ChronoUnit.MILLIS), "should not be deleted in this scenario"));
+        addPage(new BookId(bookId), new PageToAdd(new_page, Instant.now().plus(3, ChronoUnit.MINUTES), "should not be deleted in this scenario"));
 
         BookId bookIdkey = new BookId(bookId);
         BookInfo bookIdObj = this.storage.getBook(bookIdkey);
