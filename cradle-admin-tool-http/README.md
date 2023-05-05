@@ -1,5 +1,12 @@
-# cradle-admin-tool-http (1.6.0)
+# cradle-admin-tool-http (1.6.1)
 Service which allows user to manage books/pages via RestAPI requests.
+- The first page in a book can be created only if start time is more than current time.
+- After the first page all new pages must have start time more than current time + `bookRefreshIntervalMillis` * 2
+- Pages can be updated and removed if their start time is more than current time + `bookRefreshIntervalMillis` * 2
+
+`bookRefreshIntervalMillis` is a configurable amount of time found in cradle storage settings
+
+
 
 ## Configuration
 - **ip** - host where http cradle admin instance will be instanciated. Default value: `0.0.0.0`
@@ -17,7 +24,7 @@ metadata:
   name: cradle-admin
 spec:
   image-name: your.image.repo:42/cradle-admin-tool-http
-  image-version: 1.6.0
+  image-version: 1.6.1
   type: th2-box
   custom-config:
     ip: 198.168.0.2
