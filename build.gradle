@@ -38,6 +38,10 @@ allprojects {
         }
     }
 
+    configurations {
+        implementation.exclude group: 'com.google.guava', module: 'guava'
+    }
+
     dependencies {
 
         implementation "com.exactpro.th2:common:$commonVersion"
