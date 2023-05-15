@@ -42,8 +42,8 @@ public class TestCradleStorage extends CradleStorage {
     private Map<BookId, List<PageInfo>> pages;
     private Instant nextRemovedTime;
 
-    public TestCradleStorage(ExecutorService composingService, int maxMessageBatchSize, int maxMessageBatchDuration, int maxTestEventBatchSize) throws CradleStorageException {
-        super(composingService, maxMessageBatchSize, maxTestEventBatchSize);
+    public TestCradleStorage(ExecutorService composingService, int maxMessageBatchSize, int maxMessageBatchDuration, int maxTestEventBatchSize, CoreStorageSettings settings) throws CradleStorageException {
+        super(composingService, 4,maxMessageBatchSize, maxTestEventBatchSize, settings);
         bookCache = new TestBookCache();
     }
 

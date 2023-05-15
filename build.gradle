@@ -8,7 +8,7 @@ apply plugin: 'application'
 
 ext {
     commonVersion = '5.2.0-dev'
-    cradleVersion   = '5.0.0-dev-version-5-4342735022-799a8a9-SNAPSHOT'
+    cradleVersion   = '5.0.1-dev-version-5-4797213397-fa1321e-SNAPSHOT'
 }
 
 allprojects {
@@ -36,6 +36,10 @@ allprojects {
             resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
             resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
         }
+    }
+
+    configurations {
+        implementation.exclude group: 'com.google.guava', module: 'guava'
     }
 
     dependencies {
