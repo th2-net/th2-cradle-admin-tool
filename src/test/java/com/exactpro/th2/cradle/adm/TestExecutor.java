@@ -19,10 +19,10 @@ package com.exactpro.th2.cradle.adm;
 import com.exactpro.cradle.BookId;
 import com.exactpro.cradle.BookToAdd;
 import com.exactpro.cradle.PageToAdd;
-import com.exactpro.th2.common.schema.cradle.CradleConfiguration;
 import com.exactpro.th2.common.schema.factory.CommonFactory;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.mockito.ArgumentMatchers;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -63,24 +63,23 @@ public class TestExecutor {
     }
 
     public void execTest(TestExec func) throws Exception {
-        try (MockedStatic<CommonFactory> commonFactory = Mockito.mockStatic(CommonFactory.class);
-             MockedStatic<FactoryUtils> factoryUtils = Mockito.mockStatic(FactoryUtils.class)) {
-            TestCradleManager testCradleManager = new TestCradleManager();
-            TestCradleStorage storage = testCradleManager.getStorage();
-            if (this.booksToAdd != null) {
-                for (BookToAdd bta : this.booksToAdd) {
-                    storage.addBook(bta);
-                }
-            }
-            if (this.pageIds != null) {
-                for (Pair<BookId, PageToAdd> pta : this.pageIds) {
-                    storage.addPages(pta.getKey(), Collections.singletonList(pta.getRight()));
-                }
-            }
-            commonFactory.when(CommonFactory::createFromArguments).then(invocation -> new TestCommonFactory(testCradleManager));
-            factoryUtils.when(() -> FactoryUtils.createCradleManager((CommonFactory) null, false)).then(invocation -> testCradleManager);
-            factoryUtils.when(() -> FactoryUtils.createCradleManager((CradleConfiguration) null, false)).then(invocation -> testCradleManager);
 
+        TestCradleManager testCradleManager = new TestCradleManager();
+        TestCradleStorage storage = testCradleManager.getStorage();
+        if (this.booksToAdd != null) {
+            for (BookToAdd bta : this.booksToAdd) {
+                storage.addBook(bta);
+            }
+        }
+        if (this.pageIds != null) {
+            for (Pair<BookId, PageToAdd> pta : this.pageIds) {
+                storage.addPages(pta.getKey(), Collections.singletonList(pta.getRight()));
+            }
+        }
+
+        TestCommonFactory testCommonFactory = new TestCommonFactory(testCradleManager);
+        try (MockedStatic<CommonFactory> commonFactory = Mockito.mockStatic(CommonFactory.class)) {
+            commonFactory.when(() -> CommonFactory.createFromArguments(ArgumentMatchers.any())).then(action -> testCommonFactory);
             func.apply(storage);
         }
     }

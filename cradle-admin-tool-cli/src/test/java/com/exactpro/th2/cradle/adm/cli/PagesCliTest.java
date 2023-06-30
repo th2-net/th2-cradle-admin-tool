@@ -21,13 +21,11 @@ import com.exactpro.cradle.BookInfo;
 import com.exactpro.cradle.PageId;
 import com.exactpro.cradle.PageInfo;
 import com.exactpro.th2.cradle.adm.TestExecutor;
-import jnr.ffi.annotations.In;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.logging.Logger;
 
 public class PagesCliTest extends AbstractCliTest {
 
@@ -43,7 +41,24 @@ public class PagesCliTest extends AbstractCliTest {
                             Assertions.assertEquals(1, cradleStorage.getBooksCount());
                             BookInfo dev_test_5 = cradleStorage.getBook(INITIAL_BOOK);
                             Assertions.assertEquals(1, dev_test_5.getPages().size());
-                            checkOutput(false, "Timestamp of new page start must be after current timestamp");
+                            checkOutput(false, "You can only create pages which start more than");
+                        }
+                );
+    }
+
+    @Test
+    public void addPageCurrentTimeTest() throws Exception {
+
+        new TestExecutor().addBookIds(INITIAL_BOOK, Instant.now())
+                .execTest(
+                        (cradleStorage) -> {
+                            cradleStorage.addPage(new BookId(INITIAL_BOOK), INITIAL_PAGE, Instant.now().plusSeconds(30), "test");
+                            Assertions.assertEquals(1, cradleStorage.getBook(INITIAL_BOOK).getPages().size());
+                            Application.main(new String[]{"-c=stub/", "--page", "-pageName", "page123", "-bookId", INITIAL_BOOK, "-pageStart", Instant.now().toString()});
+                            Assertions.assertEquals(1, cradleStorage.getBooksCount());
+                            BookInfo dev_test_5 = cradleStorage.getBook(INITIAL_BOOK);
+                            Assertions.assertEquals(1, dev_test_5.getPages().size());
+                            checkOutput(false, "You can only create pages which start more than");
                         }
                 );
     }
@@ -126,7 +141,7 @@ public class PagesCliTest extends AbstractCliTest {
                         (cradleStorage) -> {
                             cradleStorage.addPage(new BookId(INITIAL_BOOK), INITIAL_PAGE, Instant.now().plusSeconds(30), "test");
                             Assertions.assertEquals(1,cradleStorage.getBook(new BookId(INITIAL_BOOK)).getPages().size());
-                            Application.main(new String[]{"-c=stub/", "--page", "-pageName", INITIAL_PAGE, "-bookId", INITIAL_BOOK, "-pageStart", Instant.now().plus(1, ChronoUnit.MINUTES).toString()});
+                            Application.main(new String[]{"-c=stub/", "--page", "-pageName", INITIAL_PAGE, "-bookId", INITIAL_BOOK, "-pageStart", Instant.now().plus(3, ChronoUnit.MINUTES).toString()});
                             Assertions.assertEquals(1, cradleStorage.getBooksCount());
                             Assertions.assertEquals(1,cradleStorage.getBook(new BookId(INITIAL_BOOK)).getPages().size());
                             checkOutput(false, String.format("Page '%s' is already present in book '%s'", INITIAL_PAGE, INITIAL_BOOK));

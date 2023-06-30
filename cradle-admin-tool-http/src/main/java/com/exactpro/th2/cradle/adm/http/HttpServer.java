@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2021-2023 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,11 @@ public class HttpServer implements AutoCloseable {
 
 	private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
 	
-	private final CustomConfiguration configuration;
+	private final Configuration configuration;
 	private final CradleStorage storage;
 	protected Server server;
 
-	public HttpServer(CustomConfiguration configuration, CradleStorage storage) {
+	public HttpServer(Configuration configuration, CradleStorage storage) {
 		this.configuration = configuration;
 		this.storage = storage;
 	}

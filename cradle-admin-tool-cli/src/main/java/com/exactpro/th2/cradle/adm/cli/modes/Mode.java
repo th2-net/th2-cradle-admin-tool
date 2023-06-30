@@ -19,7 +19,6 @@ package com.exactpro.th2.cradle.adm.cli.modes;
 import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
 import com.exactpro.th2.cradle.adm.cli.params.*;
 import com.exactpro.th2.cradle.adm.modes.AbstractMode;
-import com.exactpro.th2.cradle.adm.modes.InitKeySpaceMode;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -27,8 +26,6 @@ import org.apache.commons.cli.Options;
 public class Mode {
 
 	public static void getModeOpts(Options options) {
-		options.addOption(Option.builder().longOpt(CmdParams.INIT_KEYSPACE_L).hasArg(false)
-				.required(false).desc("Initializing new keyspace").build());
 		options.addOption(Option.builder().longOpt(CmdParams.ALL_BOOKS_L).hasArg(false)
 				.required(false).desc("Getting info about books").build());
 		options.addOption(Option.builder().longOpt(CmdParams.ALL_BOOKS_SCHEMA_L).hasArg(false)
@@ -58,8 +55,6 @@ public class Mode {
 			return new NewBookCreationCliMode();
 		} else if (cmdLine.hasOption(CmdParams.MODE_PAGE_S)) {
 			return new NewPageCreationCliMode();
-		} else if (cmdLine.hasOption(CmdParams.INIT_KEYSPACE_L)) {
-			return new InitKeySpaceMode();
 		} else if (cmdLine.hasOption(CmdParams.ALL_BOOKS_L)) {
 			return new GetAllBooksCreationCliMode();
 		} else if (cmdLine.hasOption(CmdParams.ALL_BOOKS_SCHEMA_L)){

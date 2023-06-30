@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+ * Copyright 2023 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+package com.exactpro.th2.cradle.adm.http;
 
-package com.exactpro.th2.cradle.adm.modes;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.Duration;
+import java.time.Instant;
 
-import com.exactpro.th2.cradle.adm.params.NoParams;
-import com.exactpro.th2.cradle.adm.results.SimpleResult;
+@SuppressWarnings("FieldMayBeFinal")
+public class AutoPageConfiguration {
+    @JsonProperty("page-duration")
+    private Duration pageDuration;
 
-public class InitKeySpaceMode extends AbstractMode<NoParams, SimpleResult> {
-	@Override
-	public SimpleResult execute() {
-		return new SimpleResult();
-	}
+    @JsonProperty("page-start-time")
+    private Instant pageStartTime = Instant.MIN;
 
-	protected boolean requiredParams() {
-		return false;
-	}
+    public Duration getPageDuration() {
+        return pageDuration;
+    }
 
-	@Override
-	public boolean prepareStorage() {
-		return true;
-	}
+    public Instant getPageStartTime() {
+        return pageStartTime;
+    }
 }

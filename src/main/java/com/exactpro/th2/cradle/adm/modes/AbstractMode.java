@@ -43,10 +43,4 @@ public abstract class AbstractMode<T, K extends SimpleResult> {
 			throw new InitException("Params is not read");
 		}
 	}
-
-	public boolean prepareStorage() {
-		return false;
-	}
-	
-	
 }

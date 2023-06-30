@@ -19,8 +19,6 @@ package com.exactpro.th2.cradle.adm.cli;
 import com.exactpro.cradle.CradleManager;
 import com.exactpro.cradle.CradleStorage;
 import com.exactpro.th2.common.schema.factory.CommonFactory;
-import com.exactpro.th2.cradle.adm.FactoryUtils;
-import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
 import com.exactpro.th2.cradle.adm.cli.modes.CliMode;
 import com.exactpro.th2.cradle.adm.cli.modes.Mode;
 import com.exactpro.th2.cradle.adm.modes.AbstractMode;
@@ -73,7 +71,7 @@ public class Application {
 				return;
 			}
 
-			try (CradleManager mngr = FactoryUtils.createCradleManager(commonFactory, mode.prepareStorage())) {
+			try (CradleManager mngr = commonFactory.getCradleManager()) {
 
 				CradleStorage storage = mngr.getStorage();
 				mode.init(storage);

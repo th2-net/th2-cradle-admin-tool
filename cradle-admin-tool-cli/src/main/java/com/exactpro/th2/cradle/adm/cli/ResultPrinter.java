@@ -42,7 +42,6 @@ public class ResultPrinter {
 				}
 			}
 		}
-		
 	}
 	
 	private static void printBookToCmd(ResultBookInfo bookInfo) {

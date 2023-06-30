@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class AbstractCliTest {
@@ -52,11 +53,18 @@ public class AbstractCliTest {
         String out = outContent.toString();
         String[] separated = out.split("\n");
 
-        Assertions.assertTrue((exceptionText == null ? 3: 4) <= separated.length);
-        Assertions.assertEquals(status ? "Success": "Failed", separated[2]);
-        if (exceptionText != null)
-            Assertions.assertTrue(separated[3].contains(exceptionText), () ->
-                    String.format("Actual value (%s) should contain: %s", separated[3], exceptionText));
+        String statusInLogs =  "Empty Log Status";
+        statusInLogs = Arrays.asList(separated).contains("Success") ? "Success" : statusInLogs;
+        statusInLogs = Arrays.asList(separated).contains("Failed") ? "Failed" : statusInLogs;
+        Assertions.assertEquals(status ? "Success": "Failed", statusInLogs);
+
+        if (exceptionText != null) {
+            boolean isExceptionPresent = Arrays.stream(separated).anyMatch(el -> el.contains(exceptionText));
+
+            Assertions.assertTrue(isExceptionPresent, () ->
+                    String.format("Could not find following desired exception in logs: %s", exceptionText));
+        }
+
     }
 
 }

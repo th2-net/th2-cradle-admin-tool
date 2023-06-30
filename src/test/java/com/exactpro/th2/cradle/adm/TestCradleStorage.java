@@ -42,8 +42,8 @@ public class TestCradleStorage extends CradleStorage {
     private Map<BookId, List<PageInfo>> pages;
     private Instant nextRemovedTime;
 
-    public TestCradleStorage(ExecutorService composingService, int maxMessageBatchSize, int maxMessageBatchDuration, int maxTestEventBatchSize) throws CradleStorageException {
-        super(composingService, maxMessageBatchSize, maxMessageBatchDuration, maxTestEventBatchSize);
+    public TestCradleStorage(ExecutorService composingService, int maxMessageBatchSize, int maxMessageBatchDuration, int maxTestEventBatchSize, CoreStorageSettings settings) throws CradleStorageException {
+        super(composingService, 4,maxMessageBatchSize, maxTestEventBatchSize, settings);
         bookCache = new TestBookCache();
     }
 
@@ -112,7 +112,7 @@ public class TestCradleStorage extends CradleStorage {
 
     @Override
     protected Collection<PageInfo> doLoadPages(BookId bookId) throws CradleStorageException, IOException {
-        return bpc.getBook(bookId).getPages();
+        return getBookCache().getBook(bookId).getPages();
     }
 
     @Override
@@ -143,7 +143,7 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected void doStoreGroupedMessageBatch(MessageBatchToStore batch, PageInfo page, String groupName) throws IOException {
+    protected void doStoreGroupedMessageBatch(GroupedMessageBatchToStore batch, PageInfo page) throws IOException {
 
     }
 
@@ -153,7 +153,7 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected CompletableFuture<Void> doStoreGroupedMessageBatchAsync(MessageBatchToStore batch, PageInfo page, String groupName) throws IOException, CradleStorageException {
+    protected CompletableFuture<Void> doStoreGroupedMessageBatchAsync(GroupedMessageBatchToStore batch, PageInfo page) throws IOException, CradleStorageException {
         return null;
     }
 
@@ -223,7 +223,7 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected CradleResultSet<StoredMessageBatch> doGetGroupedMessageBatches(GroupedMessageFilter filter, BookInfo book) throws IOException, CradleStorageException {
+    protected CradleResultSet<StoredGroupedMessageBatch> doGetGroupedMessageBatches(GroupedMessageFilter filter, BookInfo book) throws IOException, CradleStorageException {
         return null;
     }
 
@@ -233,7 +233,7 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected CompletableFuture<CradleResultSet<StoredMessageBatch>> doGetGroupedMessageBatchesAsync(GroupedMessageFilter filter, BookInfo book) throws CradleStorageException {
+    protected CompletableFuture<CradleResultSet<StoredGroupedMessageBatch>> doGetGroupedMessageBatchesAsync(GroupedMessageFilter filter, BookInfo book) throws CradleStorageException {
         return null;
     }
 
@@ -249,6 +249,11 @@ public class TestCradleStorage extends CradleStorage {
 
     @Override
     protected Collection<String> doGetSessionAliases(BookId bookId) throws IOException, CradleStorageException {
+        return null;
+    }
+
+    @Override
+    protected Collection<String> doGetGroups(BookId bookId) throws IOException, CradleStorageException {
         return null;
     }
 
@@ -278,7 +283,12 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    public IntervalsWorker getIntervalsWorker(PageId pageId) {
+    protected CradleResultSet<String> doGetScopes(BookId bookId, Interval interval) throws CradleStorageException {
+        return null;
+    }
+
+    @Override
+    protected CompletableFuture<CradleResultSet<String>> doGetScopesAsync(BookId bookId, Interval interval) throws CradleStorageException {
         return null;
     }
 
@@ -349,6 +359,21 @@ public class TestCradleStorage extends CradleStorage {
 
     @Override
     protected PageInfo doUpdatePageName(BookId bookId, String pageName, String newPageName) throws CradleStorageException {
+        return null;
+    }
+
+    @Override
+    protected Iterator<PageInfo> doGetPages(BookId bookId, Interval interval) throws CradleStorageException {
+        return null;
+    }
+
+    @Override
+    protected CompletableFuture<Iterator<PageInfo>> doGetPagesAsync(BookId bookId, Interval interval) {
+        return null;
+    }
+
+    @Override
+    public IntervalsWorker getIntervalsWorker() {
         return null;
     }
 }

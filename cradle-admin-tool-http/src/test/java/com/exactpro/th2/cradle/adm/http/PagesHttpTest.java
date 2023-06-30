@@ -1,34 +1,34 @@
-/*******************************************************************************
- * Copyright 2022 Exactpro (Exactpro Systems Limited)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
+/*
+* Copyright 2022 Exactpro (Exactpro Systems Limited)
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package com.exactpro.th2.cradle.adm.http;
 
-import com.exactpro.cradle.BookId;
-import com.exactpro.cradle.BookInfo;
-import com.exactpro.cradle.BookToAdd;
-import com.exactpro.cradle.PageId;
-import com.exactpro.cradle.PageInfo;
-import com.exactpro.cradle.PageToAdd;
+import com.exactpro.cradle.*;
 import org.eclipse.jetty.http.HttpTester;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import java.util.regex.Pattern;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 public class PagesHttpTest extends AbstractHttpTest {
 
@@ -125,7 +125,7 @@ public class PagesHttpTest extends AbstractHttpTest {
         String new_page = "new_page";
         addBook(new BookToAdd(bookId, Instant.now().minus(20, ChronoUnit.SECONDS)));
         addPage(new BookId(bookId), new PageToAdd(old_page, Instant.now().plus(5, ChronoUnit.MILLIS), "should be deleted in this scenario"));
-        addPage(new BookId(bookId), new PageToAdd(new_page, Instant.now().plus(10, ChronoUnit.MILLIS), "should not be deleted in this scenario"));
+        addPage(new BookId(bookId), new PageToAdd(new_page, Instant.now().plus(3, ChronoUnit.MINUTES), "should not be deleted in this scenario"));
 
         BookId bookIdkey = new BookId(bookId);
         BookInfo bookIdObj = this.storage.getBook(bookIdkey);
@@ -176,4 +176,59 @@ public class PagesHttpTest extends AbstractHttpTest {
 
     }
 
+    @Test
+    public void pageManagerDelayedLaunchTest() throws Exception {
+        Instant now = Instant.now().minusSeconds(10);
+
+        BookInfo before = createBookInfo(now.minusSeconds(5), "before");
+        BookInfo equal = createBookInfo(now, "equal");
+        BookInfo after = createBookInfo(now.plusSeconds(5), "after");
+
+        CradleStorage mockStorage = mock(CradleStorage.class);
+        when(mockStorage.refreshBook(same(before.getFullName()))).thenReturn(before);
+        when(mockStorage.refreshBook(same(equal.getFullName()))).thenReturn(equal);
+        when(mockStorage.refreshBook(same(after.getFullName()))).thenReturn(after);
+        when(mockStorage.addPage(same(before.getId()), any(), any(), any())).thenReturn(before);
+        when(mockStorage.addPage(same(equal.getId()), any(), any(), any())).thenReturn(equal);
+        when(mockStorage.addPage(same(after.getId()), any(), any(), any())).thenReturn(after);
+
+        AutoPageConfiguration autoPageConfig = mock(AutoPageConfiguration.class);
+        when(autoPageConfig.getPageDuration()).thenReturn(Duration.of(100, ChronoUnit.SECONDS));
+        when(autoPageConfig.getPageStartTime()).thenReturn(now);
+
+
+        Map<String, AutoPageConfiguration> mapping = Map.of(
+                before.getFullName(), autoPageConfig,
+                equal.getFullName(), autoPageConfig,
+                after.getFullName(), autoPageConfig
+        );
+        PageManager manager = new PageManager(
+            mockStorage, mapping,
+            10
+        );
+        verify(mockStorage, times(1)).refreshBook(before.getFullName());
+        verify(mockStorage, times(1)).refreshBook(equal.getFullName());
+        verify(mockStorage, times(1)).refreshBook(after.getFullName());
+
+        verify(mockStorage, timeout(1000).times(1))
+                .addPage(same(before.getId()), any(), eq(now), any());
+        verify(mockStorage, times(1))
+                .addPage(same(equal.getId()), any(), eq(now.plusSeconds(100)), any());
+        verify(mockStorage, times(1))
+                .addPage(same(after.getId()), any(), eq(now.plusSeconds(100)), any());
+
+        verifyNoMoreInteractions(mockStorage);
+        manager.close();
+    }
+
+    private BookInfo createBookInfo(Instant lastStarted, String fullName) {
+        PageInfo pageInfoMock = mock(PageInfo.class);
+        when(pageInfoMock.getStarted()).thenReturn(lastStarted);
+
+        BookInfo bookInfoMock = mock(BookInfo.class);
+        when(bookInfoMock.getId()).thenReturn(new BookId(fullName));
+        when(bookInfoMock.getLastPage()).thenReturn(pageInfoMock);
+        when(bookInfoMock.getFullName()).thenReturn(fullName);
+        return bookInfoMock;
+    }
 }
