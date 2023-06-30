@@ -283,6 +283,16 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
+    protected CradleResultSet<String> doGetScopes(BookId bookId, Interval interval) throws CradleStorageException {
+        return null;
+    }
+
+    @Override
+    protected CompletableFuture<CradleResultSet<String>> doGetScopesAsync(BookId bookId, Interval interval) throws CradleStorageException {
+        return null;
+    }
+
+    @Override
     protected CompletableFuture<CradleResultSet<CounterSample>> doGetMessageCountersAsync(BookId bookId, String sessionAlias, Direction direction, FrameType frameType, Interval interval) throws CradleStorageException {
         return null;
     }
