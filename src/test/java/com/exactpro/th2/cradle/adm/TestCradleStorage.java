@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright 2022 Exactpro (Exactpro Systems Limited)
+/*
+ * Copyright 2022-2023 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,16 +12,33 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ */
 
 package com.exactpro.th2.cradle.adm;
 
-import com.exactpro.cradle.*;
+import com.exactpro.cradle.BookCache;
+import com.exactpro.cradle.BookId;
+import com.exactpro.cradle.BookInfo;
+import com.exactpro.cradle.BookListEntry;
+import com.exactpro.cradle.BookToAdd;
+import com.exactpro.cradle.CradleStorage;
+import com.exactpro.cradle.Direction;
+import com.exactpro.cradle.EntityType;
+import com.exactpro.cradle.FrameType;
+import com.exactpro.cradle.PageId;
+import com.exactpro.cradle.PageInfo;
 import com.exactpro.cradle.counters.Counter;
 import com.exactpro.cradle.counters.CounterSample;
 import com.exactpro.cradle.counters.Interval;
 import com.exactpro.cradle.intervals.IntervalsWorker;
-import com.exactpro.cradle.messages.*;
+import com.exactpro.cradle.messages.GroupedMessageBatchToStore;
+import com.exactpro.cradle.messages.GroupedMessageFilter;
+import com.exactpro.cradle.messages.MessageBatchToStore;
+import com.exactpro.cradle.messages.MessageFilter;
+import com.exactpro.cradle.messages.StoredGroupedMessageBatch;
+import com.exactpro.cradle.messages.StoredMessage;
+import com.exactpro.cradle.messages.StoredMessageBatch;
+import com.exactpro.cradle.messages.StoredMessageId;
 import com.exactpro.cradle.resultset.CradleResultSet;
 import com.exactpro.cradle.testevents.StoredTestEvent;
 import com.exactpro.cradle.testevents.StoredTestEventId;
@@ -29,23 +46,22 @@ import com.exactpro.cradle.testevents.TestEventFilter;
 import com.exactpro.cradle.testevents.TestEventToStore;
 import com.exactpro.cradle.utils.CradleStorageException;
 
-import java.io.IOException;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 public class TestCradleStorage extends CradleStorage {
-    private BookCache bookCache;
-    private List<BookListEntry> bookList;
-    private Map<BookId, List<PageInfo>> pages;
+    private final BookCache bookCache;
+    private final List<BookListEntry> bookList;
+    private final Map<BookId, List<PageInfo>> pages;
     private Instant nextRemovedTime;
-
-    public TestCradleStorage(ExecutorService composingService, int maxMessageBatchSize, int maxMessageBatchDuration, int maxTestEventBatchSize, CoreStorageSettings settings) throws CradleStorageException {
-        super(composingService, 4,maxMessageBatchSize, maxTestEventBatchSize, settings);
-        bookCache = new TestBookCache();
-    }
 
     public TestCradleStorage() throws CradleStorageException {
         super();
@@ -75,7 +91,7 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected void doInit(boolean prepareStorage) throws CradleStorageException {
+    protected void doInit(boolean prepareStorage) {
 
     }
 
@@ -85,7 +101,7 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected void doDispose() throws CradleStorageException {
+    protected void doDispose() {
 
     }
 
@@ -95,12 +111,12 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected void doAddBook(BookToAdd newBook, BookId bookId) throws IOException {
+    protected void doAddBook(BookToAdd newBook, BookId bookId) {
         bookList.add(new BookListEntry(bookId.getName(), null));
     }
 
     @Override
-    protected void doAddPages(BookId bookId, List<PageInfo> pages, PageInfo lastPage) throws CradleStorageException, IOException {
+    protected void doAddPages(BookId bookId, List<PageInfo> pages, PageInfo lastPage) {
         this.pages.putIfAbsent(bookId, new ArrayList<>());
 
         if (lastPage != null) {
@@ -111,12 +127,12 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected Collection<PageInfo> doLoadPages(BookId bookId) throws CradleStorageException, IOException {
+    protected Collection<PageInfo> doLoadPages(BookId bookId) throws CradleStorageException {
         return getBookCache().getBook(bookId).getPages();
     }
 
     @Override
-    protected Collection<PageInfo> doGetAllPages(BookId bookId) throws CradleStorageException {
+    protected Collection<PageInfo> doGetAllPages(BookId bookId) {
         List<PageInfo> book = new ArrayList<>();
         if(pages.containsKey(bookId)){
             book = pages.get(bookId);
@@ -125,7 +141,7 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected void doRemovePage(PageInfo page) throws CradleStorageException, IOException {
+    protected void doRemovePage(PageInfo page) {
         this.pages.get(page.getId().getBookId()).remove(page);
         this.pages.get(page.getId().getBookId()).add(new PageInfo(
                 page.getId(),
@@ -138,37 +154,37 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected void doStoreMessageBatch(MessageBatchToStore batch, PageInfo page) throws IOException, CradleStorageException {
+    protected void doStoreMessageBatch(MessageBatchToStore batch, PageInfo page) {
 
     }
 
     @Override
-    protected void doStoreGroupedMessageBatch(GroupedMessageBatchToStore batch, PageInfo page) throws IOException {
+    protected void doStoreGroupedMessageBatch(GroupedMessageBatchToStore batch, PageInfo page) {
 
     }
 
     @Override
-    protected CompletableFuture<Void> doStoreMessageBatchAsync(MessageBatchToStore batch, PageInfo page) throws IOException, CradleStorageException {
+    protected CompletableFuture<Void> doStoreMessageBatchAsync(MessageBatchToStore batch, PageInfo page) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<Void> doStoreGroupedMessageBatchAsync(GroupedMessageBatchToStore batch, PageInfo page) throws IOException, CradleStorageException {
+    protected CompletableFuture<Void> doStoreGroupedMessageBatchAsync(GroupedMessageBatchToStore batch, PageInfo page) {
         return null;
     }
 
     @Override
-    protected void doStoreTestEvent(TestEventToStore event, PageInfo page) throws IOException, CradleStorageException {
+    protected void doStoreTestEvent(TestEventToStore event, PageInfo page) {
 
     }
 
     @Override
-    protected CompletableFuture<Void> doStoreTestEventAsync(TestEventToStore event, PageInfo page) throws IOException, CradleStorageException {
+    protected CompletableFuture<Void> doStoreTestEventAsync(TestEventToStore event, PageInfo page) {
         return null;
     }
 
     @Override
-    protected void doUpdateParentTestEvents(TestEventToStore event) throws IOException {
+    protected void doUpdateParentTestEvents(TestEventToStore event) {
 
     }
 
@@ -178,7 +194,7 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected void doUpdateEventStatus(StoredTestEvent event, boolean success) throws IOException {
+    protected void doUpdateEventStatus(StoredTestEvent event, boolean success) {
 
     }
 
@@ -188,182 +204,182 @@ public class TestCradleStorage extends CradleStorage {
     }
 
     @Override
-    protected StoredMessage doGetMessage(StoredMessageId id, PageId pageId) throws IOException, CradleStorageException {
+    protected StoredMessage doGetMessage(StoredMessageId id, PageId pageId) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<StoredMessage> doGetMessageAsync(StoredMessageId id, PageId pageId) throws CradleStorageException {
+    protected CompletableFuture<StoredMessage> doGetMessageAsync(StoredMessageId id, PageId pageId) {
         return null;
     }
 
     @Override
-    protected StoredMessageBatch doGetMessageBatch(StoredMessageId id, PageId pageId) throws IOException, CradleStorageException {
+    protected StoredMessageBatch doGetMessageBatch(StoredMessageId id, PageId pageId) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<StoredMessageBatch> doGetMessageBatchAsync(StoredMessageId id, PageId pageId) throws CradleStorageException {
+    protected CompletableFuture<StoredMessageBatch> doGetMessageBatchAsync(StoredMessageId id, PageId pageId) {
         return null;
     }
 
     @Override
-    protected CradleResultSet<StoredMessage> doGetMessages(MessageFilter filter, BookInfo book) throws IOException, CradleStorageException {
+    protected CradleResultSet<StoredMessage> doGetMessages(MessageFilter filter, BookInfo book) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<CradleResultSet<StoredMessage>> doGetMessagesAsync(MessageFilter filter, BookInfo book) throws CradleStorageException {
+    protected CompletableFuture<CradleResultSet<StoredMessage>> doGetMessagesAsync(MessageFilter filter, BookInfo book) {
         return null;
     }
 
     @Override
-    protected CradleResultSet<StoredMessageBatch> doGetMessageBatches(MessageFilter filter, BookInfo book) throws IOException, CradleStorageException {
+    protected CradleResultSet<StoredMessageBatch> doGetMessageBatches(MessageFilter filter, BookInfo book) {
         return null;
     }
 
     @Override
-    protected CradleResultSet<StoredGroupedMessageBatch> doGetGroupedMessageBatches(GroupedMessageFilter filter, BookInfo book) throws IOException, CradleStorageException {
+    protected CradleResultSet<StoredGroupedMessageBatch> doGetGroupedMessageBatches(GroupedMessageFilter filter, BookInfo book) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<CradleResultSet<StoredMessageBatch>> doGetMessageBatchesAsync(MessageFilter filter, BookInfo book) throws CradleStorageException {
+    protected CompletableFuture<CradleResultSet<StoredMessageBatch>> doGetMessageBatchesAsync(MessageFilter filter, BookInfo book) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<CradleResultSet<StoredGroupedMessageBatch>> doGetGroupedMessageBatchesAsync(GroupedMessageFilter filter, BookInfo book) throws CradleStorageException {
+    protected CompletableFuture<CradleResultSet<StoredGroupedMessageBatch>> doGetGroupedMessageBatchesAsync(GroupedMessageFilter filter, BookInfo book) {
         return null;
     }
 
     @Override
-    protected long doGetLastSequence(String sessionAlias, Direction direction, BookId bookId) throws IOException, CradleStorageException {
+    protected long doGetLastSequence(String sessionAlias, Direction direction, BookId bookId) {
         return 0;
     }
 
     @Override
-    protected long doGetFirstSequence(String sessionAlias, Direction direction, BookId bookId) throws IOException, CradleStorageException {
+    protected long doGetFirstSequence(String sessionAlias, Direction direction, BookId bookId) {
         return 0;
     }
 
     @Override
-    protected Collection<String> doGetSessionAliases(BookId bookId) throws IOException, CradleStorageException {
+    protected Collection<String> doGetSessionAliases(BookId bookId) {
         return null;
     }
 
     @Override
-    protected Collection<String> doGetGroups(BookId bookId) throws IOException, CradleStorageException {
+    protected Collection<String> doGetGroups(BookId bookId) {
         return null;
     }
 
     @Override
-    protected StoredTestEvent doGetTestEvent(StoredTestEventId id, PageId pageId) throws IOException, CradleStorageException {
+    protected StoredTestEvent doGetTestEvent(StoredTestEventId id, PageId pageId) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<StoredTestEvent> doGetTestEventAsync(StoredTestEventId ids, PageId pageId) throws CradleStorageException {
+    protected CompletableFuture<StoredTestEvent> doGetTestEventAsync(StoredTestEventId ids, PageId pageId) {
         return null;
     }
 
     @Override
-    protected CradleResultSet<StoredTestEvent> doGetTestEvents(TestEventFilter filter, BookInfo book) throws IOException, CradleStorageException {
+    protected CradleResultSet<StoredTestEvent> doGetTestEvents(TestEventFilter filter, BookInfo book) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<CradleResultSet<StoredTestEvent>> doGetTestEventsAsync(TestEventFilter filter, BookInfo book) throws CradleStorageException {
+    protected CompletableFuture<CradleResultSet<StoredTestEvent>> doGetTestEventsAsync(TestEventFilter filter, BookInfo book) {
         return null;
     }
 
     @Override
-    protected Collection<String> doGetScopes(BookId bookId) throws IOException, CradleStorageException {
+    protected Collection<String> doGetScopes(BookId bookId) {
         return null;
     }
 
     @Override
-    protected CradleResultSet<String> doGetScopes(BookId bookId, Interval interval) throws CradleStorageException {
+    protected CradleResultSet<String> doGetScopes(BookId bookId, Interval interval) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<CradleResultSet<String>> doGetScopesAsync(BookId bookId, Interval interval) throws CradleStorageException {
+    protected CompletableFuture<CradleResultSet<String>> doGetScopesAsync(BookId bookId, Interval interval) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<CradleResultSet<CounterSample>> doGetMessageCountersAsync(BookId bookId, String sessionAlias, Direction direction, FrameType frameType, Interval interval) throws CradleStorageException {
+    protected CompletableFuture<CradleResultSet<CounterSample>> doGetMessageCountersAsync(BookId bookId, String sessionAlias, Direction direction, FrameType frameType, Interval interval) {
         return null;
     }
 
     @Override
-    protected CradleResultSet<CounterSample> doGetMessageCounters(BookId bookId, String sessionAlias, Direction direction, FrameType frameType, Interval interval) throws CradleStorageException, IOException {
+    protected CradleResultSet<CounterSample> doGetMessageCounters(BookId bookId, String sessionAlias, Direction direction, FrameType frameType, Interval interval) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<CradleResultSet<CounterSample>> doGetCountersAsync(BookId bookId, EntityType entityType, FrameType frameType, Interval interval) throws CradleStorageException {
+    protected CompletableFuture<CradleResultSet<CounterSample>> doGetCountersAsync(BookId bookId, EntityType entityType, FrameType frameType, Interval interval) {
         return null;
     }
 
     @Override
-    protected CradleResultSet<CounterSample> doGetCounters(BookId bookId, EntityType entityType, FrameType frameType, Interval interval) throws CradleStorageException, IOException {
+    protected CradleResultSet<CounterSample> doGetCounters(BookId bookId, EntityType entityType, FrameType frameType, Interval interval) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<Counter> doGetMessageCountAsync(BookId bookId, String sessionAlias, Direction direction, Interval interval) throws CradleStorageException {
+    protected CompletableFuture<Counter> doGetMessageCountAsync(BookId bookId, String sessionAlias, Direction direction, Interval interval) {
         return null;
     }
 
     @Override
-    protected Counter doGetMessageCount(BookId bookId, String sessionAlias, Direction direction, Interval interval) throws CradleStorageException, IOException {
+    protected Counter doGetMessageCount(BookId bookId, String sessionAlias, Direction direction, Interval interval) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<Counter> doGetCountAsync(BookId bookId, EntityType entityType, Interval interval) throws CradleStorageException {
+    protected CompletableFuture<Counter> doGetCountAsync(BookId bookId, EntityType entityType, Interval interval) {
         return null;
     }
 
     @Override
-    protected Counter doGetCount(BookId bookId, EntityType entityType, Interval interval) throws CradleStorageException, IOException {
+    protected Counter doGetCount(BookId bookId, EntityType entityType, Interval interval) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<CradleResultSet<String>> doGetSessionAliasesAsync(BookId bookId, Interval interval) throws CradleStorageException {
+    protected CompletableFuture<CradleResultSet<String>> doGetSessionAliasesAsync(BookId bookId, Interval interval) {
         return null;
     }
 
     @Override
-    protected CradleResultSet<String> doGetSessionAliases(BookId bookId, Interval interval) throws CradleStorageException {
+    protected CradleResultSet<String> doGetSessionAliases(BookId bookId, Interval interval) {
         return null;
     }
 
     @Override
-    protected CompletableFuture<CradleResultSet<String>> doGetSessionGroupsAsync(BookId bookId, Interval interval) throws CradleStorageException {
+    protected CompletableFuture<CradleResultSet<String>> doGetSessionGroupsAsync(BookId bookId, Interval interval) {
         return null;
     }
 
     @Override
-    protected CradleResultSet<String> doGetSessionGroups(BookId bookId, Interval interval) throws CradleStorageException {
+    protected CradleResultSet<String> doGetSessionGroups(BookId bookId, Interval interval) {
         return null;
     }
 
     @Override
-    protected PageInfo doUpdatePageComment(BookId bookId, String pageName, String comment) throws CradleStorageException {
+    protected PageInfo doUpdatePageComment(BookId bookId, String pageName, String comment) {
         return null;
     }
 
     @Override
-    protected PageInfo doUpdatePageName(BookId bookId, String pageName, String newPageName) throws CradleStorageException {
+    protected PageInfo doUpdatePageName(BookId bookId, String pageName, String newPageName) {
         return null;
     }
 
     @Override
-    protected Iterator<PageInfo> doGetPages(BookId bookId, Interval interval) throws CradleStorageException {
+    protected Iterator<PageInfo> doGetPages(BookId bookId, Interval interval) {
         return null;
     }
 
