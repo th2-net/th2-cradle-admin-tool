@@ -16,6 +16,7 @@
 
 package com.exactpro.th2.cradle.adm.http;
 
+import com.exactpro.cradle.CoreStorageSettings;
 import com.exactpro.cradle.CradleManager;
 import com.exactpro.cradle.CradleStorage;
 import com.exactpro.th2.common.schema.factory.CommonFactory;
@@ -39,10 +40,11 @@ public class Application {
 			resources.add(factory);
 
 			Configuration config = factory.getCustomConfiguration(Configuration.class);
-
+			// FIXME: user will be able to define bookRefreshIntervalMillis after refactoring related to th2 transport protocol
+			// use another place for getting configuration
+			CoreStorageSettings settings = new CoreStorageSettings();
 			CradleManager cradleManager = factory.getCradleManager();
 			resources.add(cradleManager);
-
 			CradleStorage storage = cradleManager.getStorage();
 
 			HttpServer httpServer = new HttpServer(config, storage);
@@ -53,7 +55,8 @@ public class Application {
 				new PageManager(
 					storage,
 					config.getAutoPages(),
-					config.getPageRecheckInterval()
+					config.getPageRecheckInterval(),
+					settings.calculatePageActionRejectionThreshold() * 2
 				));
 		} catch (Exception e) {
 			logger.error("{}", e.getMessage(), e);

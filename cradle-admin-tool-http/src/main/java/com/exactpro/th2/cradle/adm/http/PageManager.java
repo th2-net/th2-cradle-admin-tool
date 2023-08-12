@@ -22,6 +22,7 @@ import com.exactpro.cradle.PageInfo;
 import com.exactpro.cradle.utils.CradleStorageException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,21 +36,28 @@ import org.slf4j.LoggerFactory;
 public class PageManager implements AutoCloseable, Runnable{
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-    private CradleStorage storage;
-    private ScheduledExecutorService executorService;
-    private Map<String, AutoPageInfo> books;
+    private final CradleStorage storage;
+    private final long pageActionRejectionThreshold;
+    private final ScheduledExecutorService executorService;
+    private final Map<String, AutoPageInfo> books;
 
     public PageManager(
             CradleStorage storage,
-           Map<String, AutoPageConfiguration> autoPages,
-           int pageRecheckInterval
+            Map<String, AutoPageConfiguration> autoPages,
+            int pageRecheckInterval,
+            long pageActionRejectionThreshold
     ) throws CradleStorageException {
         if (autoPages == null || autoPages.isEmpty()) {
             logger.info("auto-page configuration is not provided, pages will not be generated automatically");
+            this.storage = null;
+            this.pageActionRejectionThreshold = 0;
+            this.executorService = null;
+            this.books = Collections.emptyMap();
             return;
         }
 
         this.storage = storage;
+        this.pageActionRejectionThreshold = pageActionRejectionThreshold;
 
         books = new HashMap<>();
         for (String bookName : autoPages.keySet()) {
@@ -65,22 +73,22 @@ public class PageManager implements AutoCloseable, Runnable{
     private BookInfo checkBook(BookInfo book, AutoPageConfiguration autoPageConfiguration) throws Exception {
         Instant pageStartBase = autoPageConfiguration.getPageStartTime();
         Duration pageDuration = autoPageConfiguration.getPageDuration();
-        Instant now = Instant.now();
-        long nowMillis =  now.toEpochMilli();
+        Instant nowPlusThreshold = Instant.now().plusMillis(pageActionRejectionThreshold);
+        long nowMillis =  nowPlusThreshold.toEpochMilli();
 
         PageInfo pageInfo = book.getLastPage();
 
         if (pageInfo == null) {
-            return storage.addPage(book.getId(), "auto-page-" + nowMillis, now, null);
+            return storage.addPage(book.getId(), "auto-page-" + nowMillis, nowPlusThreshold, null);
         }
 
         Instant lastPageStart = pageInfo.getStarted();
-        if (lastPageStart.isBefore(now)) {
-            int comparison = lastPageStart.compareTo(pageStartBase);
+        if (lastPageStart.isBefore(nowPlusThreshold)) {
+            int comparison = nowPlusThreshold.compareTo(pageStartBase);
             if (comparison < 0) {
                 return storage.addPage(book.getId(), "auto-page-" + nowMillis, pageStartBase, null);
             } else if (comparison > 0) {
-                Duration diff = Duration.between(pageStartBase, lastPageStart);
+                Duration diff = Duration.between(pageStartBase, nowPlusThreshold);
                 Instant nextMark = pageStartBase.plus(pageDuration.multipliedBy(diff.dividedBy(pageDuration) + 1));
                 return storage.addPage(book.getId(), "auto-page-" + nowMillis, nextMark, null);
             } else {

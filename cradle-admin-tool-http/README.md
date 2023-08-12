@@ -1,4 +1,4 @@
-# cradle-admin-tool-http (1.6.1)
+# cradle-admin-tool-http (1.7.0)
 Service which allows user to manage books/pages via RestAPI requests.
 - The first page in a book can be created only if start time is more than current time.
 - After the first page all new pages must have start time more than current time + `bookRefreshIntervalMillis` * 2
@@ -41,3 +41,18 @@ spec:
         page-start-time: 2023-03-27T12:00:00
     page-recheck-interval: 60 
 ```
+
+## Release notes
+
+### 1.7.0
+
++ Feature:
+  + Considers default value of page action reject threshold (2 min). This calculated parameter prevent page adding if its start time is before now + threshold value. 
+    Cradle-admin uses now + threshold value * 2 (4 min) time to create auto-pages
+    
++ Bug fix:
+  + Cradle-admin creates auto-page in future even if the start time of a last page is much earlier than now + threshold
+
++ Updated:
+  + Cradle API to `5.0.3-dev`  
+  + common to `5.2.1-dev`  
