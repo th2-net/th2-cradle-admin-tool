@@ -49,7 +49,9 @@ allprojects {
 
     dependencies {
 
-        implementation "com.exactpro.th2:common:$commonVersion"
+        implementation("com.exactpro.th2:common:$commonVersion") {
+            exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+        }
         implementation(platform("com.exactpro.th2:bom:4.4.0"))
         implementation "com.exactpro.th2:cradle-core:$cradleVersion"
         implementation "com.exactpro.th2:cradle-cassandra:$cradleVersion"
