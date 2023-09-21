@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 public class PageManager implements AutoCloseable, Runnable{
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
+    private static final String AUTO_PAGE_COMMENT = "auto-page";
 
     private final CradleStorage storage;
     private final long pageActionRejectionThreshold;
@@ -79,20 +80,20 @@ public class PageManager implements AutoCloseable, Runnable{
         PageInfo pageInfo = book.getLastPage();
 
         if (pageInfo == null) {
-            return storage.addPage(book.getId(), "auto-page-" + nowMillis, nowPlusThreshold, null);
+            return storage.addPage(book.getId(), "auto-page-" + nowMillis, nowPlusThreshold, AUTO_PAGE_COMMENT);
         }
 
         Instant lastPageStart = pageInfo.getStarted();
         if (lastPageStart.isBefore(nowPlusThreshold)) {
             int comparison = nowPlusThreshold.compareTo(pageStartBase);
             if (comparison < 0) {
-                return storage.addPage(book.getId(), "auto-page-" + nowMillis, pageStartBase, null);
+                return storage.addPage(book.getId(), "auto-page-" + nowMillis, pageStartBase, AUTO_PAGE_COMMENT);
             } else if (comparison > 0) {
                 Duration diff = Duration.between(pageStartBase, nowPlusThreshold);
                 Instant nextMark = pageStartBase.plus(pageDuration.multipliedBy(diff.dividedBy(pageDuration) + 1));
-                return storage.addPage(book.getId(), "auto-page-" + nowMillis, nextMark, null);
+                return storage.addPage(book.getId(), "auto-page-" + nowMillis, nextMark, AUTO_PAGE_COMMENT);
             } else {
-                return storage.addPage(book.getId(), "auto-page-" + nowMillis, pageStartBase.plus(pageDuration), null);
+                return storage.addPage(book.getId(), "auto-page-" + nowMillis, pageStartBase.plus(pageDuration), AUTO_PAGE_COMMENT);
             }
         }
 
