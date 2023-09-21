@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PageManager implements AutoCloseable, Runnable{
-    private static final Logger logger = LoggerFactory.getLogger(Application.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PageManager.class);
     private static final String AUTO_PAGE_COMMENT = "auto-page";
 
     private final CradleStorage storage;
@@ -49,7 +49,7 @@ public class PageManager implements AutoCloseable, Runnable{
             long pageActionRejectionThreshold
     ) throws CradleStorageException {
         if (autoPages == null || autoPages.isEmpty()) {
-            logger.info("auto-page configuration is not provided, pages will not be generated automatically");
+            LOGGER.info("auto-page configuration is not provided, pages will not be generated automatically");
             this.storage = null;
             this.pageActionRejectionThreshold = 0;
             this.executorService = null;
@@ -65,7 +65,7 @@ public class PageManager implements AutoCloseable, Runnable{
             books.put(bookName, new AutoPageInfo(autoPages.get(bookName), storage.refreshBook(bookName)));
         }
 
-        logger.info("Managing pages for books {} every {} sec", books.keySet().toArray(), pageRecheckInterval);
+        LOGGER.info("Managing pages for books {} every {} sec", books.keySet().toArray(), pageRecheckInterval);
         executorService = Executors.newScheduledThreadPool(1);
         executorService.scheduleAtFixedRate(this, 0, pageRecheckInterval, TimeUnit.SECONDS);
     }
@@ -106,7 +106,7 @@ public class PageManager implements AutoCloseable, Runnable{
             executorService.shutdown();
             if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
                 List<Runnable> tasks = executorService.shutdownNow();
-                logger.warn("Executor can't stop during 5 seconds, " + tasks + " tasks that never commenced execution");
+                LOGGER.warn("Executor can't stop during 5 seconds, " + tasks + " tasks that never commenced execution");
             }
         }
     }
@@ -117,7 +117,7 @@ public class PageManager implements AutoCloseable, Runnable{
             try {
                 autoPageInfo.setBookInfo(checkBook(autoPageInfo.getBookInfo(), autoPageInfo.getAutoPageConfiguration()));
             } catch (Exception e) {
-                logger.error("Exception processing book {}", bookName, e);
+                LOGGER.error("Exception processing book {}", bookName, e);
             }
         });
     }

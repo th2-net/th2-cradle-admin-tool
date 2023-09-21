@@ -51,6 +51,8 @@ public class Application {
 			httpServer.run();
 			resources.add(httpServer);
 
+			AutoBookUtils.createBooks(storage, config.getAutoBooks());
+
 			resources.add(
 				new PageManager(
 					storage,
