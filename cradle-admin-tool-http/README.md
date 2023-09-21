@@ -1,4 +1,4 @@
-# cradle-admin-tool-http (1.7.0)
+# cradle-admin-tool-http (1.7.2)
 Service which allows user to manage books/pages via RestAPI requests.
 - The first page in a book can be created only if start time is more than current time.
 - After the first page all new pages must have start time more than current time + `bookRefreshIntervalMillis` * 2
@@ -43,6 +43,21 @@ spec:
 ```
 
 ## Release notes
+
+### 1.7.2
+
++ Bug fix:
+  + Migrated to the cradle version where auto-page feature doesn't produce cassandra tombstone.
+  
++ Updated:
+  + Cradle API to `5.1.4-dev`
+  + bom to `4.5.0`
+  + common to `5.4.2-dev`
+
+### 1.7.1
+
++ Vulnerability fix:
+  + Excluded the `com.squareup.okhttp3:okhttp` dependency 
 
 ### 1.7.0
 

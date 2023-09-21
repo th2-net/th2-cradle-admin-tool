@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+/*
+ * Copyright 2021-2023 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ */
 
 package com.exactpro.th2.cradle.adm.cli;
 
@@ -29,7 +29,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +79,7 @@ public class Application {
 
 			}
 		} catch (Exception e) {
-			logger.error("Exception {}", e);
+			logger.error("Cannot start application, cause {}", e.getMessage(), e);
 			printHelp(options);
 		}
 	}
@@ -106,7 +105,6 @@ public class Application {
 
 	private static void initApplication(String[] args)
 	{
-		PropertyConfigurator.configureAndWatch("log.properties");
 		initMetadata();
 		System.out.printf("%s, version %s, build-date %s%n", IMPLEMENTATION_TITLE, VERSION, BUILD_DATE);
 		System.out.println("Started with arguments: " + Arrays.toString(args));
