@@ -17,25 +17,34 @@
 package com.exactpro.th2.cradle.adm.http;
 
 import com.exactpro.cradle.BookInfo;
+import com.exactpro.cradle.BookToAdd;
 import com.exactpro.cradle.CradleStorage;
 import com.exactpro.cradle.PageInfo;
 import com.exactpro.cradle.utils.CradleStorageException;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.trim;
 
 public class PageManager implements AutoCloseable, Runnable{
     private static final Logger LOGGER = LoggerFactory.getLogger(PageManager.class);
-    private static final String AUTO_PAGE_COMMENT = "auto-page";
+    static final String AUTO_PAGE_COMMENT = "auto-page";
+    static final String AUTO_BOOK_DESCRIPTION = "auto-book";
 
     private final CradleStorage storage;
     private final long pageActionRejectionThreshold;
@@ -44,10 +53,11 @@ public class PageManager implements AutoCloseable, Runnable{
 
     public PageManager(
             CradleStorage storage,
+            boolean autoBooks,
             Map<String, AutoPageConfiguration> autoPages,
             int pageRecheckInterval,
             long pageActionRejectionThreshold
-    ) throws CradleStorageException {
+    ) {
         if (autoPages == null || autoPages.isEmpty()) {
             LOGGER.info("auto-page configuration is not provided, pages will not be generated automatically");
             this.storage = null;
@@ -57,17 +67,39 @@ public class PageManager implements AutoCloseable, Runnable{
             return;
         }
 
+        Map<String, String> normalisedBookName = autoPages.keySet().stream()
+                .collect(Collectors.toMap(
+                        PageManager::normaliseBookName,
+                        Function.identity()
+                ));
+
+        if (normalisedBookName.size() != autoPages.size()) {
+            throw new IllegalArgumentException("Some of books have the same name after normalization" +
+                    ", origin: " + autoPages.keySet() +
+                    ", normalized: " + normalisedBookName.keySet());
+        }
+
+        books = normalisedBookName.entrySet().stream()
+                .collect(Collectors.toUnmodifiableMap(
+                        Map.Entry::getKey,
+                        entry -> new AutoPageInfo(autoPages.get(entry.getValue()), getOrCreateBook(storage, entry.getKey(), autoBooks))
+                ));
+
         this.storage = storage;
         this.pageActionRejectionThreshold = pageActionRejectionThreshold;
-
-        books = new HashMap<>();
-        for (String bookName : autoPages.keySet()) {
-            books.put(bookName, new AutoPageInfo(autoPages.get(bookName), storage.refreshBook(bookName)));
-        }
 
         LOGGER.info("Managing pages for books {} every {} sec", books.keySet().toArray(), pageRecheckInterval);
         executorService = Executors.newScheduledThreadPool(1);
         executorService.scheduleAtFixedRate(this, 0, pageRecheckInterval, TimeUnit.SECONDS);
+    }
+
+    @NotNull
+    private static String normaliseBookName(String origin) {
+        String bookName = lowerCase(trim(origin));
+        if (bookName == null || bookName.isEmpty()) {
+            throw new IllegalArgumentException("One of book is null or empty");
+        }
+        return bookName;
     }
 
 
@@ -75,25 +107,24 @@ public class PageManager implements AutoCloseable, Runnable{
         Instant pageStartBase = autoPageConfiguration.getPageStartTime();
         Duration pageDuration = autoPageConfiguration.getPageDuration();
         Instant nowPlusThreshold = Instant.now().plusMillis(pageActionRejectionThreshold);
-        long nowMillis =  nowPlusThreshold.toEpochMilli();
 
         PageInfo pageInfo = book.getLastPage();
 
         if (pageInfo == null) {
-            return storage.addPage(book.getId(), "auto-page-" + nowMillis, nowPlusThreshold, AUTO_PAGE_COMMENT);
+            return createAutoPage(storage, book, nowPlusThreshold);
         }
 
         Instant lastPageStart = pageInfo.getStarted();
         if (lastPageStart.isBefore(nowPlusThreshold)) {
             int comparison = nowPlusThreshold.compareTo(pageStartBase);
             if (comparison < 0) {
-                return storage.addPage(book.getId(), "auto-page-" + nowMillis, pageStartBase, AUTO_PAGE_COMMENT);
+                return createAutoPage(storage, book, pageStartBase);
             } else if (comparison > 0) {
                 Duration diff = Duration.between(pageStartBase, nowPlusThreshold);
                 Instant nextMark = pageStartBase.plus(pageDuration.multipliedBy(diff.dividedBy(pageDuration) + 1));
-                return storage.addPage(book.getId(), "auto-page-" + nowMillis, nextMark, AUTO_PAGE_COMMENT);
+                return createAutoPage(storage, book, nextMark);
             } else {
-                return storage.addPage(book.getId(), "auto-page-" + nowMillis, pageStartBase.plus(pageDuration), AUTO_PAGE_COMMENT);
+                return createAutoPage(storage, book, pageStartBase.plus(pageDuration));
             }
         }
 
@@ -120,5 +151,45 @@ public class PageManager implements AutoCloseable, Runnable{
                 LOGGER.error("Exception processing book {}", bookName, e);
             }
         });
+    }
+
+    private static BookInfo getOrCreateBook(@NotNull CradleStorage storage, String bookName, boolean autoBook) {
+        try {
+            BookInfo storageBookInfo = storage.refreshBook(bookName);
+
+            if (storageBookInfo != null) {
+                return storageBookInfo;
+            }
+
+            if (!autoBook) {
+                throw new IllegalStateException("Storage doesn't contain the '" + bookName + "' book, auto book: false");
+            }
+
+            BookToAdd bookToAdd = new BookToAdd(
+                    bookName,
+                    Instant.now().minus(1, ChronoUnit.DAYS)
+            );
+            bookToAdd.setFullName(bookName);
+            bookToAdd.setDesc(AUTO_BOOK_DESCRIPTION);
+
+            BookInfo bookInfo = storage.addBook(bookToAdd);
+
+            LOGGER.info("Created '{}' book, time: {}, full name: {}, description: {}",
+                    bookName,
+                    bookToAdd.getCreated(),
+                    bookToAdd.getFullName(),
+                    bookToAdd.getDesc());
+
+            createAutoPage(storage, bookInfo, bookInfo.getCreated());
+            LOGGER.info("Added first page, book: {}, time: {}", bookInfo.getId().getName(), bookInfo.getCreated());
+            return bookInfo;
+        } catch (Exception e) {
+            throw new RuntimeException("Book with name '" + bookName + "' can't be created", e);
+        }
+    }
+
+    private static BookInfo createAutoPage(CradleStorage storage, BookInfo book, Instant nowPlusThreshold) throws CradleStorageException, IOException {
+        long nowMillis =  nowPlusThreshold.toEpochMilli();
+        return storage.addPage(book.getId(), "auto-page-" + nowMillis, nowPlusThreshold, AUTO_PAGE_COMMENT);
     }
 }

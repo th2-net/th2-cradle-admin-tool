@@ -51,11 +51,10 @@ public class Application {
 			httpServer.run();
 			resources.add(httpServer);
 
-			AutoBookUtils.createBooks(storage, config.getAutoBooks());
-
 			resources.add(
 				new PageManager(
 					storage,
+					config.isAutoBook(),
 					config.getAutoPages(),
 					config.getPageRecheckInterval(),
 					settings.calculatePageActionRejectionThreshold() * 2

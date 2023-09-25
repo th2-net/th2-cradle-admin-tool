@@ -16,6 +16,7 @@
 package com.exactpro.th2.cradle.adm.http;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.Duration;
 import java.time.Instant;
 
@@ -33,5 +34,13 @@ public class AutoPageConfiguration {
 
     public Instant getPageStartTime() {
         return pageStartTime;
+    }
+
+    public void setPageDuration(Duration pageDuration) {
+        this.pageDuration = pageDuration;
+    }
+
+    public void setPageStartTime(Instant pageStartTime) {
+        this.pageStartTime = pageStartTime;
     }
 }
