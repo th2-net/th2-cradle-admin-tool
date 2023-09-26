@@ -38,7 +38,7 @@ public class Configuration {
 	private int pageRecheckInterval = DEFAULT_PAGE_RECHECK_INTERVAL_SEC;
 
 	@JsonProperty("auto-book")
-	private boolean autoBook = false;
+	private boolean autoBook = true;
 
 	@JsonProperty("auto-pages")
 	private Map<String, AutoPageConfiguration> autoPages = Collections.emptyMap();

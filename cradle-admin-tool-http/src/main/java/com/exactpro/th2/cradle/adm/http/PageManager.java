@@ -17,6 +17,7 @@
 package com.exactpro.th2.cradle.adm.http;
 
 import com.exactpro.cradle.BookInfo;
+import com.exactpro.cradle.BookListEntry;
 import com.exactpro.cradle.BookToAdd;
 import com.exactpro.cradle.CradleStorage;
 import com.exactpro.cradle.PageInfo;
@@ -32,6 +33,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -155,10 +157,13 @@ public class PageManager implements AutoCloseable, Runnable{
 
     private static BookInfo getOrCreateBook(@NotNull CradleStorage storage, String bookName, boolean autoBook) {
         try {
-            BookInfo storageBookInfo = storage.refreshBook(bookName);
+            BookListEntry bookListEntry = storage.listBooks().stream()
+                    .filter(entry -> Objects.equals(entry.getName(), bookName))
+                    .findFirst()
+                    .orElse(null);
 
-            if (storageBookInfo != null) {
-                return storageBookInfo;
+            if (bookListEntry != null) {
+                return storage.refreshBook(bookName);
             }
 
             if (!autoBook) {

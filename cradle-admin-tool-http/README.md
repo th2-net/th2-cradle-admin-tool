@@ -13,8 +13,9 @@ Service which allows user to manage books/pages via RestAPI requests.
 - **port** - port on which http server will listen user requests. Default value: `8080`
 - **page-recheck-interval** - interval in seconds which `PageManager` service checks if new page is required to create or not based on duration values presented in `auto-pages`. Default value: 60 seconds
 - **auto-book** - if `true` than cradle-admin-tool creates books with first page for each value from `auto-pages` option when target book doesn't exist in cradle. 
-  Creation book time is calculate by the `current time - 1 day` formula to cover events and messages published a bit earlier than cradle-admin-tool started. Please note you can create your own book via REST API later.
-- **auto-pages** - defines rule for automatic pages creation for multiple books. If empty no pages will be created automatically. Default value: `false`.
+  Creation book time is calculate by the `current time - 1 day` formula to cover events and messages published a bit earlier than cradle-admin-tool started. Default value: `true`.
+  Please note you can create your own book via REST API later.
+- **auto-pages** - defines rule for automatic pages creation for multiple books. If empty no pages will be created automatically.
   - **page-duration** - defines duration of the page for the book. Value uses the Java Duration format. You can read more about it [here](https://docs.oracle.com/javase/8/docsT/api/java/time/Duration.html#parse-java.lang.CharSequence-).
   - **page-start-time** - baseline date and time for every new page created by `PageManager` for this book.
 
