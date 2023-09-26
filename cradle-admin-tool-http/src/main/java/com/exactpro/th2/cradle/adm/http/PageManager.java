@@ -162,7 +162,7 @@ public class PageManager implements AutoCloseable, Runnable{
             }
 
             if (!autoBook) {
-                throw new IllegalStateException("Storage doesn't contain the '" + bookName + "' book, auto book: false");
+                throw new IllegalStateException("Storage doesn't contain the '" + bookName + "' book. Create book manually or enable auto-book functionality in configuration");
             }
 
             BookToAdd bookToAdd = new BookToAdd(
