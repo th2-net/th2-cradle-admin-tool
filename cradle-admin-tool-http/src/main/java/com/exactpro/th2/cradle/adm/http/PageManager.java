@@ -37,7 +37,6 @@ import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.lowerCase;
@@ -69,10 +68,10 @@ public class PageManager implements AutoCloseable, Runnable{
             return;
         }
 
-        Map<String, String> normalisedBookName = autoPages.keySet().stream()
+        Map<String, AutoPageConfiguration> normalisedBookName = autoPages.entrySet().stream()
                 .collect(Collectors.toMap(
-                        PageManager::normaliseBookName,
-                        Function.identity()
+                        entry -> normaliseBookName(entry.getKey()),
+                        Map.Entry::getValue
                 ));
 
         if (normalisedBookName.size() != autoPages.size()) {
@@ -84,7 +83,7 @@ public class PageManager implements AutoCloseable, Runnable{
         books = normalisedBookName.entrySet().stream()
                 .collect(Collectors.toUnmodifiableMap(
                         Map.Entry::getKey,
-                        entry -> new AutoPageInfo(autoPages.get(entry.getValue()), getOrCreateBook(storage, entry.getKey(), autoBooks))
+                        entry -> new AutoPageInfo(entry.getValue(), getOrCreateBook(storage, entry.getKey(), autoBooks))
                 ));
 
         this.storage = storage;
