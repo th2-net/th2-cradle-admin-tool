@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Copyright 2023 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ */
 package com.exactpro.th2.cradle.adm.http;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.Duration;
 import java.time.Instant;
 
@@ -33,5 +34,13 @@ public class AutoPageConfiguration {
 
     public Instant getPageStartTime() {
         return pageStartTime;
+    }
+
+    public void setPageDuration(Duration pageDuration) {
+        this.pageDuration = pageDuration;
+    }
+
+    public void setPageStartTime(Instant pageStartTime) {
+        this.pageStartTime = pageStartTime;
     }
 }

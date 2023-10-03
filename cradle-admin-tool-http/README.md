@@ -1,4 +1,4 @@
-# cradle-admin-tool-http (1.7.2)
+# cradle-admin-tool-http (1.8.0)
 Service which allows user to manage books/pages via RestAPI requests.
 - The first page in a book can be created only if start time is more than current time.
 - After the first page all new pages must have start time more than current time + `bookRefreshIntervalMillis` * 2
@@ -12,7 +12,10 @@ Service which allows user to manage books/pages via RestAPI requests.
 - **ip** - host where http cradle admin instance will be instanciated. Default value: `0.0.0.0`
 - **port** - port on which http server will listen user requests. Default value: `8080`
 - **page-recheck-interval** - interval in seconds which `PageManager` service checks if new page is required to create or not based on duration values presented in `auto-pages`. Default value: 60 seconds
-- **auto-pages** - defines rule for automatic pages creation for multiple books. If empty no pages will be created automatically. Default value: `empty_map`.
+- **auto-book** - if `true` than cradle-admin-tool creates books with first page for each value from `auto-pages` option when target book doesn't exist in cradle. 
+  Creation book time is calculate by the `current time - 1 day` formula to cover events and messages published a bit earlier than cradle-admin-tool started. Default value: `true`.
+  Please note you can create your own book via REST API later.
+- **auto-pages** - defines rule for automatic pages creation for multiple books. If empty no pages will be created automatically.
   - **page-duration** - defines duration of the page for the book. Value uses the Java Duration format. You can read more about it [here](https://docs.oracle.com/javase/8/docsT/api/java/time/Duration.html#parse-java.lang.CharSequence-).
   - **page-start-time** - baseline date and time for every new page created by `PageManager` for this book.
 
@@ -29,6 +32,7 @@ spec:
   custom-config:
     ip: 198.168.0.2
     port: 8080
+    auto-book: true
     auto-pages:
       book1:
         page-duration: PT60S
@@ -43,6 +47,11 @@ spec:
 ```
 
 ## Release notes
+
+### 1.8.0
+
++ Feature:
+  + Added auto-book functionality
 
 ### 1.7.2
 

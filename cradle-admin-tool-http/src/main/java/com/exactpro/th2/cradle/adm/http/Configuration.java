@@ -17,6 +17,8 @@
 package com.exactpro.th2.cradle.adm.http;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Collections;
 import java.util.Map;
 
 @SuppressWarnings("FieldMayBeFinal")
@@ -35,8 +37,11 @@ public class Configuration {
 	@JsonProperty("page-recheck-interval")
 	private int pageRecheckInterval = DEFAULT_PAGE_RECHECK_INTERVAL_SEC;
 
+	@JsonProperty("auto-book")
+	private boolean autoBook = true;
+
 	@JsonProperty("auto-pages")
-	private Map<String, AutoPageConfiguration> autoPages;
+	private Map<String, AutoPageConfiguration> autoPages = Collections.emptyMap();
 
 	public String getIp() {
 		return ip;
@@ -44,6 +49,10 @@ public class Configuration {
 
 	public int getPort() {
 		return port;
+	}
+
+	public boolean isAutoBook() {
+		return autoBook;
 	}
 
 	public Map<String, AutoPageConfiguration> getAutoPages() {

@@ -54,6 +54,7 @@ public class Application {
 			resources.add(
 				new PageManager(
 					storage,
+					config.isAutoBook(),
 					config.getAutoPages(),
 					config.getPageRecheckInterval(),
 					settings.calculatePageActionRejectionThreshold() * 2
