@@ -7,7 +7,16 @@ dependencies {
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        excludeTags('integration')
+    }
+}
+
+tasks.register('integrationTest', Test) {
+    group = 'verification'
+    useJUnitPlatform {
+        includeTags('integration')
+    }
 }
 
 jar {

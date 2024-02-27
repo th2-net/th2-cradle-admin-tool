@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2023 Exactpro (Exactpro Systems Limited)
+ * Copyright 2021-2024 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.Function;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -56,34 +57,43 @@ public class Application {
 	private static String BUILD_DATE;
 	
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
+		run(args, CommonFactory::createFromArguments);
+	}
 
-		initApplication(args);
-		Options options = buildOptions();
-		
-		CommandLine cmdLine = new DefaultParser().parse(options, args);
+	static void run(String[] args, Function<String[], CommonFactory> createFactory) {
+		try {
+			initApplication(args);
+			Options options = buildOptions();
+			try {
 
-		try (CommonFactory commonFactory = CommonFactory.createFromArguments(buildSchemaParams(cmdLine))) {
-			
-			AbstractMode<?, ?> mode = Mode.getMode(cmdLine);
-			if (mode instanceof CliMode && !((CliMode<?>)mode).initParams(cmdLine)) {
-				return;
-			}
 
-			try (CradleManager mngr = commonFactory.getCradleManager()) {
+				CommandLine cmdLine = new DefaultParser().parse(options, args);
 
-				CradleStorage storage = mngr.getStorage();
-				mode.init(storage);
-				SimpleResult result = mode.execute();
-				ResultPrinter.printToCmd(result);
+				try (CommonFactory commonFactory = createFactory.apply(buildSchemaParams(cmdLine))) {
 
+					AbstractMode<?, ?> mode = Mode.getMode(cmdLine);
+					if (mode instanceof CliMode && !((CliMode<?>) mode).initParams(cmdLine)) {
+						return;
+					}
+
+					try (CradleManager manager = commonFactory.getCradleManager()) {
+
+						CradleStorage storage = manager.getStorage();
+						mode.init(storage);
+						SimpleResult result = mode.execute();
+						ResultPrinter.printToCmd(result);
+
+					}
+				}
+			} catch (Exception e) {
+				logger.error("Cannot start application, cause {}", e.getMessage(), e);
+				printHelp(options);
 			}
 		} catch (Exception e) {
-			logger.error("Cannot start application, cause {}", e.getMessage(), e);
-			printHelp(options);
+			logger.error("Cannot init application, cause {}", e.getMessage(), e);
 		}
 	}
-	
 	private static Options buildOptions() {
 		Options options = new Options();
 		options.addOption(new Option(CmdParams.COMMON_CFG_SHORT, CmdParams.COMMON_CFG_LONG, true, null));
