@@ -230,7 +230,7 @@ public class PagesHttpTest extends AbstractHttpTest {
 
         assertEquals(page1Start, pages.get(0).getStarted());
         assertEquals(page2Start, pages.get(0).getEnded());
-        assertEquals(page3Start, pages.get(1).getStarted());
+        assertEquals(page2Start, pages.get(1).getStarted());
         assertEquals(page3Start, pages.get(1).getEnded());
         assertEquals(page3Start, pages.get(2).getStarted());
         assertNull(pages.get(2).getEnded());
