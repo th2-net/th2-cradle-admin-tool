@@ -39,14 +39,14 @@ public class BookCliTest extends AbstractCliTest {
     public void addBookTest(@Th2AppFactory CommonFactory appFactory,
                             @Th2TestFactory CommonFactory testFactory) throws Exception {
         CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+        int initNumberOfBooks = cradleStorage.listBooks().size();
 
         String bookName = "addBookTest";
 
         Application.run(new String[]{"-c=stub/", "--book", "-bookName", bookName}, args -> appFactory);
 
-        assertEquals(0, cradleStorage.getBooks().size());
         BookInfo bookInfo = cradleStorage.getBook(new BookId(bookName));
-        assertEquals(1, cradleStorage.getBooks().size());
+        assertEquals(initNumberOfBooks + 1, cradleStorage.listBooks().size());
         assertEquals(0, bookInfo.getPages().size());
 
         checkOutput(true, null);
@@ -56,14 +56,14 @@ public class BookCliTest extends AbstractCliTest {
     public void addBookWithoutTimeTest(@Th2AppFactory CommonFactory appFactory,
                                        @Th2TestFactory CommonFactory testFactory) throws Exception {
         CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+        int initNumberOfBooks = cradleStorage.listBooks().size();
 
         Instant i1 = Instant.now();
         String bookName = "addBookWithoutTimeTest";
         Application.run(new String[]{"-c=stub/", "--book", "-bookName", bookName}, args -> appFactory);
 
-        assertEquals(0, cradleStorage.getBooks().size());
         BookInfo bookInfo = cradleStorage.getBook(new BookId(bookName));
-        assertEquals(1, cradleStorage.getBooks().size());
+        assertEquals(initNumberOfBooks + 1, cradleStorage.listBooks().size());
         assertNotNull(bookInfo);
         assertNotNull(bookInfo.getCreated());
         assertTrue(bookInfo.getCreated().isAfter(i1));
@@ -76,6 +76,7 @@ public class BookCliTest extends AbstractCliTest {
     public void addBookWithParamsTest(@Th2AppFactory CommonFactory appFactory,
                                       @Th2TestFactory CommonFactory testFactory) throws Exception {
         CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+        int initNumberOfBooks = cradleStorage.listBooks().size();
 
         Instant created = Instant.now().minus(20, ChronoUnit.MINUTES);
         String bookName = "addBookWithParamsTest";
@@ -89,9 +90,8 @@ public class BookCliTest extends AbstractCliTest {
                 args -> appFactory);
 
 
-        assertEquals(0, cradleStorage.getBooks().size());
         BookInfo bookInfo = cradleStorage.getBook(bookId);
-        assertEquals(1, cradleStorage.getBooks().size());
+        assertEquals(initNumberOfBooks + 1, cradleStorage.listBooks().size());
         assertNotNull(bookInfo);
         assertEquals(bookFullName, bookInfo.getFullName());
         assertEquals(bookDesc, bookInfo.getDesc());
@@ -105,12 +105,13 @@ public class BookCliTest extends AbstractCliTest {
     public void addExistedBookTest(@Th2AppFactory CommonFactory appFactory,
                                    @Th2TestFactory CommonFactory testFactory) throws Exception {
         CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+        int initNumberOfBooks = cradleStorage.listBooks().size();
+
         String bookName = "addExistedBookTest";
         BookId bookId = new BookId(bookName);
-        assertEquals(0, cradleStorage.getBooks().size());
         testBookPageBuilder.addBookIds(bookName, Instant.now())
                 .exec(cradleStorage);
-        assertEquals(1, cradleStorage.getBooks().size());
+        assertEquals(initNumberOfBooks + 1, cradleStorage.listBooks().size());
 
         Application.run(new String[]{"-c=stub/", "--book", "-bookName", bookName}, args -> appFactory);
 
