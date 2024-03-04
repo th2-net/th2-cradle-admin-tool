@@ -18,10 +18,10 @@ package com.exactpro.th2.cradle.adm.cli;
 
 import com.exactpro.cradle.BookId;
 import com.exactpro.cradle.BookInfo;
+import com.exactpro.cradle.CradleManager;
 import com.exactpro.cradle.CradleStorage;
 import com.exactpro.th2.common.schema.factory.CommonFactory;
 import com.exactpro.th2.test.annotations.Th2AppFactory;
-import com.exactpro.th2.test.annotations.Th2TestFactory;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -37,8 +37,8 @@ public class BookCliTest extends AbstractCliTest {
 
     @Test
     public void addBookTest(@Th2AppFactory CommonFactory appFactory,
-                            @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                            CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
         int initNumberOfBooks = cradleStorage.listBooks().size();
 
         String bookName = "addBookTest";
@@ -54,8 +54,8 @@ public class BookCliTest extends AbstractCliTest {
 
     @Test
     public void addBookWithoutTimeTest(@Th2AppFactory CommonFactory appFactory,
-                                       @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                                       CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
         int initNumberOfBooks = cradleStorage.listBooks().size();
 
         Instant i1 = Instant.now();
@@ -74,8 +74,8 @@ public class BookCliTest extends AbstractCliTest {
 
     @Test
     public void addBookWithParamsTest(@Th2AppFactory CommonFactory appFactory,
-                                      @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                                      CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
         int initNumberOfBooks = cradleStorage.listBooks().size();
 
         Instant created = Instant.now().minus(20, ChronoUnit.MINUTES);
@@ -103,8 +103,8 @@ public class BookCliTest extends AbstractCliTest {
 
     @Test
     public void addExistedBookTest(@Th2AppFactory CommonFactory appFactory,
-                                   @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                                   CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
         int initNumberOfBooks = cradleStorage.listBooks().size();
 
         String bookName = "addExistedBookTest";

@@ -16,11 +16,11 @@
 
 package com.exactpro.th2.cradle.adm.cli;
 
+import com.exactpro.cradle.CradleManager;
 import com.exactpro.cradle.CradleStorage;
 import com.exactpro.th2.common.schema.factory.CommonFactory;
 import com.exactpro.th2.cradle.adm.TestBookPageBuilder;
 import com.exactpro.th2.test.annotations.Th2AppFactory;
-import com.exactpro.th2.test.annotations.Th2TestFactory;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -34,8 +34,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ViewersAllBooksTest extends AbstractCliTest {
     @Test
     public void printAllBooksTest(@Th2AppFactory CommonFactory appFactory,
-                                  @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                                  CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
 
         String book1Name = "Book1";
         Instant book1Start = Instant.now();

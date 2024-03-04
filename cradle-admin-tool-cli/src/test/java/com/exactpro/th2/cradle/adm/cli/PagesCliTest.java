@@ -18,12 +18,12 @@ package com.exactpro.th2.cradle.adm.cli;
 
 import com.exactpro.cradle.BookId;
 import com.exactpro.cradle.BookInfo;
+import com.exactpro.cradle.CradleManager;
 import com.exactpro.cradle.CradleStorage;
 import com.exactpro.cradle.PageId;
 import com.exactpro.cradle.PageInfo;
 import com.exactpro.th2.common.schema.factory.CommonFactory;
 import com.exactpro.th2.test.annotations.Th2AppFactory;
-import com.exactpro.th2.test.annotations.Th2TestFactory;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -41,8 +41,8 @@ public class PagesCliTest extends AbstractCliTest {
 
     @Test
     public void addPageBeforeTest(@Th2AppFactory CommonFactory appFactory,
-                                  @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                                  CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
 
         String bookName = "addPageBeforeTest";
         BookId bookId = new BookId(bookName);
@@ -69,8 +69,8 @@ public class PagesCliTest extends AbstractCliTest {
 
     @Test
     public void addPageCurrentTimeTest(@Th2AppFactory CommonFactory appFactory,
-                                       @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                                       CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
 
         String bookName = "addPageCurrentTimeTest";
         BookId bookId = new BookId(bookName);
@@ -97,8 +97,8 @@ public class PagesCliTest extends AbstractCliTest {
 
     @Test
     public void addPageCorrectTest(@Th2AppFactory CommonFactory appFactory,
-                                   @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                                   CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
 
         String bookName = "addPageCorrectTest";
         BookId bookId = new BookId(bookName);
@@ -128,8 +128,8 @@ public class PagesCliTest extends AbstractCliTest {
 
     @Test
     public void addPageWithoutNameTest(@Th2AppFactory CommonFactory appFactory,
-                                      @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                                      CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
 
         String bookName = "addPageWithoutNameTest";
         BookId bookId = new BookId(bookName);
@@ -158,8 +158,8 @@ public class PagesCliTest extends AbstractCliTest {
 
     @Test
     public void addPageWithParamsTest(@Th2AppFactory CommonFactory appFactory,
-                                      @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                                      CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
 
         String bookName = "addPageWithParamsTest";
         BookId bookId = new BookId(bookName);
@@ -192,8 +192,8 @@ public class PagesCliTest extends AbstractCliTest {
 
     @Test
     public void addExistedPageTest(@Th2AppFactory CommonFactory appFactory,
-                                   @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                                   CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
 
         String bookName = "addExistedPageTest";
         BookId bookId = new BookId(bookName);

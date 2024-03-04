@@ -26,7 +26,6 @@ import com.exactpro.cradle.utils.CradleStorageException;
 import com.exactpro.th2.common.schema.factory.CommonFactory;
 import com.exactpro.th2.test.annotations.Th2AppFactory;
 import com.exactpro.th2.test.annotations.Th2IntegrationTest;
-import com.exactpro.th2.test.annotations.Th2TestFactory;
 import com.exactpro.th2.test.spec.CradleSpec;
 import org.eclipse.jetty.http.HttpTester;
 import org.eclipse.jetty.server.LocalConnector;
@@ -59,8 +58,8 @@ public class AbstractHttpTest {
 
     @BeforeEach
     public void init(@Th2AppFactory CommonFactory appFactory,
-                     @Th2TestFactory CommonFactory testFactory) throws Exception {
-        this.storage = testFactory.getCradleManager().getStorage();
+                     CradleManager manager) throws Exception {
+        this.storage = manager.getStorage();
         this.testHttpServer = new TestHttpServer(new Configuration(), appFactory.getCradleManager().getStorage());
         this.testHttpServer.run();
         this.connector = testHttpServer.getLocalConnector();

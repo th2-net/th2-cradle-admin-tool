@@ -18,13 +18,13 @@ package com.exactpro.th2.cradle.adm.cli;
 
 import com.exactpro.cradle.BookId;
 import com.exactpro.cradle.BookInfo;
+import com.exactpro.cradle.CradleManager;
 import com.exactpro.cradle.CradleStorage;
 import com.exactpro.cradle.PageInfo;
 import com.exactpro.cradle.utils.CradleStorageException;
 import com.exactpro.th2.common.schema.factory.CommonFactory;
 import com.exactpro.th2.cradle.adm.TestBookPageBuilder;
 import com.exactpro.th2.test.annotations.Th2AppFactory;
-import com.exactpro.th2.test.annotations.Th2TestFactory;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -56,8 +56,8 @@ public class ViewersTest extends AbstractCliTest {
 
     @Test
     public void printBookTest(@Th2AppFactory CommonFactory appFactory,
-                              @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                              CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
 
         DBMetadata result = getInitData(cradleStorage, "printBookTest");
 
@@ -101,8 +101,8 @@ public class ViewersTest extends AbstractCliTest {
 
     @Test
     public void printBookTest2(@Th2AppFactory CommonFactory appFactory,
-                               @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                               CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
 
         DBMetadata result = getInitData(cradleStorage, "printBookTest2");
 
@@ -132,8 +132,8 @@ public class ViewersTest extends AbstractCliTest {
 
     @Test
     public void printBookTestWithRemovedPages(@Th2AppFactory CommonFactory appFactory,
-                                      @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                                      CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
 
         DBMetadata result = getInitData(cradleStorage, "printBookTestWithRemovedPages");
 
@@ -175,8 +175,8 @@ public class ViewersTest extends AbstractCliTest {
 
     @Test
     public void printBookTestWithoutPages(@Th2AppFactory CommonFactory appFactory,
-                                          @Th2TestFactory CommonFactory testFactory) throws Exception {
-        CradleStorage cradleStorage = testFactory.getCradleManager().getStorage();
+                                          CradleManager manager) throws Exception {
+        CradleStorage cradleStorage = manager.getStorage();
 
         DBMetadata result = getInitData(cradleStorage, "printBookTestWithoutPages");
 
