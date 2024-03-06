@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright 2022-2022 Exactpro (Exactpro Systems Limited)
+/*
+ * Copyright 2022-2024 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,14 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ */
 
 package com.exactpro.th2.cradle.adm.params;
 
 import com.exactpro.cradle.BookId;
-import com.exactpro.cradle.PageId;
-
-import java.time.Instant;
 
 public class RemovePageParams {
 	
@@ -31,10 +28,6 @@ public class RemovePageParams {
 
 	public BookId getBookId() {
 		return new BookId(bookId);
-	}
-
-	public PageId getPageId() {
-		return new PageId(getBookId(), this.pageName);
 	}
 
 	public String getPageName() {

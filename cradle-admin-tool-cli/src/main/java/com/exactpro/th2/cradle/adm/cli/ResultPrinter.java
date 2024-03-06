@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+/*
+ * Copyright 2021-2024 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,11 @@
 
 package com.exactpro.th2.cradle.adm.cli;
 
-import com.exactpro.cradle.BookListEntry;
-import com.exactpro.th2.cradle.adm.results.*;
+import com.exactpro.th2.cradle.adm.results.BooksListInfo;
+import com.exactpro.th2.cradle.adm.results.ResultBookDetailedInfo;
+import com.exactpro.th2.cradle.adm.results.ResultBookInfo;
+import com.exactpro.th2.cradle.adm.results.ResultPageInfo;
+import com.exactpro.th2.cradle.adm.results.SimpleResult;
 
 import java.util.List;
 

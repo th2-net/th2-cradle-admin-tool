@@ -27,10 +27,6 @@ application {
     mainClassName = "com.exactpro.th2.cradle.adm.http.Application"
 }
 
-test {
-    useJUnitPlatform()
-}
-
 applicationName = 'service'
 
 distTar {

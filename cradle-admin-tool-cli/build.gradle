@@ -6,10 +6,6 @@ dependencies {
     testImplementation project(':').sourceSets.test.output
 }
 
-test {
-    useJUnitPlatform()
-}
-
 jar {
     archivesBaseName = 'th2-cradle-admin-cli'
     manifest {
