@@ -13,7 +13,7 @@ apply plugin: 'application'
 
 ext {
     commonVersion = '5.8.0-dev'
-    cradleVersion = '5.2.0-TH2-5165-+'
+    cradleVersion = '5.2.0-dev'
 }
 
 allprojects {
