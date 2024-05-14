@@ -16,8 +16,8 @@
 
 package com.exactpro.th2.cradle.adm.modes;
 
-import com.exactpro.cradle.CradleStorage;
 import com.exactpro.th2.cradle.adm.results.SimpleResult;
+import com.exactpro.cradle.CradleStorage;
 
 
 public abstract class AbstractMode<T, K extends SimpleResult> {

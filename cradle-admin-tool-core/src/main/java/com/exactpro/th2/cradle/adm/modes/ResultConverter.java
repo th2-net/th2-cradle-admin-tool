@@ -16,10 +16,10 @@
 
 package com.exactpro.th2.cradle.adm.modes;
 
-import com.exactpro.cradle.BookInfo;
-import com.exactpro.cradle.PageInfo;
 import com.exactpro.th2.cradle.adm.results.ResultBookInfo;
 import com.exactpro.th2.cradle.adm.results.ResultPageInfo;
+import com.exactpro.cradle.BookInfo;
+import com.exactpro.cradle.PageInfo;
 
 public class ResultConverter {
 

@@ -16,13 +16,12 @@
 
 package com.exactpro.th2.cradle.adm.modes;
 
-import com.exactpro.th2.cradle.adm.params.NewBookCreationParams;
 import com.exactpro.th2.cradle.adm.results.SimpleResult;
+import com.exactpro.th2.cradle.adm.params.NewBookCreationParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
-import java.util.UUID;
 
 
 public class NewBookCreationMode extends AbstractMode<NewBookCreationParams, SimpleResult> {

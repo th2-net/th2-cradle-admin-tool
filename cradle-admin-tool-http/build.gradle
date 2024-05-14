@@ -8,17 +8,23 @@ ext {
 }
 
 dependencies {
-    implementation project(':')
+    implementation project(':cradle-admin-tool-core')
+    implementation("com.exactpro.th2:common:$commonVersion") {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    }
+    implementation "com.exactpro.th2:cradle-core:$cradleVersion"
+    implementation "com.exactpro.th2:cradle-cassandra:$cradleVersion"
+
     implementation "org.eclipse.jetty:jetty-server:${jettyVersion}"
     implementation "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
+
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
 
-    testImplementation project(':').sourceSets.test.output
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+    implementation 'org.apache.commons:commons-lang3'
+
+    testImplementation project(':cradle-admin-tool-test')
     testImplementation "org.eclipse.jetty:jetty-http:${jettyVersion}:tests"
     testImplementation "org.eclipse.jetty:jetty-util:${jettyVersion}"
-
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
 }
 
 application {

@@ -41,21 +41,17 @@ allprojects {
     }
 
     dependencies {
-        implementation("com.exactpro.th2:common:$commonVersion") {
-            exclude group: 'com.squareup.okhttp3', module: 'okhttp'
-        }
-        implementation "com.exactpro.th2:cradle-core:$cradleVersion"
-        implementation "com.exactpro.th2:cradle-cassandra:$cradleVersion"
-        implementation 'org.apache.commons:commons-lang3'
-
         implementation "org.slf4j:slf4j-api"
-
-        testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
         testImplementation 'org.mockito:mockito-inline:5.2.0'
         testImplementation 'org.mockito:mockito-junit-jupiter:5.10.0'
+
         testImplementation 'com.exactpro.th2:junit-jupiter-integration:0.0.1'
+
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
     }
 
     test {
