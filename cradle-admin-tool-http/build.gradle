@@ -1,43 +1,27 @@
 plugins {
-    id 'java'
     id 'application'
-    id 'com.palantir.docker' version '0.25.0'
+    id 'com.exactpro.th2.gradle.component'
 }
 
-repositories {
-    mavenCentral()
+ext {
+    jettyVersion = '9.4.54.v20240208'
 }
 
 dependencies {
-
     implementation project(':')
-    implementation 'org.eclipse.jetty:jetty-server:9.4.51.v20230217'
-    implementation 'org.eclipse.jetty:jetty-servlet:9.4.51.v20230217'
+    implementation "org.eclipse.jetty:jetty-server:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
 
     testImplementation project(':').sourceSets.test.output
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testImplementation 'org.eclipse.jetty:jetty-http:9.4.51.v20230217:tests'
-    testImplementation 'org.eclipse.jetty:jetty-util:9.4.51.v20230217'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+    testImplementation "org.eclipse.jetty:jetty-http:${jettyVersion}:tests"
+    testImplementation "org.eclipse.jetty:jetty-util:${jettyVersion}"
 
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
 }
 
 application {
+    applicationName = 'service'
     mainClassName = "com.exactpro.th2.cradle.adm.http.Application"
 }
-
-applicationName = 'service'
-
-distTar {
-    archiveName "${applicationName}.tar"
-}
-
-dockerPrepare {
-    dependsOn distTar
-}
-
-docker {
-    copySpec.from(tarTree("$buildDir/distributions/${applicationName}.tar"))
-}
-
