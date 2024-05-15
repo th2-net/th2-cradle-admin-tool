@@ -16,12 +16,12 @@
 
 package com.exactpro.th2.cradle.adm.modes;
 
+import com.exactpro.th2.cradle.adm.results.BooksListInfo;
+import com.exactpro.th2.cradle.adm.results.ResultBookDetailedInfo;
 import com.exactpro.cradle.BookInfo;
 import com.exactpro.cradle.PageInfo;
 import com.exactpro.cradle.utils.CradleStorageException;
 import com.exactpro.th2.cradle.adm.params.GetBookInfoParams;
-import com.exactpro.th2.cradle.adm.results.BooksListInfo;
-import com.exactpro.th2.cradle.adm.results.ResultBookDetailedInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

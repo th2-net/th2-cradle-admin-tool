@@ -1,43 +1,30 @@
 plugins {
-    id 'java'
     id 'application'
-    id 'com.palantir.docker' version '0.25.0'
-}
-
-repositories {
-    mavenCentral()
+    id 'com.exactpro.th2.gradle.component'
 }
 
 dependencies {
+    implementation project(':cradle-admin-tool-core')
+    implementation platform('org.eclipse.jetty:jetty-bom:9.4.54.v20240208')
+    implementation("com.exactpro.th2:common:$commonVersion") {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    }
+    implementation "com.exactpro.th2:cradle-core:$cradleVersion"
+    implementation "com.exactpro.th2:cradle-cassandra:$cradleVersion"
 
-    implementation project(':')
-    implementation 'org.eclipse.jetty:jetty-server:9.4.51.v20230217'
-    implementation 'org.eclipse.jetty:jetty-servlet:9.4.51.v20230217'
+    implementation "org.eclipse.jetty:jetty-server"
+    implementation "org.eclipse.jetty:jetty-servlet"
+
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
 
-    testImplementation project(':').sourceSets.test.output
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testImplementation 'org.eclipse.jetty:jetty-http:9.4.51.v20230217:tests'
-    testImplementation 'org.eclipse.jetty:jetty-util:9.4.51.v20230217'
+    implementation 'org.apache.commons:commons-lang3'
 
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation project(':cradle-admin-tool-test')
+    //noinspection DependencyNotationArgument
+    testImplementation group: "org.eclipse.jetty", name: "jetty-http", classifier: "tests"
+    testImplementation "org.eclipse.jetty:jetty-util"
 }
 
 application {
     mainClassName = "com.exactpro.th2.cradle.adm.http.Application"
 }
-
-applicationName = 'service'
-
-distTar {
-    archiveName "${applicationName}.tar"
-}
-
-dockerPrepare {
-    dependsOn distTar
-}
-
-docker {
-    copySpec.from(tarTree("$buildDir/distributions/${applicationName}.tar"))
-}
-

@@ -16,8 +16,8 @@
 
 package com.exactpro.th2.cradle.adm.modes;
 
-import com.exactpro.th2.cradle.adm.params.NewPageParams;
 import com.exactpro.th2.cradle.adm.results.SimpleResult;
+import com.exactpro.th2.cradle.adm.params.NewPageParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

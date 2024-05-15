@@ -1,28 +1,25 @@
+plugins {
+    id 'application'
+}
+
 dependencies {
+    implementation project(':cradle-admin-tool-core')
 
-    implementation project(':')
-    implementation 'commons-cli:commons-cli:1.4'
-
-    testImplementation project(':').sourceSets.test.output
-}
-
-jar {
-    archivesBaseName = 'th2-cradle-admin-cli'
-    manifest {
-        attributes(
-                'Created-By': "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})",
-                'Specification-Title': 'Cradle TH2 Admin tool (CLI)',
-                'Specification-Vendor': 'Exactpro Systems LLC',
-                'Implementation-Title': 'Cradle TH2 Admin tool (CLI)',
-                'Implementation-Vendor-Id': 'com.exactpro',
-                'Implementation-Version-Date': getDate(),
-                'Implementation-Version': project.version,
-                'Main-Class': 'com.exactpro.th2.cradle.adm.cli.Application',
-                "Class-Path": configurations.runtimeClasspath.collect { "lib/" + it.getName() }.join(' '))
+    implementation("com.exactpro.th2:common:$commonVersion") {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
+
+    implementation "com.exactpro.th2:cradle-core:$cradleVersion"
+    implementation "com.exactpro.th2:cradle-cassandra:$cradleVersion"
+
+    implementation 'commons-cli:commons-cli:1.7.0'
+
+    testImplementation project(':cradle-admin-tool-test')
 }
 
-mainClassName = 'com.exactpro.th2.cradle.adm.cli.Application'
+application {
+    mainClassName = 'com.exactpro.th2.cradle.adm.cli.Application'
+}
 
 
 tasks.register('release', Zip) {
@@ -33,11 +30,4 @@ tasks.register('release', Zip) {
     }
     from jar
 }
-
-static def getDate() {
-    def date = new Date()
-    def formattedDate = date.format('yyyy-MM-dd_HH:mm:ss.SSS')
-    return formattedDate
-}
-
 

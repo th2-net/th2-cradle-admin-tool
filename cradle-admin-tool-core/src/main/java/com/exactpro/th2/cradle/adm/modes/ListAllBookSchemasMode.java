@@ -1,8 +1,8 @@
 package com.exactpro.th2.cradle.adm.modes;
 
+import com.exactpro.th2.cradle.adm.results.BookSchemaInfo;
 import com.exactpro.cradle.BookListEntry;
 import com.exactpro.th2.cradle.adm.params.NoParams;
-import com.exactpro.th2.cradle.adm.results.BookSchemaInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

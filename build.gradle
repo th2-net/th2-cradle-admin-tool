@@ -1,25 +1,19 @@
-import com.github.jk1.license.filter.LicenseBundleNormalizer
-import com.github.jk1.license.render.JsonReportRenderer
-
 plugins {
-    id "org.owasp.dependencycheck" version "8.3.1"
-    id 'com.github.jk1.dependency-license-report' version '2.5'
-    id "de.undercouch.download" version "5.4.0"
+    id "com.exactpro.th2.gradle.base" version "0.0.6"
+    id "com.exactpro.th2.gradle.component" version "0.0.6" apply false
 }
-
-apply plugin: 'java'
-apply plugin: 'application'
-
 
 ext {
-    commonVersion = '5.8.0-dev'
-    cradleVersion = '5.2.0-dev'
+    commonVersion = '5.11.0-dev'
+    cradleVersion = '5.3.0-dev'
 }
 
-allprojects {
+dependencyCheck {
+    suppressionFile = "suppressions.xml"
+}
 
+subprojects {
     apply plugin: 'java'
-    apply plugin: 'application'
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -44,23 +38,19 @@ allprojects {
     }
 
     dependencies {
-        implementation(platform("com.exactpro.th2:bom:4.5.0"))
-
-        implementation("com.exactpro.th2:common:$commonVersion") {
-            exclude group: 'com.squareup.okhttp3', module: 'okhttp'
-        }
-        implementation "com.exactpro.th2:cradle-core:$cradleVersion"
-        implementation "com.exactpro.th2:cradle-cassandra:$cradleVersion"
-        implementation 'org.apache.commons:commons-lang3'
-
         implementation "org.slf4j:slf4j-api"
-
-        testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
         testImplementation 'org.mockito:mockito-inline:5.2.0'
         testImplementation 'org.mockito:mockito-junit-jupiter:5.10.0'
-        testImplementation 'com.exactpro.th2:junit-jupiter-integration:0.0.1-master-6956603819-5241ee5-SNAPSHOT'
+
+        testImplementation 'com.exactpro.th2:junit-jupiter-integration:0.0.1'
+
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+
+        testRuntimeOnly('org.junit.platform:junit-platform-launcher') {
+            because 'This artifact will not be added automatically since gradle 9.0. You can read more information here:' +
+                    'https://docs.gradle.org/8.3/userguide/upgrading_version_8.html#test_framework_implementation_dependencies'
+        }
     }
 
     test {
@@ -78,41 +68,4 @@ allprojects {
             showStandardStreams = true
         }
     }
-}
-
-dependencyLocking {
-    lockAllConfigurations()
-}
-
-dependencyCheck {
-    formats = ['SARIF', 'JSON', 'HTML']
-    failBuildOnCVSS = 5
-    suppressionFile = "suppressions.xml"
-
-    analyzers {
-        assemblyEnabled = false
-        nugetconfEnabled = false
-        nodeEnabled = false
-    }
-}
-
-licenseReport {
-    def licenseNormalizerBundlePath = "$buildDir/license-normalizer-bundle.json"
-
-    if (!file(licenseNormalizerBundlePath).exists()) {
-        download.run {
-            src 'https://raw.githubusercontent.com/th2-net/.github/main/license-compliance/gradle-license-report/license-normalizer-bundle.json'
-            dest "$buildDir/license-normalizer-bundle.json"
-            overwrite false
-        }
-    }
-
-    filters = [
-            new LicenseBundleNormalizer(licenseNormalizerBundlePath, false)
-    ]
-    renderers = [
-            new JsonReportRenderer('licenses.json', false),
-    ]
-    excludeOwnGroup = false
-    allowedLicensesFile = new URL("https://raw.githubusercontent.com/th2-net/.github/main/license-compliance/gradle-license-report/allowed-licenses.json")
 }
