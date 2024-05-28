@@ -1,6 +1,6 @@
 plugins {
-    id "com.exactpro.th2.gradle.base" version "0.0.6"
-    id "com.exactpro.th2.gradle.component" version "0.0.6" apply false
+    id "com.exactpro.th2.gradle.base" version "0.0.7"
+    id "com.exactpro.th2.gradle.component" version "0.0.7" apply false
 }
 
 ext {
@@ -20,6 +20,7 @@ subprojects {
     compileJava.options.debugOptions.debugLevel = 'source,lines,vars' // Include debug information
 
     group = 'com.exactpro.th2'
+    version = release_version
 
     repositories {
         mavenCentral()
@@ -68,4 +69,8 @@ subprojects {
             showStandardStreams = true
         }
     }
+}
+
+licenseReport {
+    excludeBoms = true
 }
