@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
     implementation project(':cradle-admin-tool-core')
-    implementation platform('org.eclipse.jetty:jetty-bom:9.4.54.v20240208')
+    implementation platform('org.eclipse.jetty:jetty-bom:9.4.56.v20240826')
     implementation("com.exactpro.th2:common:$commonVersion") {
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
@@ -15,7 +15,7 @@ dependencies {
     implementation "org.eclipse.jetty:jetty-server"
     implementation "org.eclipse.jetty:jetty-servlet"
 
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
 
     implementation 'org.apache.commons:commons-lang3'
 

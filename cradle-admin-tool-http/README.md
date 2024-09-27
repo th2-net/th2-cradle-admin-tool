@@ -1,4 +1,4 @@
-# cradle-admin-tool-http (1.8.0)
+# cradle-admin-tool-http (1.11.1)
 Service which allows user to manage books/pages via RestAPI requests.
 - The first page in a book can be created only if start time is more than current time.
 - After the first page all new pages must have start time more than current time + `bookRefreshIntervalMillis` * 2
@@ -27,7 +27,7 @@ metadata:
   name: cradle-admin
 spec:
   image-name: your.image.repo:42/cradle-admin-tool-http
-  image-version: 1.6.1
+  image-version: 1.11.1
   type: th2-box
   custom-config:
     ip: 198.168.0.2
@@ -47,6 +47,13 @@ spec:
 ```
 
 ## Release notes
+
+### 1.11.1
+
++ Updated:
+  + Cradle API to `5.4.3-dev` (executes insert and update operations on pages atomically)
+  + th2-gradle-plugin: `0.1.3` (bom: `4.8.0`)
+  + common to `5.14.0-dev`
 
 ### 1.8.0
 
@@ -78,5 +85,5 @@ spec:
   + Cradle-admin creates auto-page in future even if the start time of a last page is much earlier than now + threshold
 
 + Updated:
-  + Cradle API to `5.0.3-dev`  
-  + common to `5.2.1-dev`  
+  + Cradle API to `5.0.3-dev`
+  + common to `5.2.1-dev`
