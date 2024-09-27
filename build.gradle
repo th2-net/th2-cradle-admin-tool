@@ -5,7 +5,7 @@ plugins {
 
 ext {
     commonVersion = '5.14.0-dev'
-    cradleVersion = '5.4.2-TH2-5241-11069342183-82eea57-SNAPSHOT'
+    cradleVersion = '5.4.2-dev'
 }
 
 dependencyCheck {
