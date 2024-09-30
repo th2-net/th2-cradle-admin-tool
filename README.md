@@ -66,10 +66,11 @@ spec:
 ## Release notes:
 
 ### 1.11.1-dev
-+ Updated:
-  + Cradle API to `5.4.3-dev` (executes insert and update operations on pages atomically)
-  + th2-gradle-plugin: `0.1.3` (bom: `4.8.0`)
-  + common to `5.14.0-dev`
+* Updated:
+  * Cradle API to `5.4.3-dev` (executes insert and update operations on pages atomically)
+  * th2-gradle-plugin: `0.1.3` (bom: `4.8.0`)
+  * common to `5.14.0-dev`
+  * jetty: `9.4.56.v20240826`
 
 ### 1.11.0-dev
 * Migrated to th2 gradle plugin `0.0.8`
