@@ -1,4 +1,4 @@
-# th2-cradle-admin 1.11.0
+# th2-cradle-admin 1.11.1
 
 The th2-cradle-admin is a set of projects for managing books and pages in th2 storage.
 
@@ -15,7 +15,7 @@ metadata:
   name: cradle-admin
 spec:
   imageName: ghcr.io/th2-net/th2-cradle-admin-tool
-  imageVersion: 1.9.0-dev
+  imageVersion: 1.11.1-dev
   type: th2-conn
   customConfig:
     ip: 0.0.0.0
@@ -64,6 +64,12 @@ spec:
   * `page-name` - name of the removed page (required).
 
 ## Release notes:
+
+### 1.11.1
++ Updated:
+  + Cradle API to `5.4.3-dev` (executes insert and update operations on pages atomically)
+  + th2-gradle-plugin: `0.1.3` (bom: `4.8.0`)
+  + common to `5.14.0-dev`
 
 ### 1.11.0-dev
 * Migrated to th2 gradle plugin `0.0.8`
