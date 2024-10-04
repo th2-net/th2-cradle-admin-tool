@@ -9,7 +9,7 @@ Service which allows user to manage books/pages via RestAPI requests.
 
 
 ## Configuration
-- **ip** - host where http cradle admin instance will be instanciated. Default value: `0.0.0.0`
+- **ip** - host where http cradle admin instance will be instantiated. Default value: `0.0.0.0`
 - **port** - port on which http server will listen user requests. Default value: `8080`
 - **page-recheck-interval** - interval in seconds which `PageManager` service checks if new page is required to create or not based on duration values presented in `auto-pages`. Default value: 60 seconds
 - **auto-book** - if `true` than cradle-admin-tool creates books with first page for each value from `auto-pages` option when target book doesn't exist in cradle. 
@@ -55,6 +55,7 @@ spec:
   + th2-gradle-plugin: `0.1.3` (bom: `4.8.0`)
   + common to `5.14.0-dev`
   + jetty: `9.4.56.v20240826`
+  + commons-cli: `1.9.0`
 
 ### 1.8.0
 
