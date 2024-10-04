@@ -216,9 +216,8 @@ public class PagesCliTest extends AbstractCliTest {
         cradleStorage.refreshBook(bookName);
         assertEquals(1, bookInfo.getPages().size());
         checkOutput(false, String.format(
-                "Query to insert page '%s' book '%s' was not applied. Probably, page already exists",
+                "Query to insert page '%s' to book '%s' failed. Page already exists",
                 pageName,
                 bookName.toLowerCase()));
     }
-
 }
