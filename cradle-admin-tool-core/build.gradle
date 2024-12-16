@@ -1,5 +1,5 @@
 dependencies {
-    implementation "com.exactpro.th2:cradle-core:$cradleVersion"
-    implementation "com.exactpro.th2:cradle-cassandra:$cradleVersion"
+    implementation(libs.cradle.core)
+    implementation(libs.cradle.cassandra)
     implementation 'org.apache.commons:commons-lang3'
 }
