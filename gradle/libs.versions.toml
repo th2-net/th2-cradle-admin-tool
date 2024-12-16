@@ -2,6 +2,7 @@
 th2-plugin = "0.1.6"
 cradle = "5.4.4-dev"
 mockito = "5.14.1"
+jetty = "11.0.24"
 
 [libraries]
 th2-common = { group = "com.exactpro.th2", name = "common", version = "5.14.0-dev" }
@@ -9,7 +10,8 @@ cradle-core = { group = "com.exactpro.th2", name = "cradle-core", version.ref = 
 cradle-cassandra = { group = "com.exactpro.th2", name = "cradle-cassandra", version.ref = "cradle" }
 th2-junit-jupiter-integration = { group = "com.exactpro.th2", name = "junit-jupiter-integration", version = "0.0.1" }
 
-jetty-bom = { group = "org.eclipse.jetty", name = "jetty-bom", version = "9.4.56.v20240826" }
+jetty-bom = { group = "org.eclipse.jetty", name = "jetty-bom", version.ref = "jetty" }
+
 jackson-datatype-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310", version = "2.18.2" }
 commons-cli = { group = "commons-cli", name = "commons-cli", version = "1.9.0" }
 

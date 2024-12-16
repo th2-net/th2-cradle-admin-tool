@@ -56,6 +56,8 @@ subprojects {
 
     tasks.register('integrationTest', Test) {
         group = 'verification'
+        systemProperty 'datastax-java-driver.advanced.connection.init-query-timeout', '5 seconds'
+        systemProperty 'datastax-java-driver.basic.request.timeout', '10 seconds'
         useJUnitPlatform {
             includeTags('integration')
         }
