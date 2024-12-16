@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+/*
+ * Copyright 2021-2024 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,22 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ */
 
 package com.exactpro.th2.cradle.adm.http.servlets;
 
 import com.exactpro.cradle.CradleStorage;
 import com.exactpro.th2.cradle.adm.http.modes.NewPageCreationHttpMode;
 import com.exactpro.th2.cradle.adm.modes.AbstractMode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class NewPageServlet extends SimpleHttpServlet {
 
-	private static final Logger logger = LoggerFactory.getLogger(NewBookServlet.class);
-
-	public NewPageServlet(CradleStorage storage) {
+    public NewPageServlet(CradleStorage storage) {
 		super(storage);
 	}
 

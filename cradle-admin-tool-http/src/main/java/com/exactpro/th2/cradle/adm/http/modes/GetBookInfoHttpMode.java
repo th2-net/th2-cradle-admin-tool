@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright 2022-2022 Exactpro (Exactpro Systems Limited)
+/*
+ * Copyright 2022-2024 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ */
 
 package com.exactpro.th2.cradle.adm.http.modes;
 
@@ -23,7 +23,7 @@ import com.exactpro.th2.cradle.adm.modes.GetBookInfoMode;
 import com.exactpro.th2.cradle.adm.params.GetBookInfoParams;
 import com.exactpro.th2.cradle.adm.results.BooksListInfo;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class GetBookInfoHttpMode extends GetBookInfoMode implements HttpMode<GetBookInfoParams> {
 	
@@ -33,9 +33,8 @@ public class GetBookInfoHttpMode extends GetBookInfoMode implements HttpMode<Get
 	}
 
 	@Override
-	public boolean initParams(HttpServletRequest req) throws InvalidConfigurationException {
+	public void initParams(HttpServletRequest req) throws InvalidConfigurationException {
 		this.param = getParams(req);
-		return true;
 	}
 
 	@Override
