@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2024 Exactpro (Exactpro Systems Limited)
+ * Copyright 2022-2025 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +30,16 @@ import com.exactpro.th2.test.spec.CradleSpec;
 import org.eclipse.jetty.http.HttpTester;
 import org.eclipse.jetty.server.LocalConnector;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 
 import java.io.IOException;
 import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("integration")
 @Th2IntegrationTest
@@ -81,14 +84,18 @@ public class AbstractHttpTest {
 
     protected void checkPlainResponse(String str, boolean status, String test) {
         PlainResponse rsp = new PlainResponse(str.trim());
-        Assertions.assertEquals(status ? "Success": "Failed", rsp.status);
-        Assertions.assertEquals(test, rsp.comment);
+        assertAll(
+                () -> assertEquals(status ? "Success" : "Failed", rsp.status, rsp.toString()),
+                () -> assertEquals(test, rsp.comment)
+        );
     }
 
-    protected void checkPlainResponseContains(String body, boolean expected, String test) {
+    protected void checkPlainResponseContains(String body, boolean status, String test) {
         PlainResponse rsp = new PlainResponse(body.trim());
-        Assertions.assertEquals(rsp.status, expected ? "Success": "Failed", rsp.toString());
-        Assertions.assertTrue(rsp.comment.contains(test), () -> String.format("Comment should contain text: %s but actual text is %s", test, rsp.comment));
+        assertAll(
+                () -> assertEquals(status ? "Success" : "Failed", rsp.status, rsp.toString()),
+                () -> assertTrue(rsp.comment.contains(test), () -> String.format("Comment should contain text: %s but actual text is %s", test, rsp.comment))
+        );
     }
 
     protected void addBook(BookToAdd bookToAdd) throws Exception {

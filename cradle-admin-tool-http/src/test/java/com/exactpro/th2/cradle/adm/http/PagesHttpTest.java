@@ -1,5 +1,5 @@
 /*
-* Copyright 2022-2024 Exactpro (Exactpro Systems Limited)
+* Copyright 2022-2025 Exactpro (Exactpro Systems Limited)
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -125,6 +125,140 @@ public class PagesHttpTest extends AbstractHttpTest {
     }
 
     @Test
+    public void updatePageCommentTest() throws Exception {
+        String bookName = "updatePageCommentTest";
+        String pageName = "page2";
+        String pageComment = "update-page-comment-test";
+        Instant time = Instant.now().minus(2, ChronoUnit.MINUTES);
+        addBook(new BookToAdd(bookName, Instant.now()));
+
+        BookId bookId = new BookId(bookName);
+        PageId pageId = new PageId(bookId, time, pageName);
+        BookInfo bookInfo = this.storage.getBook(bookId);
+
+        HttpTester.Response response = this.executeGet(String.format("/new-page?book-id=%s&page-name=%s&page-start=%s",
+                bookName, pageName, time));
+        assertEquals(200, response.getStatus());
+
+        bookInfo.refresh();
+        PageInfo pageInfo = bookInfo.getPage(pageId);
+        assertNotNull(pageInfo);
+        assertNull(pageInfo.getComment());
+
+        response = this.executeGet(String.format("/update-page?book-id=%s&page-name=%s&new-page-comment=%s",
+                bookName, pageName, pageComment));
+        assertEquals(200, response.getStatus());
+        this.checkPlainResponseContains(response.getContent(), true,
+                String.format("Page updated bookId = %s,pageName = %s,pageStart = %s,pageComment = %s,updated = ", bookName.toLowerCase(), pageName, time, pageComment));
+
+        bookInfo.refresh();
+        pageInfo = bookInfo.getPage(pageId);
+        assertNotNull(pageInfo);
+        assertEquals(pageComment, pageInfo.getComment());
+    }
+
+    @Test
+    public void updatePageNameTest() throws Exception {
+        String bookName = "updatePageNameTest";
+        String pageNameFirst = "page-first";
+        String pageNameSecond = "page-second";
+        Instant time = Instant.now().plus(2, ChronoUnit.MINUTES);
+        addBook(new BookToAdd(bookName, Instant.now()));
+
+        BookId bookId = new BookId(bookName);
+        PageId pageIdFirst = new PageId(bookId, time, pageNameFirst);
+        PageId pageIdSecond = new PageId(bookId, time, pageNameSecond);
+        BookInfo bookInfo = this.storage.getBook(bookId);
+
+        HttpTester.Response response = this.executeGet(String.format("/new-page?book-id=%s&page-name=%s&page-start=%s",
+                bookName, pageNameFirst, time));
+        assertEquals(200, response.getStatus());
+
+        bookInfo.refresh();
+        assertNotNull(bookInfo.getPage(pageIdFirst));
+        assertNull(bookInfo.getPage(pageIdSecond));
+
+        response = this.executeGet(String.format("/update-page?book-id=%s&page-name=%s&new-page-name=%s",
+                bookName, pageNameFirst, pageNameSecond));
+        assertEquals(200, response.getStatus());
+        this.checkPlainResponseContains(response.getContent(), true,
+                String.format("Page updated bookId = %s,pageName = %s,pageStart = %s,updated = ", bookName.toLowerCase(), pageIdSecond.getName(), time));
+
+        bookInfo.refresh();
+        assertNull(bookInfo.getPage(pageIdFirst));
+        assertNotNull(bookInfo.getPage(pageIdSecond));
+    }
+
+    @Test
+    public void updatePageNameInPastTest() throws Exception {
+        String bookName = "updatePageNameInPastTest";
+        String pageNameFirst = "page-first";
+        String pageNameSecond = "page-second";
+        Instant time = Instant.now().minus(2, ChronoUnit.MINUTES);
+        addBook(new BookToAdd(bookName, Instant.now()));
+
+        BookId bookId = new BookId(bookName);
+        PageId pageIdFirst = new PageId(bookId, time, pageNameFirst);
+        PageId pageIdSecond = new PageId(bookId, time, pageNameSecond);
+        BookInfo bookInfo = this.storage.getBook(bookId);
+
+        HttpTester.Response response = this.executeGet(String.format("/new-page?book-id=%s&page-name=%s&page-start=%s",
+                bookName, pageNameFirst, time));
+        assertEquals(200, response.getStatus());
+
+        bookInfo.refresh();
+        assertNotNull(bookInfo.getPage(pageIdFirst));
+        assertNull(bookInfo.getPage(pageIdSecond));
+
+        response = this.executeGet(String.format("/update-page?book-id=%s&page-name=%s&new-page-name=%s",
+                bookName, pageNameFirst, pageNameSecond));
+        assertEquals(200, response.getStatus());
+        this.checkPlainResponseContains(response.getContent(), false,
+                String.format("You can only rename pages which start more than 200 ms in future: pageStart - %s, now + threshold - ", time));
+
+        bookInfo.refresh();
+        assertNotNull(bookInfo.getPage(pageIdFirst));
+        assertNull(bookInfo.getPage(pageIdSecond));
+    }
+
+    @Test
+    public void updatePageTest() throws Exception {
+        String bookName = "updatePageTest";
+        String pageNameFirst = "page-first";
+        String pageNameSecond = "page-second";
+        String pageComment = "update-page-comment-test";
+        Instant time = Instant.now().plus(2, ChronoUnit.MINUTES);
+        addBook(new BookToAdd(bookName, Instant.now()));
+
+        BookId bookId = new BookId(bookName);
+        PageId pageIdFirst = new PageId(bookId, time, pageNameFirst);
+        PageId pageIdSecond = new PageId(bookId, time, pageNameSecond);
+        BookInfo bookInfo = this.storage.getBook(bookId);
+
+        HttpTester.Response response = this.executeGet(String.format("/new-page?book-id=%s&page-name=%s&page-start=%s",
+                bookName, pageNameFirst, time));
+        assertEquals(200, response.getStatus());
+
+        bookInfo.refresh();
+        PageInfo pageInfo = bookInfo.getPage(pageIdFirst);
+        assertNotNull(pageInfo);
+        assertNull(bookInfo.getPage(pageIdSecond));
+        assertNull(pageInfo.getComment());
+
+        response = this.executeGet(String.format("/update-page?book-id=%s&page-name=%s&new-page-name=%s&new-page-comment=%s",
+                bookName, pageNameFirst, pageNameSecond, pageComment));
+        assertEquals(200, response.getStatus());
+        this.checkPlainResponseContains(response.getContent(), true,
+                String.format("Page updated bookId = %s,pageName = %s,pageStart = %s,pageComment = %s,updated = ", bookName.toLowerCase(), pageIdSecond.getName(), time, pageComment));
+
+        bookInfo.refresh();
+        pageInfo = bookInfo.getPage(pageIdSecond);
+        assertNull(bookInfo.getPage(pageIdFirst));
+        assertNotNull(pageInfo);
+        assertEquals(pageComment, pageInfo.getComment());
+    }
+
+    @Test
     public void removePageTest() throws Exception {
         int initNumberOfBooks = storage.listBooks().size();
         String bookName = "removePageTest";
@@ -219,7 +353,7 @@ public class PagesHttpTest extends AbstractHttpTest {
         assertEquals(2, bookInfo.getPages().size());
 
         HttpTester.Response response = this.executeGet(String.format("/new-page?book-id=%s&page-name=%s&page-start=%s",
-                bookName, pageToInsert, page2Start.toString()));
+                bookName, pageToInsert, page2Start));
         assertEquals(200, response.getStatus());
         this.checkPlainResponse(response.getContent(), true,
                 String.format("Page created bookId = %s,pageName = %s,pageStart = %s", bookName.toLowerCase(), pageToInsert, page2Start));

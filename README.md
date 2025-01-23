@@ -59,6 +59,11 @@ spec:
   * `page-name` - name of the new page (optional). If you miss this argument, name is generated automatically 
   * `page-start` - start time of the new page (required)
   * `page-comment` - comment for the new page (optional)
+* `/update-page?book-id=test_book&page-name=first_page&new-page-comment=my_second_page&new-page-name=second_page` - update existed page by arguments:
+  * `book-id` - name (id) where the new page will be created (required).
+  * `page-name` - name of the updated page (required).
+  * `new-page-name` - new name for updated page (optional). Only pages in future can be renamed.
+  * `new-page-comment` - new comment for updated page (optional). Comment of any page can be updated  
 * `/remove-page?book-id=test_book&page-name=first_page` - removes a page by arguments:
   * `book-id` - name (id) where the removed page is (required).
   * `page-name` - name of the removed page (required).
