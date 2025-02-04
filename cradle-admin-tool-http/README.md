@@ -46,6 +46,26 @@ spec:
     page-recheck-interval: 60 
 ```
 
+## Scripts
+
+### cradle-admin-tool-http/scripts/update-pages-comment.sh
+
+```
+Help: this script provide ability to update comment for pages covered by time rage
+ Arg: --cradle-admin-tool-url (required) - cradle admin tool URL
+ Arg: --book (required) - th2 book for searching and updating pages
+ Arg: --start-timestamp (required) - start timestamp for searching page to add --comment comment
+ Arg: --end-timestamp (required) - end timestamp for searching page to add --comment comment
+ Arg: --comment (required) - comment for adding to pages found from --start-timestamp to --end-timestamp
+ Arg: --mode (optional) - work mode. Default value is 'append'
+         * append - appends existed pages' comment by text specified using --comment. 'auto-page' default page comment is removed
+           Final comment has JSON string array format, for example: '["<existed comment>","<specified comment>"]'
+         * set - sets text specified using --comment as pages' comment
+           Final comment has JSON string array format, for example: '["<specified comment>"]'
+         * reset - resets pages' comment to 'auto-page' default page comment
+           Final comment is 'auto-page'
+```
+
 ## Release notes
 
 ### 1.11.1-dev
