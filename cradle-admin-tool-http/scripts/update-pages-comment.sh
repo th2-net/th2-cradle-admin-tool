@@ -45,79 +45,96 @@ CRADLE_ADMIN_NULL_VALUE='null'
 CRADLE_ADMIN_DEFAULT_COMMENT='auto-page'
 
 TIMESTAMP_REGEX="^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}\:[0-9]{2}\:[0-9]{2}Z$"
+REQUIRED_UTILS=('jq' 'curl' 'paste' 'grep' 'head')
 
-args_help() {
-  echo 'Help: this script provide ability to update comment for pages covered by time rage'
-  echo " Arg: ${ARG_CRADLE_ADMIN_TOOL_URL} (required) - cradle admin tool URL"
-  echo " Arg: ${ARG_BOOK} (required) - th2 book for searching and updating pages"
-  echo " Arg: ${ARG_START_TIMESTAMP} (required) - start timestamp for searching page to add ${ARG_COMMENT} comment"
-  echo " Arg: ${ARG_END_TIMESTAMP} (required) - end timestamp for searching page to add ${ARG_COMMENT} comment"
-  echo " Arg: ${ARG_COMMENT} (required) - comment for adding to pages found from ${ARG_START_TIMESTAMP} to ${ARG_END_TIMESTAMP}"
-  echo " Arg: ${ARG_MODE} (optional) - work mode. Default value is '${MODE_APPEND}'"
-  echo "         * ${MODE_APPEND} - appends existed pages' comment by text specified using ${ARG_COMMENT}. '$CRADLE_ADMIN_DEFAULT_COMMENT' default page comment is removed"
-  echo "           Final comment has JSON string array format, for example: '[\"<existed comment>\",\"<specified comment>\"]'"
-  echo "         * ${MODE_SET} - sets text specified using ${ARG_COMMENT} as pages' comment"
-  echo "           Final comment has JSON string array format, for example: '[\"<specified comment>\"]'"
-  echo "         * ${MODE_RESET} - resets pages' comment to '$CRADLE_ADMIN_DEFAULT_COMMENT' default page comment"
-  echo "           Final comment is '$CRADLE_ADMIN_DEFAULT_COMMENT'"
+print_help() {
+  echo 'Help:'
+  echo ' Description: this script provide ability to update comment for pages covered by time rage'
+  echo " Required utils: ${REQUIRED_UTILS[*]}"
+  echo ' Arguments:'
+  echo "  ${ARG_CRADLE_ADMIN_TOOL_URL} (required) - cradle admin tool URL"
+  echo "  ${ARG_BOOK} (required) - th2 book for searching and updating pages"
+  echo "  ${ARG_START_TIMESTAMP} (required) - start timestamp for searching page to add ${ARG_COMMENT} comment"
+  echo "  ${ARG_END_TIMESTAMP} (required) - end timestamp for searching page to add ${ARG_COMMENT} comment"
+  echo "  ${ARG_COMMENT} (required) - comment for adding to pages found from ${ARG_START_TIMESTAMP} to ${ARG_END_TIMESTAMP}"
+  echo "  ${ARG_MODE} (optional) - work mode. Default value is '${MODE_APPEND}'"
+  echo "     * ${MODE_APPEND} - appends existed pages' comment by text specified using ${ARG_COMMENT}. '$CRADLE_ADMIN_DEFAULT_COMMENT' default page comment is removed"
+  echo "       Final comment has JSON string array format, for example: '[\"<existed comment>\",\"<specified comment>\"]'"
+  echo "     * ${MODE_SET} - sets text specified using ${ARG_COMMENT} as pages' comment"
+  echo "       Final comment has JSON string array format, for example: '[\"<specified comment>\"]'"
+  echo "     * ${MODE_RESET} - resets pages' comment to '$CRADLE_ADMIN_DEFAULT_COMMENT' default page comment"
+  echo "       Final comment is '$CRADLE_ADMIN_DEFAULT_COMMENT'"
 }
 
 parse_args() {
-  export CRADLE_ADMIN_TOOL_URL=''
-  export BOOK=''
-  export START_TIMESTAMP=''
-  export END_TIMESTAMP=''
-  export COMMENT=''
-  export MODE="${MODE_APPEND}"
+  CRADLE_ADMIN_TOOL_URL=''
+  BOOK=''
+  START_TIMESTAMP=''
+  END_TIMESTAMP=''
+  COMMENT=''
+  MODE="${MODE_APPEND}"
 
   while [[ "$#" -gt 0 ]]; do
     case "$1" in
       --help)
-        args_help
+        print_help
         exit 0
         ;;
       "${ARG_CRADLE_ADMIN_TOOL_URL}")
         CRADLE_ADMIN_TOOL_URL="$2"
-        export CRADLE_ADMIN_TOOL_URL
         shift 2
         ;;
       "${ARG_BOOK}")
         BOOK="$2"
-        export BOOK
         shift 2
         ;;
       "${ARG_START_TIMESTAMP}")
         START_TIMESTAMP="$2"
-        export START_TIMESTAMP
         shift 2
         ;;
       "${ARG_END_TIMESTAMP}")
         END_TIMESTAMP="$2"
-        export END_TIMESTAMP
         shift 2
         ;;
       "${ARG_COMMENT}")
         COMMENT="$2"
-        export COMMENT
         shift 2
         ;;
       "${ARG_MODE}")
         MODE="$2"
-        export MODE
         shift 2
         ;;
     esac
   done
 
+  export CRADLE_ADMIN_TOOL_URL="${CRADLE_ADMIN_TOOL_URL}"
+  export BOOK="${BOOK}"
+  export START_TIMESTAMP="${START_TIMESTAMP}"
+  export END_TIMESTAMP="${END_TIMESTAMP}"
+  export COMMENT="${COMMENT}"
+  export MODE="${MODE}"
+
   echo 'Arguments:'
-  echo " Arg: ${ARG_CRADLE_ADMIN_TOOL_URL} = '${CRADLE_ADMIN_TOOL_URL}'"
-  echo " Arg: ${ARG_BOOK} = '${BOOK}'"
-  echo " Arg: ${ARG_START_TIMESTAMP} = '${START_TIMESTAMP}'"
-  echo " Arg: ${ARG_END_TIMESTAMP} = '${END_TIMESTAMP}'"
-  echo " Arg: ${ARG_COMMENT} = '${COMMENT}'"
-  echo " Arg: ${ARG_MODE} = '${MODE}'"
+  echo " ${ARG_CRADLE_ADMIN_TOOL_URL} = '${CRADLE_ADMIN_TOOL_URL}'"
+  echo " ${ARG_BOOK} = '${BOOK}'"
+  echo " ${ARG_START_TIMESTAMP} = '${START_TIMESTAMP}'"
+  echo " ${ARG_END_TIMESTAMP} = '${END_TIMESTAMP}'"
+  echo " ${ARG_COMMENT} = '${COMMENT}'"
+  echo " ${ARG_MODE} = '${MODE}'"
 
   verify_args
+}
+
+verify_utils() {
+  echo "Check required utils: ${REQUIRED_UTILS[*]}"
+  for util in "${REQUIRED_UTILS[@]}"; do
+    if ! command -v "${util}" &> /dev/null; then
+      echo " ERROR: '${util}' is not installed."
+      print_help
+      exit 10
+    fi
+  done
+  echo " INFO: required utils are available"
 }
 
 verify_args() {
@@ -137,7 +154,7 @@ verify_url() {
     echo " INFO: '${CRADLE_ADMIN_TOOL_URL}' URL is accessible"
   else
     echo " ERROR: '${CRADLE_ADMIN_TOOL_URL}' URL is not accessible"
-    args_help
+    print_help
     exit 2
   fi
 }
@@ -316,8 +333,8 @@ prepare_comment_test() {
   exit 0
 }
 
-update_comments() {
-  echo 'Update comments:'
+update_page_comments() {
+  echo 'Update page comments:'
   local books_info_json
   local url
   url="${CRADLE_ADMIN_TOOL_URL}/${CRADLE_ADMIN_GET_BOOK_INFO_PATH}?${CRADLE_ADMIN_BOOK_ID_HTTP_ARG}=${BOOK}"
@@ -356,5 +373,6 @@ update_comments() {
   done
 }
 
+verify_utils
 parse_args "$@"
-update_comments
+update_page_comments
