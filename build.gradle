@@ -4,7 +4,7 @@ plugins {
 }
 
 ext {
-    commonVersion = '5.14.0-dev'
+    commonVersion = '5.15.0-windows-compatible-11379366273-569bd5b-SNAPSHOT'
     cradleVersion = '5.4.3-dev'
 }
 
