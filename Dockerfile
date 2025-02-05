@@ -4,7 +4,7 @@ COPY ./ .
 RUN gradle clean build dockerPrepare -p cradle-admin-tool-http -Prelease_version=${Prelease_version}
 
 FROM adoptopenjdk/openjdk11:alpine
-RUN apk add bash jq curl paste grep head # These utils are required for running embedded scripts
+RUN apk add bash jq curl grep # These utils are required for running embedded scripts
 ENV CRADLE_INSTANCE_NAME=instance1 \
     CASSANDRA_DATA_CENTER=kos \
     CASSANDRA_HOST=cassandra \
