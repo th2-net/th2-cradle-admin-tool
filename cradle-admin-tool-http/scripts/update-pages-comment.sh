@@ -53,19 +53,23 @@ print_help() {
   echo ' Description: this script provide ability to update comment for pages covered by time rage where page.started is included and page.ended is excluded'
   echo " Required utils: ${REQUIRED_UTILS[*]}"
   echo ' Arguments:'
+  echo "  ${ARG_MODE} (optional) - work mode. Default value is '${MODE_GET}'"
+  echo "     * '${MODE_APPEND}' - appends existed pages' comment by text specified using ${ARG_COMMENT}. '$CRADLE_ADMIN_DEFAULT_COMMENT' default page comment is removed"
+  echo "       Final comment has JSON string array format, for example: '[\"<existed comment>\",\"<specified comment>\"]'"
+  echo "     * '${MODE_SET}' - sets text specified using ${ARG_COMMENT} as pages' comment"
+  echo "       Final comment has JSON string array format, for example: '[\"<specified comment>\"]'"
+  echo "     * '${MODE_RESET}' - resets pages' comment to '$CRADLE_ADMIN_DEFAULT_COMMENT' default page comment"
+  echo "       Final comment is '$CRADLE_ADMIN_DEFAULT_COMMENT'"
+  echo "     * '${MODE_GET}' - prints pages and their comments"
   echo "  ${ARG_CRADLE_ADMIN_TOOL_URL} (required) - cradle admin tool URL"
   echo "  ${ARG_BOOK} (required) - th2 book for searching and updating pages"
-  echo "  ${ARG_START_TIMESTAMP} (optional) - start timestamp for searching page to add ${ARG_COMMENT} comment. Default is min timestamp"
-  echo "  ${ARG_END_TIMESTAMP} (optional) - end timestamp for searching page to add ${ARG_COMMENT} comment. Default is max timestamp"
+  echo "  ${ARG_START_TIMESTAMP} (conditional) - start timestamp for searching page to add ${ARG_COMMENT} comment."
+  echo "     - ['${MODE_APPEND}','${MODE_SET}','${MODE_RESET}'] modes (required)"
+  echo "     - '${MODE_GET}' mode (optional) - default is min timestamp"
+  echo "  ${ARG_END_TIMESTAMP} (conditional) - end timestamp for searching page to add ${ARG_COMMENT} comment."
+  echo "     - ['${MODE_APPEND}','${MODE_SET}','${MODE_RESET}'] modes (required)"
+  echo "     - '${MODE_GET}' mode (optional) - default is max timestamp"
   echo "  ${ARG_COMMENT} (conditional) - comment for adding to pages found from ${ARG_START_TIMESTAMP} to ${ARG_END_TIMESTAMP}. Required for ['${MODE_APPEND}','${MODE_SET}'] modes"
-  echo "  ${ARG_MODE} (optional) - work mode. Default value is '${MODE_GET}'"
-  echo "     * ${MODE_APPEND} - appends existed pages' comment by text specified using ${ARG_COMMENT}. '$CRADLE_ADMIN_DEFAULT_COMMENT' default page comment is removed"
-  echo "       Final comment has JSON string array format, for example: '[\"<existed comment>\",\"<specified comment>\"]'"
-  echo "     * ${MODE_SET} - sets text specified using ${ARG_COMMENT} as pages' comment"
-  echo "       Final comment has JSON string array format, for example: '[\"<specified comment>\"]'"
-  echo "     * ${MODE_RESET} - resets pages' comment to '$CRADLE_ADMIN_DEFAULT_COMMENT' default page comment"
-  echo "       Final comment is '$CRADLE_ADMIN_DEFAULT_COMMENT'"
-  echo "     * ${MODE_GET} - prints pages and their comments"
 }
 
 parse_args() {
@@ -151,7 +155,11 @@ verify_args() {
 
   case "${MODE}" in
     "${MODE_SET}"|"${MODE_APPEND}")
+      verify_not_empty_timestamps
       verify_comment
+      ;;
+    "${MODE_RESET}")
+      verify_not_empty_timestamps
       ;;
   esac
 }
@@ -217,6 +225,13 @@ verify_timestamps() {
   else
     echo " ERROR: '${START_TIMESTAMP}' start timestamp is greater than '${END_TIMESTAMP}' end timestamp."
     exit 4
+  fi
+}
+
+verify_not_empty_timestamps() {
+  if [[ "${START_TIMESTAMP}" == '' || "${END_TIMESTAMP}" == '' ]]; then
+    echo " ERROR: '${START_TIMESTAMP}' start timestamp and '${END_TIMESTAMP}' end timestamp mustn't be empty."
+    exit 7
   fi
 }
 
