@@ -24,6 +24,7 @@ ARG_MODE='--mode'
 MODE_APPEND='append'
 MODE_SET='set'
 MODE_RESET='reset'
+MODE_GET='get'
 
 CRADLE_ADMIN_GET_ALL_BOOKS_PATH='get-all-books'
 CRADLE_ADMIN_GET_BOOK_INFO_PATH='get-book-info'
@@ -49,21 +50,26 @@ REQUIRED_UTILS=('jq' 'curl' 'paste' 'grep' 'head')
 
 print_help() {
   echo 'Help:'
-  echo ' Description: this script provide ability to update comment for pages covered by time rage'
+  echo ' Description: this script provide ability to update comment for pages covered by time rage where page.started is included and page.ended is excluded'
   echo " Required utils: ${REQUIRED_UTILS[*]}"
   echo ' Arguments:'
+  echo "  ${ARG_MODE} (optional) - work mode. Default value is '${MODE_GET}'"
+  echo "     * '${MODE_APPEND}' - appends existed pages' comment by text specified using ${ARG_COMMENT}. '$CRADLE_ADMIN_DEFAULT_COMMENT' default page comment is removed"
+  echo "       Final comment has JSON string array format, for example: '[\"<existed comment>\",\"<specified comment>\"]'"
+  echo "     * '${MODE_SET}' - sets text specified using ${ARG_COMMENT} as pages' comment"
+  echo "       Final comment has JSON string array format, for example: '[\"<specified comment>\"]'"
+  echo "     * '${MODE_RESET}' - resets pages' comment to '$CRADLE_ADMIN_DEFAULT_COMMENT' default page comment"
+  echo "       Final comment is '$CRADLE_ADMIN_DEFAULT_COMMENT'"
+  echo "     * '${MODE_GET}' - prints pages and their comments"
   echo "  ${ARG_CRADLE_ADMIN_TOOL_URL} (required) - cradle admin tool URL"
   echo "  ${ARG_BOOK} (required) - th2 book for searching and updating pages"
-  echo "  ${ARG_START_TIMESTAMP} (required) - start timestamp for searching page to add ${ARG_COMMENT} comment"
-  echo "  ${ARG_END_TIMESTAMP} (required) - end timestamp for searching page to add ${ARG_COMMENT} comment"
-  echo "  ${ARG_COMMENT} (required) - comment for adding to pages found from ${ARG_START_TIMESTAMP} to ${ARG_END_TIMESTAMP}"
-  echo "  ${ARG_MODE} (optional) - work mode. Default value is '${MODE_APPEND}'"
-  echo "     * ${MODE_APPEND} - appends existed pages' comment by text specified using ${ARG_COMMENT}. '$CRADLE_ADMIN_DEFAULT_COMMENT' default page comment is removed"
-  echo "       Final comment has JSON string array format, for example: '[\"<existed comment>\",\"<specified comment>\"]'"
-  echo "     * ${MODE_SET} - sets text specified using ${ARG_COMMENT} as pages' comment"
-  echo "       Final comment has JSON string array format, for example: '[\"<specified comment>\"]'"
-  echo "     * ${MODE_RESET} - resets pages' comment to '$CRADLE_ADMIN_DEFAULT_COMMENT' default page comment"
-  echo "       Final comment is '$CRADLE_ADMIN_DEFAULT_COMMENT'"
+  echo "  ${ARG_START_TIMESTAMP} (conditional) - start timestamp for searching page to add ${ARG_COMMENT} comment."
+  echo "     - ['${MODE_APPEND}','${MODE_SET}','${MODE_RESET}'] modes (required)"
+  echo "     - '${MODE_GET}' mode (optional) - default is min timestamp"
+  echo "  ${ARG_END_TIMESTAMP} (conditional) - end timestamp for searching page to add ${ARG_COMMENT} comment."
+  echo "     - ['${MODE_APPEND}','${MODE_SET}','${MODE_RESET}'] modes (required)"
+  echo "     - '${MODE_GET}' mode (optional) - default is max timestamp"
+  echo "  ${ARG_COMMENT} (conditional) - comment for adding to pages found from ${ARG_START_TIMESTAMP} to ${ARG_END_TIMESTAMP}. Required for ['${MODE_APPEND}','${MODE_SET}'] modes"
 }
 
 parse_args() {
@@ -72,7 +78,7 @@ parse_args() {
   START_TIMESTAMP=''
   END_TIMESTAMP=''
   COMMENT=''
-  MODE="${MODE_APPEND}"
+  MODE="${MODE_GET}"
 
   while [[ "$#" -gt 0 ]]; do
     case "$1" in
@@ -104,6 +110,9 @@ parse_args() {
         MODE="$2"
         shift 2
         ;;
+      *)
+        echo " ERROR: unknown '${1}' argument"
+        exit 1
     esac
   done
 
@@ -139,11 +148,20 @@ verify_utils() {
 
 verify_args() {
   echo 'Check arguments:'
+  verify_mode
   verify_url
   verify_book
   verify_timestamps
-  verify_comment
-  verify_mode
+
+  case "${MODE}" in
+    "${MODE_SET}"|"${MODE_APPEND}")
+      verify_not_empty_timestamps
+      verify_comment
+      ;;
+    "${MODE_RESET}")
+      verify_not_empty_timestamps
+      ;;
+  esac
 }
 
 verify_url() {
@@ -179,18 +197,22 @@ verify_book() {
 }
 
 verify_timestamps() {
-  if [[ "${START_TIMESTAMP}" =~ ${TIMESTAMP_REGEX} ]]; then
+  if [[ "${START_TIMESTAMP}" == '' || "${START_TIMESTAMP}" =~ ${TIMESTAMP_REGEX} ]]; then
     echo " INFO: '${START_TIMESTAMP}' start timestamp has correct format"
   else
     echo " ERROR: '${START_TIMESTAMP}' start timestamp has invalid format. Ensure it is in the format 'YYYY-MM-DDTHH:MM:SSZ'"
     exit 4
   fi
 
-  if [[ "${END_TIMESTAMP}" =~ ${TIMESTAMP_REGEX} ]]; then
+  if [[ "${END_TIMESTAMP}" == '' || "${END_TIMESTAMP}" =~ ${TIMESTAMP_REGEX} ]]; then
     echo " INFO: '${END_TIMESTAMP}' end timestamp has correct format"
   else
     echo " ERROR: '${END_TIMESTAMP}' end timestamp has invalid format. Ensure it is in the format 'YYYY-MM-DDTHH:MM:SSZ'"
     exit 4
+  fi
+
+  if [[ "${START_TIMESTAMP}" == '' || "${END_TIMESTAMP}" == '' ]]; then
+    return
   fi
 
   local start_epoch
@@ -206,6 +228,13 @@ verify_timestamps() {
   fi
 }
 
+verify_not_empty_timestamps() {
+  if [[ "${START_TIMESTAMP}" == '' || "${END_TIMESTAMP}" == '' ]]; then
+    echo " ERROR: '${START_TIMESTAMP}' start timestamp and '${END_TIMESTAMP}' end timestamp mustn't be empty."
+    exit 7
+  fi
+}
+
 verify_comment() {
   if [ -z "${COMMENT}" ]; then
     echo " ERROR: '${COMMENT}' comment can't be empty"
@@ -214,8 +243,8 @@ verify_comment() {
 }
 
 verify_mode() {
-  if [[ "${MODE}" != "${MODE_APPEND}" && "${MODE}" != "${MODE_SET}" && "${MODE}" != "${MODE_RESET}" ]]; then
-    echo " ERROR: '${MODE}' mode isn't either of values ['${MODE_APPEND}','${MODE_SET}','${MODE_RESET}']"
+  if [[ "${MODE}" != "${MODE_APPEND}" && "${MODE}" != "${MODE_SET}" && "${MODE}" != "${MODE_RESET}" && "${MODE}" != "${MODE_GET}" ]]; then
+    echo " ERROR: '${MODE}' mode isn't either of values ['${MODE_APPEND}','${MODE_SET}','${MODE_RESET}','${MODE_GET}']"
     exit 6
   fi
 }
@@ -333,15 +362,34 @@ prepare_comment_test() {
   exit 0
 }
 
+generate_jq_query() {
+  echo ".[] | .[\"${CRADLE_ADMIN_PAGES_KEY}\"][] |
+    select(
+      (
+        .[\"${CRADLE_ADMIN_ENDED_KEY}\"] == ${CRADLE_ADMIN_NULL_VALUE}
+          or
+        \"${START_TIMESTAMP}\" == \"\"
+          or
+        .[\"${CRADLE_ADMIN_ENDED_KEY}\"] > \"${START_TIMESTAMP}\"
+      ) and (
+        \"${END_TIMESTAMP}\" == \"\"
+          or
+        .[\"${CRADLE_ADMIN_STARTED_KEY}\"] <= \"${END_TIMESTAMP}\"
+      )
+    )"
+}
+
 update_page_comments() {
-  echo 'Update page comments:'
+  echo "Update pages' comments:"
   local books_info_json
   local url
+  local jq_query
   url="${CRADLE_ADMIN_TOOL_URL}/${CRADLE_ADMIN_GET_BOOK_INFO_PATH}?${CRADLE_ADMIN_BOOK_ID_HTTP_ARG}=${BOOK}"
   echo " INFO: GET - $url"
   books_info_json=$(curl --silent "${url}")
 
-  echo "${books_info_json}" | jq -r ".[] | .[\"${CRADLE_ADMIN_PAGES_KEY}\"][] | select((.[\"${CRADLE_ADMIN_ENDED_KEY}\"] == ${CRADLE_ADMIN_NULL_VALUE} or .[\"${CRADLE_ADMIN_ENDED_KEY}\"] >= \"${START_TIMESTAMP}\") and (.[\"${CRADLE_ADMIN_STARTED_KEY}\"] <= \"${END_TIMESTAMP}\")) | \"\(.[\"${CRADLE_ADMIN_PAGE_ID_KEY}\"]) \(.[\"${CRADLE_ADMIN_COMMENT_KEY}\"])\"" | \
+  jq_query="$(generate_jq_query) | \"\(.[\"${CRADLE_ADMIN_PAGE_ID_KEY}\"]) \(.[\"${CRADLE_ADMIN_COMMENT_KEY}\"])\""
+  echo "${books_info_json}" | jq -r "${jq_query}" | \
   while read -r page_id comment; do
     local new_comment
 
@@ -354,6 +402,10 @@ update_page_comments() {
         ;;
       "${MODE_RESET}")
         new_comment="${CRADLE_ADMIN_DEFAULT_COMMENT}"
+        ;;
+      *)
+        echo " ERROR: incorrect '${MODE}' mode for update pages' comment"
+        exit 20
         ;;
     esac
 
@@ -373,6 +425,29 @@ update_page_comments() {
   done
 }
 
+get_page_comments() {
+  echo "Get pages' comments:"
+  local books_info_json
+  local url
+  local jq_query
+  url="${CRADLE_ADMIN_TOOL_URL}/${CRADLE_ADMIN_GET_BOOK_INFO_PATH}?${CRADLE_ADMIN_BOOK_ID_HTTP_ARG}=${BOOK}"
+  echo " INFO: GET - $url"
+  books_info_json=$(curl --silent "${url}")
+
+  jq_query="$(generate_jq_query) | \"\(.[\"${CRADLE_ADMIN_PAGE_ID_KEY}\"]) \(.[\"${CRADLE_ADMIN_STARTED_KEY}\"]) \(.[\"${CRADLE_ADMIN_ENDED_KEY}\"]) \(.[\"${CRADLE_ADMIN_COMMENT_KEY}\"]) \""
+  echo "${books_info_json}" | jq -r "${jq_query}" | \
+  while read -r page_id started ended comment; do
+    echo " '${BOOK}.${page_id}' [${started} - ${ended}) - '${comment}'"
+  done
+}
+
 verify_utils
 parse_args "$@"
-update_page_comments
+case "${MODE}" in
+  "${MODE_GET}")
+    get_page_comments
+    ;;
+  *)
+    update_page_comments
+    ;;
+esac
