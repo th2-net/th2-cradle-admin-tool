@@ -1,4 +1,4 @@
-# th2-cradle-admin 1.11.1
+# th2-cradle-admin 1.11.2
 
 The th2-cradle-admin is a set of projects for managing books and pages in th2 storage.
 
@@ -69,6 +69,13 @@ spec:
   * `page-name` - name of the removed page (required).
 
 ## Release notes:
+
+### 1.11.2-dev
+
+* Included scripts for REST API interaction and installed required utils into docker image 
+* Updated 
+  * th2-gradle-plugin: `0.1.8` (th2-bom: `4.10.0`)
+  * jackson-datatype-jsr310: `2.18.2`
 
 ### 1.11.1-dev
 * Updated:

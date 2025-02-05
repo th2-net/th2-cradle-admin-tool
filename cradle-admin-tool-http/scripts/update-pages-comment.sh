@@ -168,7 +168,7 @@ verify_url() {
   local url
   url="${CRADLE_ADMIN_TOOL_URL}/${CRADLE_ADMIN_GET_ALL_BOOKS_PATH}"
   echo " INFO: GET - $url"
-  if curl --head --silent "${url}" | head --lines 1 | grep --silent "200 OK"; then
+  if curl --head --silent "${url}" | head -n 1 | grep --silent "200 OK"; then
     echo " INFO: '${CRADLE_ADMIN_TOOL_URL}' URL is accessible"
   else
     echo " ERROR: '${CRADLE_ADMIN_TOOL_URL}' URL is not accessible"
@@ -186,7 +186,7 @@ verify_book() {
   local book_list
   url="${CRADLE_ADMIN_TOOL_URL}/${CRADLE_ADMIN_GET_ALL_BOOKS_PATH}"
   echo " INFO: GET - $url"
-  book_list=$(curl --silent "${url}" | jq -r ".[].$CRADLE_ADMIN_BOOK_ID_KEY" | paste --serial --delimiters ' ')
+  book_list=$(curl --silent "${url}" | jq -r ".[].$CRADLE_ADMIN_BOOK_ID_KEY" | paste -sd ' ')
   echo " INFO: existed books: $book_list"
   if echo "${book_list}" | grep --silent --word-regexp "${BOOK}"; then
     echo " INFO: '${BOOK}' book exists in the cradle"
@@ -416,7 +416,7 @@ update_page_comments() {
       escaped_new_comment="$(escape_http_parameter "${new_comment}")"
       url="${CRADLE_ADMIN_TOOL_URL}/${CRADLE_ADMIN_UPDATE_PAGE_PATH}?${CRADLE_ADMIN_BOOK_ID_HTTP_ARG}=${BOOK}&${CRADLE_ADMIN_PAGE_NAME_HTTP_ARG}=${page_id}&${CRADLE_ADMIN_NEW_COMMENT_HTTP_ARG}=${escaped_new_comment}"
       echo " INFO: GET - $url"
-      if curl --silent "${url}" | head --lines 1 | grep --silent "Success"; then
+      if curl --silent "${url}" | head -n 1 | grep --silent "Success"; then
         echo " INFO: updated comment from '${comment}' to '${new_comment}' for '${BOOK}.${page_id}' page"
       else
         echo " ERROR: update comment for '${BOOK}.${page_id}' page failed"
