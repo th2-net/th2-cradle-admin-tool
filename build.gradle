@@ -1,11 +1,6 @@
 plugins {
-    id "com.exactpro.th2.gradle.base" version "0.1.8"
-    id "com.exactpro.th2.gradle.component" version "0.1.8" apply false
-}
-
-ext {
-    commonVersion = '5.14.0-dev'
-    cradleVersion = '5.4.3-dev'
+    alias(libs.plugins.th2.base)
+    alias(libs.plugins.th2.component) apply false
 }
 
 dependencyCheck {
@@ -15,8 +10,10 @@ dependencyCheck {
 subprojects {
     apply plugin: 'java'
 
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    th2JavaRelease {
+        targetJavaVersion.set(JavaVersion.VERSION_11)
+    }
+
     compileJava.options.debugOptions.debugLevel = 'source,lines,vars' // Include debug information
 
     group = 'com.exactpro.th2'
@@ -39,13 +36,15 @@ subprojects {
     }
 
     dependencies {
+        implementation(libs.cradle.core)
+        implementation(libs.cradle.cassandra)
         implementation "org.slf4j:slf4j-api"
 
-        testImplementation 'com.exactpro.th2:junit-jupiter-integration:0.0.1'
+        testImplementation(libs.junit.jupiter.integration)
 
-        testImplementation 'org.mockito:mockito-core:5.15.2'
-        testImplementation 'org.mockito:mockito-junit-jupiter:5.15.2'
-        testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+        testImplementation(libs.mockito.core)
+        testImplementation(libs.mockito.junit.jupiter)
+        testImplementation(libs.junit.jupiter)
 
         testRuntimeOnly('org.junit.platform:junit-platform-launcher') {
             because 'This artifact will not be added automatically since gradle 9.0. You can read more information here:' +
