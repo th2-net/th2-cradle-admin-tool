@@ -9,9 +9,6 @@ dependencies {
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
 
-    implementation(libs.cradle.core)
-    implementation(libs.cradle.cassandra)
-
     implementation(libs.commons.cli)
 
     testImplementation project(':cradle-admin-tool-test')
