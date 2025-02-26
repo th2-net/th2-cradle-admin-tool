@@ -10,8 +10,10 @@ dependencyCheck {
 subprojects {
     apply plugin: 'java'
 
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    th2JavaRelease {
+        targetJavaVersion.set(JavaVersion.VERSION_11)
+    }
+
     compileJava.options.debugOptions.debugLevel = 'source,lines,vars' // Include debug information
 
     group = 'com.exactpro.th2'
@@ -34,6 +36,8 @@ subprojects {
     }
 
     dependencies {
+        implementation(libs.cradle.core)
+        implementation(libs.cradle.cassandra)
         implementation "org.slf4j:slf4j-api"
 
         testImplementation(libs.th2.junit.jupiter.integration)

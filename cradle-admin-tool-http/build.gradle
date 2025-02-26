@@ -9,8 +9,6 @@ dependencies {
     implementation(libs.th2.common) {
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
-    implementation(libs.cradle.core)
-    implementation(libs.cradle.cassandra)
 
     implementation "org.eclipse.jetty:jetty-server"
     implementation "org.eclipse.jetty:jetty-servlet"
@@ -25,4 +23,14 @@ dependencies {
 
 application {
     mainClassName = "com.exactpro.th2.cradle.adm.http.Application"
+}
+
+distributions {
+    main {
+        contents {
+            into('scripts') {
+                from 'scripts'
+            }
+        }
+    }
 }

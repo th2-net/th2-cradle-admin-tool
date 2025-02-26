@@ -1,5 +1,3 @@
 dependencies {
-    implementation(libs.cradle.core)
-    implementation(libs.cradle.cassandra)
     implementation 'org.apache.commons:commons-lang3'
 }
