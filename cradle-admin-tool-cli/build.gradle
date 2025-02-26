@@ -5,14 +5,14 @@ plugins {
 dependencies {
     implementation project(':cradle-admin-tool-core')
 
-    implementation("com.exactpro.th2:common:$commonVersion") {
+    implementation(libs.th2.common) {
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
 
-    implementation "com.exactpro.th2:cradle-core:$cradleVersion"
-    implementation "com.exactpro.th2:cradle-cassandra:$cradleVersion"
+    implementation(libs.cradle.core)
+    implementation(libs.cradle.cassandra)
 
-    implementation 'commons-cli:commons-cli:1.9.0'
+    implementation(libs.commons.cli)
 
     testImplementation project(':cradle-admin-tool-test')
 }
