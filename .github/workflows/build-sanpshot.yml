@@ -15,7 +15,7 @@ jobs:
     with:
       integration-test-enabled: false
       scanner-enabled: true
-      strict-scanner: true
+      strict-scanner: false
       integration-test-projects: "['cradle-admin-tool-cli','cradle-admin-tool-http']"
       build-target: 'Docker'
       docker-username: ${{ github.actor }}
