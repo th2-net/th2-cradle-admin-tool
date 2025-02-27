@@ -1,5 +1,5 @@
 [versions]
-th2-plugin = "0.2.2"
+th2-plugin = "0.2.3"
 mockito = "5.15.2"
 cradle = "5.4.3-dev"
 
