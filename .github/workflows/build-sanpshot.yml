@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-job:
-    uses: th2-net/.github/.github/workflows/compound-java-dev.yml@integration-tests # FIXME: switch to main branch
+    uses: th2-net/.github/.github/workflows/compound-java-dev.yml@main
     with:
       integration-test-enabled: true
       integration-test-projects: "['cradle-admin-tool-cli','cradle-admin-tool-http']"
