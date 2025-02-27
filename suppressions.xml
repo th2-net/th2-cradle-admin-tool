@@ -10,4 +10,9 @@
         <packageUrl regex="true">^pkg:maven/io\.netty/netty-handler@.*$</packageUrl>
         <vulnerabilityName>CVE-2025-24970</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[file names: jetty-(io|http|security|server|servlet|util)-11.0.24.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.eclipse\.jetty/jetty-(io|http|security|server|servlet|util)@11.0.24$</packageUrl>
+        <cve>CVE-2024-6763</cve>
+    </suppress>
 </suppressions>
