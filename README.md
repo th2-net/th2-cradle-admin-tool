@@ -73,11 +73,9 @@ spec:
 ### 1.12.0-dev
 * Updated:
   * migrated to jetty: `11.0.24`
-  * th2-gradle-plugin: `0.1.6` (th2-bom: `4.9.0`)
+  * th2-gradle-plugin: `0.2.3` (th2-bom: `4.11.0`)
   * Cradle API to `5.4.4-dev`
 * Added vulnerability suppressions
-  * CVE-2025-25193 - This vulnerability does not affect us because the component don’t use netty for reading environment files, only for network interaction.
-  * CVE-2025-24970 - The component doesn’t directly use SSL for communication between each other because they are deployed in cluster.
   * CVE-2024-6763 - The component doesn’t communicate with others components or client’s systems via HTTP and even hasn’t got credentials for such communication.
 
 ### 1.11.2-dev
