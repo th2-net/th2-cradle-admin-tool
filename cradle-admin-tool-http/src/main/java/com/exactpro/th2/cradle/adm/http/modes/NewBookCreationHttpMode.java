@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+/*
+ * Copyright 2021-2024 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ */
 
 package com.exactpro.th2.cradle.adm.http.modes;
 
@@ -21,10 +21,8 @@ import com.exactpro.th2.cradle.adm.http.params.HttpParamBuilder;
 import com.exactpro.th2.cradle.adm.http.params.NewBookCreationParamsBuilder;
 import com.exactpro.th2.cradle.adm.modes.NewBookCreationMode;
 import com.exactpro.th2.cradle.adm.params.NewBookCreationParams;
-import com.exactpro.th2.cradle.adm.results.SimpleResult;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class NewBookCreationHttpMode extends NewBookCreationMode implements HttpMode<NewBookCreationParams> {
 
@@ -34,8 +32,7 @@ public class NewBookCreationHttpMode extends NewBookCreationMode implements Http
 	}
 	
 	@Override
-	public boolean initParams(HttpServletRequest req) throws InvalidConfigurationException {
+	public void initParams(HttpServletRequest req) throws InvalidConfigurationException {
 		this.param = getParams(req);
-		return true;
 	}
 }

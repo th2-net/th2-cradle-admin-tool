@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright 2021-2021 Exactpro (Exactpro Systems Limited)
+/*
+ * Copyright 2021-2024 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,19 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ */
 
 package com.exactpro.th2.cradle.adm.http.modes;
 
 import com.exactpro.th2.cradle.adm.InvalidConfigurationException;
 import com.exactpro.th2.cradle.adm.http.params.HttpParamBuilder;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 
 public interface HttpMode<T> {
 
 	HttpParamBuilder<T> createParamsBuilder();
-	boolean initParams(HttpServletRequest commandLine) throws InvalidConfigurationException;
+	void initParams(HttpServletRequest commandLine) throws InvalidConfigurationException;
 
 	default T getParams(HttpServletRequest commandLine) throws InvalidConfigurationException {
 		var builder = createParamsBuilder();

@@ -40,7 +40,7 @@ subprojects {
         implementation(libs.cradle.cassandra)
         implementation "org.slf4j:slf4j-api"
 
-        testImplementation(libs.junit.jupiter.integration)
+        testImplementation(libs.th2.junit.jupiter.integration)
 
         testImplementation(libs.mockito.core)
         testImplementation(libs.mockito.junit.jupiter)
@@ -60,6 +60,8 @@ subprojects {
 
     tasks.register('integrationTest', Test) {
         group = 'verification'
+        systemProperty 'datastax-java-driver.advanced.connection.init-query-timeout', '5 seconds'
+        systemProperty 'datastax-java-driver.basic.request.timeout', '10 seconds'
         useJUnitPlatform {
             includeTags('integration')
         }

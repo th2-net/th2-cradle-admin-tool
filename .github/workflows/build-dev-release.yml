@@ -6,6 +6,8 @@ jobs:
   build:
     uses: th2-net/.github/.github/workflows/compound-java.yml@main
     with:
+      integration-test-enabled: true
+      integration-test-projects: "['cradle-admin-tool-cli','cradle-admin-tool-http']"
       build-target: 'Docker'
       devRelease: true
       createTag: true
