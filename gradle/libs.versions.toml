@@ -1,7 +1,7 @@
 [versions]
 th2-plugin = "0.2.4"
 mockito = "5.16.1"
-cradle = "5.4.4-dev"
+cradle = "5.5.0-dev"
 
 [libraries]
 th2-common = { group = "com.exactpro.th2", name = "common", version = "5.15.0-dev" }
