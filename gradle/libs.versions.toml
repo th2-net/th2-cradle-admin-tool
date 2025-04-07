@@ -1,6 +1,6 @@
 [versions]
 th2-plugin = "0.2.4"
-mockito = "5.16.1"
+mockito = "5.17.0"
 cradle = "5.5.0-dev"
 
 [libraries]
