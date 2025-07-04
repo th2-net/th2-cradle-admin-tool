@@ -10,7 +10,7 @@ cradle-cassandra = { group = "com.exactpro.th2", name = "cradle-cassandra", vers
 cradle-core = { group = "com.exactpro.th2", name = "cradle-core", version.ref = "cradle" }
 jackson-datatype-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310", version = "2.19.1" }
 commons-cli = { group = "commons-cli", name = "commons-cli", version = "1.9.0" }
-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version = "5.13.2" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version = "5.13.3" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 mockito-junit-jupiter = { group = "org.mockito", name = "mockito-junit-jupiter", version.ref = "mockito" }
 jetty-bom = { group = "org.eclipse.jetty", name = "jetty-bom", version = "11.0.24" }
